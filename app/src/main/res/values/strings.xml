@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Seedkeeper-Android</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_info">Seedkeeper lets you easily generate, import and export a variety of crypto related secrets.</string>
+    <string name="seedphrase_manager">Your seedphrases manager</string>
+    <string name="seedphrase_manager_info">Don’t write your seedphrases on a piece of paper anymore! We offer you an advanced hardware solution to store them properly.</string>
+    <string name="using_nfc">Using NFC</string>
+    <string name="using_nfc_info">To use it, put the card on top of your phone when prompted and keep it on the reader throughout the operation.</string>
+    <string name="start">Start</string>
+    <string name="seedkeeper">Seedkeeper</string>
+    <string name="no_seedkeeper">No Seedkeeper card yet? \nClick here to buy one.</string>
+    <string name="scan">Click\n&amp;\nScan</string>
+    <string name="cancel">Cancel</string>
+    <string name="readyToScan">Ready to Scan</string>
+    <string name="nfcHoldSeedkeeper">Hold your Seedkeeper near your phone</string>
 </resources>
