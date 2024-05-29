@@ -15,3 +15,11 @@ val SatoGradientPurple = Color(0xFF513C68)
 val SatoGradientPurpleLight = Color(0xFF8C42CF)
 val SatoGray = Color(0xFFD9C7EB)
 val SatoLightGrey = Color(0xFFC6C6C6)
+
+// MENU
+val SatoDarkPurple = Color(0xFF2D2F46)
+val SatoLightPurple = Color(0xFF485979)
+val SatoDividerPurple = Color(0xFF585D72)
+val SatoCardPurple = Color(0xFF3A374F)
+
+
