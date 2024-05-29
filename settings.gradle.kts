@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Seedkeeper-Android"
+rootProject.name = "Seedkeeper"
 include(":app")
  

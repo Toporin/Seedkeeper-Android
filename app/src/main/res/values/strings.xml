@@ -1,16 +1,26 @@
 <resources>
-    <string name="app_name">Seedkeeper-Android</string>
+    <string name="app_name">Seedkeeper</string>
     <string name="welcome">Welcome</string>
-    <string name="welcome_info">Seedkeeper lets you easily generate, import and export a variety of crypto related secrets.</string>
-    <string name="seedphrase_manager">Your seedphrases manager</string>
-    <string name="seedphrase_manager_info">Don’t write your seedphrases on a piece of paper anymore! We offer you an advanced hardware solution to store them properly.</string>
-    <string name="using_nfc">Using NFC</string>
-    <string name="using_nfc_info">To use it, put the card on top of your phone when prompted and keep it on the reader throughout the operation.</string>
+    <string name="welcomeInfo">Seedkeeper lets you easily generate, import and export a variety of crypto related secrets.</string>
+    <string name="seedphraseManager">Your seedphrases manager</string>
+    <string name="seedphraseManagerInfo">Don’t write your seedphrases on a piece of paper anymore! We offer you an advanced hardware solution to store them properly.</string>
+    <string name="usingNfc">Using NFC</string>
+    <string name="usingNfcInfo">To use it, put the card on top of your phone when prompted and keep it on the reader throughout the operation.</string>
     <string name="start">Start</string>
     <string name="seedkeeper">Seedkeeper</string>
-    <string name="no_seedkeeper">No Seedkeeper card yet? \nClick here to buy one.</string>
+    <string name="noSeedkeeper">No Seedkeeper card yet? \nClick here to buy one.</string>
     <string name="scan">Click\n&amp;\nScan</string>
     <string name="cancel">Cancel</string>
     <string name="readyToScan">Ready to Scan</string>
     <string name="nfcHoldSeedkeeper">Hold your Seedkeeper near your phone</string>
+
+    <!--Menu View-->
+    <string name="cardInfo">Car\'d Information</string>
+    <string name="makeBackup">Make a backup</string>
+    <string name="settings">Settings</string>
+    <string name="useSeedkeeper">How to use Seedkeeper</string>
+    <string name="tos">Terms of service</string>
+    <string name="privacyPolicy">Privacy policy</string>
+    <string name="allOurProducs">All our \nproducts</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package org.satochip.seedkeeper.ui.components.shared
+package org.satochip.seedkeeper.ui.components.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import org.satochip.seedkeeper.ui.theme.SatoGray
 import org.satochip.seedkeeper.ui.views.home.HomeView
+import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
 
@@ -25,79 +26,99 @@ fun Navigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Splash
+        startDestination = SplashView
     ) {
-        composable<Splash> {
+        composable<SplashView> {
             SplashView()
             LaunchedEffect(Unit) {
                 delay(500)
-                navController.navigate(FirstWelcome)
+                navController.navigate(FirstWelcomeView) {
+                    popUpTo(0)
+                }
             }
         }
-        composable<FirstWelcome> {
+        composable<FirstWelcomeView> {
             WelcomeView(
                 title = R.string.welcome,
-                text = R.string.welcome_info,
+                text = R.string.welcomeInfo,
                 colors = listOf(Color.White, SatoGray, SatoGray),
                 backgroundImage = R.drawable.seedkeeper_background_welcome_first_screen,
                 onNext = {
-                    navController.navigate(SecondWelcome)
+                    navController.navigate(SecondWelcomeView) {
+                        popUpTo(0)
+                    }
                 },
                 onBack = {}
             )
         }
-        composable<SecondWelcome> {
+        composable<SecondWelcomeView> {
             WelcomeView(
-                title = R.string.seedphrase_manager,
-                text = R.string.seedphrase_manager_info,
+                title = R.string.seedphraseManager,
+                text = R.string.seedphraseManagerInfo,
                 colors = listOf(SatoGray, Color.White, SatoGray),
                 backgroundImage = R.drawable.seedkeeper_background_welcome_second_screen,
                 onNext = {
-                    navController.navigate(ThirdWelcome)
+                    navController.navigate(ThirdWelcomeView) {
+                        popUpTo(0)
+                    }
                 },
                 onBack = {
-                    navController.navigate(FirstWelcome)
+                    navController.navigate(FirstWelcomeView) {
+                        popUpTo(0)
+                    }
                 }
             )
         }
-        composable<ThirdWelcome> {
+        composable<ThirdWelcomeView> {
             WelcomeView(
-                title = R.string.using_nfc,
-                text = R.string.using_nfc_info,
+                title = R.string.usingNfc,
+                text = R.string.usingNfcInfo,
                 backgroundImage = R.drawable.seedkeeper_background_welcome_third_screen,
                 onNext = {
-                    navController.navigate(HomeView)
+                    navController.navigate(HomeView) {
+                        popUpTo(0)
+                    }
                 },
                 onBack = {
-                    navController.navigate(SecondWelcome)
+                    navController.navigate(SecondWelcomeView) {
+                        popUpTo(0)
+                    }
                 }
             )
         }
         composable<HomeView> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Color.Blue),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                HomeView()
-            }
+            HomeView(
+                onMenuClick = {
+                    navController.navigate(MenuView)
+                }
+            )
+        }
+        composable<MenuView> {
+            MenuView (
+                onClick = {
+                    navController.navigate(HomeView) {
+                        popUpTo(0)
+                    }
+                }
+            )
         }
     }
 }
 
 @Serializable
-object Splash
+object SplashView
 
 @Serializable
-object FirstWelcome
+object FirstWelcomeView
 
 @Serializable
-object SecondWelcome
+object SecondWelcomeView
 
 @Serializable
-object ThirdWelcome
+object ThirdWelcomeView
 
 @Serializable
 object HomeView
+
+@Serializable
+object MenuView
