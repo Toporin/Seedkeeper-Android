@@ -1,14 +1,9 @@
 package org.satochip.seedkeeper
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -19,10 +14,13 @@ import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
+import org.satochip.seedkeeper.utils.webviewActivityIntent
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
+    val context = LocalContext.current
+
 
     NavHost(
         navController = navController,
@@ -90,15 +88,27 @@ fun Navigation() {
             HomeView(
                 onMenuClick = {
                     navController.navigate(MenuView)
+                },
+                webViewAction = { link ->
+                    webviewActivityIntent(
+                        url = link,
+                        context = context
+                    )
                 }
             )
         }
         composable<MenuView> {
-            MenuView (
+            MenuView(
                 onClick = {
                     navController.navigate(HomeView) {
                         popUpTo(0)
                     }
+                },
+                webViewAction = { link ->
+                    webviewActivityIntent(
+                        url = link,
+                        context = context
+                    )
                 }
             )
         }
