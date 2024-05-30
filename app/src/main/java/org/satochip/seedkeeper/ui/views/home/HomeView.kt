@@ -22,7 +22,8 @@ import org.satochip.seedkeeper.ui.components.home.SatoRoundButton
 
 @Composable
 fun HomeView(
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    webViewAction: (String) -> Unit
 ) {
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     // NfcDialog
@@ -31,7 +32,6 @@ fun HomeView(
             openDialogCustom = showNfcDialog,
         )
     }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -63,7 +63,9 @@ fun HomeView(
             }
             // WEBVIEW
             SatoGradientButton(
-                onClick = {},
+                onClick = {
+                    webViewAction("https://satochip.io/product/seedkeeper/")
+                },
                 text = R.string.noSeedkeeper
             )
         }

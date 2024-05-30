@@ -25,12 +25,13 @@ import org.satochip.seedkeeper.utils.satoClickEffect
 
 @Composable
 fun HeaderAlternateRow(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     titleText: Int? = null,
     message: Int? = null
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
