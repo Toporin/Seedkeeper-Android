@@ -32,5 +32,30 @@
     <string name="verbouseLogs">Activate the verbose logs collection</string>
     <string name="showLogs">Show logs</string>
 
+    <!--Card's Information View-->
+    <string name="cardVersion">Card version</string>
+    <string name="cardLabel">Card label</string>
+    <string name="pinCode">PIN code</string>
+    <string name="changePinCode">Change PIN code</string>
+    <string name="cardAuthenticity">Card authenticity</string>
+    <string name="cardIsGenuine">this card is genuine</string>
+    <string name="cardIsNotGenuine">this card is not genuine</string>
+
+    <!--Card's Authenticity View-->
+    <string name="cardAuthFailed">Card authentication failed!</string>
+    <string name="cardAuthFailedText">Impossible to authenticate the issuer of this card. It was not issued by Satochip S.R.L.</string>
+    <string name="cardAuthFailedUsage">If you didn\'t load the card yourself, be extremely careful!</string>
+    <string name="cardAuthSuccessful">Card authentication successfully!</string>
+    <string name="cardAuthSuccessfulText">This card was issued by Satochip S.R.L.</string>
+    <string name="cardAuthSuccessfulUsage">You can safely use it.</string>
+    <string name="showCardCertificate">Show card certificate</string>
+    <string name="showCaCardCertificate">Show sub-CA certificate</string>
+
+    <!--Card's Edit Pin Code View-->
+    <string name="setup">Setup</string>
+    <string name="editPinCode">Change the PIN code</string>
+    <string name="editPinCodeText">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
+    <string name="enterCurrentPinCode">Enter the current PIN code</string>
+    <string name="next">Next</string>
 
 </resources>

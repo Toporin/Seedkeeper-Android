@@ -31,4 +31,30 @@
     <string name="debugMode">Mode débogage</string>
     <string name="verbouseLogs">Activer la collection de journaux détaillés</string>
     <string name="showLogs">Afficher les journaux</string>
+
+    <!--Card's Information View-->
+    <string name="cardVersion">Version carte</string>
+    <string name="cardLabel">Etiquette de la carte</string>
+    <string name="pinCode">Code PIN</string>
+    <string name="changePinCode">Changer le code PIN</string>
+    <string name="cardAuthenticity">Authenticité de la carte</string>
+    <string name="cardIsGenuine">cette carte est authentique</string>
+    <string name="cardIsNotGenuine">cette carte n\'est pas authentique</string>
+
+    <!--Card's Authenticity View-->
+    <string name="cardAuthFailed">L\'authentification de la carte a échoué!</string>
+    <string name="cardAuthFailedText">Impossible d\'authentifier l\'émetteur de cette carte. Il n\'a pas été délivré par Satochip S.R.L.</string>
+    <string name="cardAuthFailedUsage">Si vous n\'avez pas chargé la carte vous-même, soyez extrêmement prudent !</string>
+    <string name="cardAuthSuccessful">Authentification de la carte réussie!</string>
+    <string name="cardAuthSuccessfulText">Cette carte a été émise par Satochip S.R.L.</string>
+    <string name="cardAuthSuccessfulUsage">Vous pouvez l\'utiliser en toute sécurité.</string>
+    <string name="showCardCertificate">Montrer le certificat de la carte</string>
+    <string name="showCaCardCertificate">Afficher le certificat sous-CA</string>
+
+    <!--Card's Edit Pin Code View-->
+    <string name="setup">Installation</string>
+    <string name="editPinCode">Changer le code PIN</string>
+    <string name="editPinCodeText">Modifiez le code PIN pour sécuriser l\'accès à votre carte à puce Seedkeeper.</string>
+    <string name="enterCurrentPinCode">Entrez le code PIN actuel</string>
+    <string name="next">Suivant</string>
 </resources>

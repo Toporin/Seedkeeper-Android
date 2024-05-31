@@ -25,11 +25,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.HomeItems
 
 @Composable
-fun HeaderRow(
-    onClick: () -> Unit,
-    onMenuClick: () -> Unit,
+fun HomeHeaderRow(
+    onClick: (HomeItems) -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -41,7 +41,9 @@ fun HeaderRow(
     ) {
         // LOGO
         IconButton(
-            onClick = onClick,
+            onClick = {
+                onClick(HomeItems.CARD_INFO)
+            },
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_sato_small),
@@ -64,7 +66,9 @@ fun HeaderRow(
             ),
         )
         // MENU BUTTON
-        IconButton(onClick = onMenuClick) {
+        IconButton(onClick = {
+            onClick(HomeItems.MENU)
+        }) {
             Icon(Icons.Default.MoreVert, "", tint = Color.Black)
         }
     }
