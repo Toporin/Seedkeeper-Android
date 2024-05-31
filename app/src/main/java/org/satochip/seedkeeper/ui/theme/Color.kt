@@ -22,4 +22,8 @@ val SatoLightPurple = Color(0xFF485979)
 val SatoDividerPurple = Color(0xFF585D72)
 val SatoCardPurple = Color(0xFF3A374F)
 
+// SETTINGS
+val SatoToggleGray = Color(0xFFABADB0)
+val SatoToggleBlack = Color(0xFF292B3D)
+
 

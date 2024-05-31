@@ -10,7 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
 
 @Composable
@@ -27,7 +30,10 @@ fun SatoButton(
             onClick()
         },
         modifier = modifier
-            .padding(10.dp)
+            .padding(
+                vertical = 10.dp,
+                horizontal = 16.dp
+            )
             .height(40.dp),
         shape = shape,
         colors = ButtonColors(
@@ -39,7 +45,12 @@ fun SatoButton(
     ) {
         Text(
             text = stringResource(text),
-            color = textColor
+            style = TextStyle(
+                color = textColor,
+                fontSize = 18.sp,
+                lineHeight = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }

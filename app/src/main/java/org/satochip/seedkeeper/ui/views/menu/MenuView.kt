@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
 import org.satochip.seedkeeper.ui.theme.SatoCardPurple
@@ -37,7 +38,7 @@ import org.satochip.seedkeeper.ui.theme.SatoLightPurple
 
 @Composable
 fun MenuView(
-    onClick: () -> Unit,
+    onClick: (MenuItems) -> Unit,
     webViewAction: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -59,7 +60,9 @@ fun MenuView(
                 .fillMaxSize()
         ) {
             HeaderAlternateRow(
-                onClick = onClick
+                onClick = {
+                    onClick(MenuItems.BACK)
+                }
             )
         }
     }
@@ -90,9 +93,11 @@ fun MenuView(
                 text = stringResource(R.string.cardInfo),
                 textAlign = Alignment.TopStart,
                 color = SatoDarkPurple,
-                drawableId = R.drawable.cards_info
-            ) {
-            }
+                drawableId = R.drawable.cards_info,
+                onClick = {
+                    onClick(MenuItems.CARD_INFORMATION)
+                }
+            )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -113,9 +118,11 @@ fun MenuView(
                 text = stringResource(R.string.makeBackup),
                 textAlign = Alignment.TopStart,
                 color = SatoLightPurple,
-                drawableId = R.drawable.make_backup
-            ) {
-            }
+                drawableId = R.drawable.make_backup,
+                onClick = {
+                    onClick(MenuItems.MAKE_A_BACKUP)
+                }
+            )
             // SETTINGS
             MenuCard(
                 modifier = Modifier
@@ -124,9 +131,11 @@ fun MenuView(
                 text = stringResource(R.string.settings),
                 textAlign = Alignment.TopStart,
                 color = SatoDarkPurple,
-                drawableId = R.drawable.settings
-            ) {
-            }
+                drawableId = R.drawable.settings,
+                onClick = {
+                    onClick(MenuItems.SETTINGS)
+                }
+            )
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,

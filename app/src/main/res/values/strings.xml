@@ -18,10 +18,19 @@
     <!--Menu View-->
     <string name="cardInfo">Card\'s Information</string>
     <string name="makeBackup">Make a backup</string>
-    <string name="settings">Settings</string>
     <string name="useSeedkeeper">How to use Seedkeeper</string>
     <string name="tos">Terms of service</string>
     <string name="privacyPolicy">Privacy policy</string>
     <string name="allOurProducs">All our \nproducts</string>
+
+    <!--Settings View-->
+    <string name="settings">Settings</string>
+    <string name="showInstructionScreens">Show the introduction screens</string>
+    <string name="restartApplication">You have to restart the application</string>
+    <string name="starterIntro">Starter intro</string>
+    <string name="debugMode">Debug mode</string>
+    <string name="verbouseLogs">Activate the verbose logs collection</string>
+    <string name="showLogs">Show logs</string>
+
 
 </resources>
