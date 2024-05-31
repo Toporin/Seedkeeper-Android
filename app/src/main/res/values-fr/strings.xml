@@ -18,9 +18,17 @@
     <!--Menu View-->
     <string name="cardInfo">Informations sur la carte</string>
     <string name="makeBackup">Faire une sauvegarde</string>
-    <string name="settings">Parametres</string>
     <string name="useSeedkeeper">Comment utiliser Seedkeeper</string>
     <string name="tos">Conditions d\'utilisation</string>
     <string name="privacyPolicy">Politique de confidentialité</string>
     <string name="allOurProducs">Tous nos \nproduits</string>
+
+    <!--Settings View-->
+    <string name="settings">Parametres</string>
+    <string name="showInstructionScreens">Afficher les écrans d\'introduction</string>
+    <string name="restartApplication">Vous devez redémarrer l\'application</string>
+    <string name="starterIntro">Introduction de démarrage</string>
+    <string name="debugMode">Mode débogage</string>
+    <string name="verbouseLogs">Activer la collection de journaux détaillés</string>
+    <string name="showLogs">Afficher les journaux</string>
 </resources>

@@ -89,6 +89,10 @@ fun WelcomeView(
                         StepCircles(colors)
                     } ?: run {
                         SatoButton(
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = 20.dp
+                                ),
                             onClick = onNext,
                             text = R.string.start
                         )
