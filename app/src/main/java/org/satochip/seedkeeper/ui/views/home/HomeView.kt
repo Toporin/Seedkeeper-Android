@@ -15,14 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.ui.components.home.HeaderRow
+import org.satochip.seedkeeper.data.HomeItems
+import org.satochip.seedkeeper.ui.components.home.HomeHeaderRow
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.home.SatoGradientButton
 import org.satochip.seedkeeper.ui.components.home.SatoRoundButton
 
 @Composable
 fun HomeView(
-    onMenuClick: () -> Unit,
+    onClick: (HomeItems) -> Unit,
     webViewAction: (String) -> Unit
 ) {
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
@@ -51,9 +52,10 @@ fun HomeView(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HeaderRow(
-                onClick = {},
-                onMenuClick = onMenuClick
+            HomeHeaderRow(
+                onClick = { homeItems ->
+                    onClick(homeItems)
+                },
             )
             // SCAN BUTTON
             SatoRoundButton(

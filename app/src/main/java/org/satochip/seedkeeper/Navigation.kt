@@ -11,10 +11,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
+import org.satochip.seedkeeper.data.CardInformationItems
+import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
 import org.satochip.seedkeeper.ui.theme.SatoGray
+import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
+import org.satochip.seedkeeper.ui.views.cardinfo.CardEditPinCode
+import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
 import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.settings.SettingsView
@@ -100,8 +105,16 @@ fun Navigation(
         }
         composable<HomeView> {
             HomeView(
-                onMenuClick = {
-                    navController.navigate(MenuView)
+                onClick = { item ->
+                    when (item) {
+                        HomeItems.CARD_INFO -> {
+                            navController.navigate(CardAuthenticity)
+                        }
+                        HomeItems.REFRESH -> {}
+                        HomeItems.MENU -> {
+                            navController.navigate(MenuView)
+                        }
+                    }
                 },
                 webViewAction = { link ->
                     webviewActivityIntent(
@@ -121,7 +134,9 @@ fun Navigation(
                             }
                         }
 
-                        MenuItems.CARD_INFORMATION -> {}
+                        MenuItems.CARD_INFORMATION -> {
+                            navController.navigate(CardInformation)
+                        }
                         MenuItems.MAKE_A_BACKUP -> {}
                         MenuItems.SETTINGS -> {
                             navController.navigate(SettingsView)
@@ -175,6 +190,58 @@ fun Navigation(
                 }
             )
         }
+        composable<CardInformation> {
+            CardInformation(
+                onClick = { item ->
+                    when (item) {
+                        CardInformationItems.CARD_AUTHENTICITY -> {
+                            navController.navigate(CardAuthenticity) {
+                                popUpTo(0)
+                            }
+                        }
+                        CardInformationItems.EDIT_PIN_CODE -> {
+                            navController.navigate(CardEditPinCodeView) {
+                                popUpTo(0)
+                            }
+                        }
+                        CardInformationItems.BACK -> {
+                            navController.navigate(MenuView) {
+                                popUpTo(0)
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+            )
+        }
+        composable<CardAuthenticity> {
+            CardAuthenticity(
+                onClick = { item ->
+                    when (item) {
+                        CardInformationItems.BACK -> {
+                            navController.navigate(CardInformation) {
+                                popUpTo(0)
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+            )
+        }
+        composable<CardEditPinCodeView> {
+            CardEditPinCode(
+                onClick = { item ->
+                    when (item) {
+                        CardInformationItems.BACK -> {
+                            navController.navigate(CardInformation) {
+                                popUpTo(0)
+                            }
+                        }
+                        else -> {}
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -198,3 +265,12 @@ object MenuView
 
 @Serializable
 object SettingsView
+
+@Serializable
+object CardInformation
+
+@Serializable
+object CardAuthenticity
+
+@Serializable
+object CardEditPinCodeView

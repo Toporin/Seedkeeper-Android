@@ -25,5 +25,6 @@ val SatoCardPurple = Color(0xFF3A374F)
 // SETTINGS
 val SatoToggleGray = Color(0xFFABADB0)
 val SatoToggleBlack = Color(0xFF292B3D)
+val SatoGreen = Color(0xFF24B59B)
 
 

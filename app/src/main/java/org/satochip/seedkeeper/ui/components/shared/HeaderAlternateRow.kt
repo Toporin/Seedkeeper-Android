@@ -53,7 +53,7 @@ fun HeaderAlternateRow(
             Text(
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.ExtraBold,
                 color = Color.Black,
                 text = stringResource(titleText),
                 modifier = Modifier.padding(start = 50.dp, end = 50.dp)
