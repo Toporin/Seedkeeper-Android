@@ -17,6 +17,7 @@ import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
 import org.satochip.seedkeeper.ui.theme.SatoGray
+import org.satochip.seedkeeper.ui.views.backup.BackupView
 import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardEditPinCode
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
@@ -129,15 +130,14 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         MenuItems.BACK -> {
-                            navController.navigate(HomeView) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
-
                         MenuItems.CARD_INFORMATION -> {
                             navController.navigate(CardInformation)
                         }
-                        MenuItems.MAKE_A_BACKUP -> {}
+                        MenuItems.MAKE_A_BACKUP -> {
+                            navController.navigate(BackupView)
+                        }
                         MenuItems.SETTINGS -> {
                             navController.navigate(SettingsView)
                         }
@@ -169,9 +169,7 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         SettingsItems.BACK -> {
-                            navController.navigate(MenuView) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
                         SettingsItems.STARTER_INFO -> {
                             settings.edit().putBoolean(
@@ -194,20 +192,14 @@ fun Navigation(
             CardInformation(
                 onClick = { item ->
                     when (item) {
+                        CardInformationItems.BACK -> {
+                            navController.popBackStack()
+                        }
                         CardInformationItems.CARD_AUTHENTICITY -> {
-                            navController.navigate(CardAuthenticity) {
-                                popUpTo(0)
-                            }
+                            navController.navigate(CardAuthenticity)
                         }
                         CardInformationItems.EDIT_PIN_CODE -> {
-                            navController.navigate(CardEditPinCodeView) {
-                                popUpTo(0)
-                            }
-                        }
-                        CardInformationItems.BACK -> {
-                            navController.navigate(MenuView) {
-                                popUpTo(0)
-                            }
+                            navController.navigate(CardEditPinCodeView)
                         }
                         else -> {}
                     }
@@ -219,9 +211,7 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         CardInformationItems.BACK -> {
-                            navController.navigate(CardInformation) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
                         else -> {}
                     }
@@ -233,12 +223,17 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         CardInformationItems.BACK -> {
-                            navController.navigate(CardInformation) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
                         else -> {}
                     }
+                }
+            )
+        }
+        composable<BackupView> {
+            BackupView(
+                onClick = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -247,30 +242,23 @@ fun Navigation(
 
 @Serializable
 object SplashView
-
 @Serializable
 object FirstWelcomeView
-
 @Serializable
 object SecondWelcomeView
-
 @Serializable
 object ThirdWelcomeView
-
 @Serializable
 object HomeView
-
 @Serializable
 object MenuView
-
 @Serializable
 object SettingsView
-
 @Serializable
 object CardInformation
-
 @Serializable
 object CardAuthenticity
-
 @Serializable
 object CardEditPinCodeView
+@Serializable
+object BackupView

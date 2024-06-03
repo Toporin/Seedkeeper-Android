@@ -57,4 +57,24 @@
     <string name="editPinCodeText">Modifiez le code PIN pour sécuriser l\'accès à votre carte à puce Seedkeeper.</string>
     <string name="enterCurrentPinCode">Entrez le code PIN actuel</string>
     <string name="next">Suivant</string>
+
+    <!--Backup View-->
+    <string name="backup">Backup</string>
+    <string name="pairing">Pairing</string>
+    <string name="masterCard">Master Card</string>
+    <string name="backupCard">Backup Card</string>
+    <string name="home">Home</string>
+    <string name="back">Back</string>
+    <string name="restart">Restart</string>
+    <string name="scanMySeedkeeper">Scan my seedkeeper</string>
+    <string name="makeTheBackup">Make the backup</string>
+    <string name="backupDescription">In order to make a backup of your Seedkeeper (master card) to another one, you’ll first need to pair the backup card.</string>
+    <string name="pairingStartProcess">Start the backup process and follow the wizard.</string>
+    <string name="pairingFirstStep">Please prepare your Seedkeeper backup card and click next to pair the card.</string>
+    <string name="pairingSecondStep">Now that your backup card has been paired, please rescan your Seedkeeper card.</string>
+    <string name="pairingThirdStepDoneTitle">Perfect!</string>
+    <string name="pairingThirdStepDoneText">You are now ready to copy the content of this card to your backup card using an encrypted communication.</string>
+    <string name="pairingFourthStep">Please prepare your Seedkeeper backup card and click next to copy your backup.</string>
+    <string name="backupFifthTitle">Congratulations!</string>
+    <string name="backupFifthText">You have successfully made a backup of your Seedkeeper card.</string>
 </resources>
