@@ -57,19 +57,3 @@ fun BackupText(
         }
     }
 }
-
-@Composable
-fun BackupSingleText(
-    text: Int
-) {
-    Text(
-        text = stringResource(text),
-        style = TextStyle(
-            color = Color.Black,
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            fontWeight = FontWeight.W500,
-            textAlign = TextAlign.Center
-        )
-    )
-}

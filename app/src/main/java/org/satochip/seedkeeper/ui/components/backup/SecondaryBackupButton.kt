@@ -17,18 +17,15 @@ fun SecondaryBackupButton(
                 BackupStatus.FIRST_STEP -> {
                     backupStatus.value = BackupStatus.DEFAULT
                 }
-
                 BackupStatus.SECOND_STEP -> {
                     backupStatus.value = BackupStatus.FIRST_STEP
                 }
-
                 BackupStatus.THIRD_STEP -> {
-                    backupStatus.value = BackupStatus.FIRST_STEP                }
-
+                    backupStatus.value = BackupStatus.FIRST_STEP
+                }
                 BackupStatus.FOURTH_STEP -> {
                     backupStatus.value = BackupStatus.FIRST_STEP
                 }
-
                 else -> {}
             }
         },

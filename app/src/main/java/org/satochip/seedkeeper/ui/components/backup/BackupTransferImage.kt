@@ -36,15 +36,9 @@ fun BackupTransferImage(
             contentScale = ContentScale.FillHeight
         )
         text?.let {
-            Text(
-                text = stringResource(id = text),
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center
-                )
+            BackupSingleText(
+                text = text,
+                fontWeight = FontWeight.ExtraBold
             )
         }
     }
