@@ -50,7 +50,7 @@ fun BackupText(
                 BackupSingleText(R.string.pairingFourthStep)
             }
             BackupStatus.FIFTH_STEP -> {
-                BackupSingleText(R.string.backupFifthTitle)
+                BackupSingleText(R.string.congratulations)
                 Spacer(modifier = Modifier.height(16.dp))
                 BackupSingleText(R.string.backupFifthText)
             }
