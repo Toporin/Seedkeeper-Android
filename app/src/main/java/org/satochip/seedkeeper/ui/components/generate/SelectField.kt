@@ -42,7 +42,6 @@ import org.satochip.seedkeeper.ui.theme.SatoPurple
 @Composable
 fun SelectField(
     selectList: List<SelectFieldItem>,
-//    selectListPrefix: List<Int>,
     onClick: (Int) -> Unit,
 ) {
     var isExpended by remember {

@@ -1,7 +1,5 @@
 package org.satochip.seedkeeper.ui.components.generate
 
-//import androidx.compose.material3.Slider
-//import androidx.compose.material3.SliderDefaults
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -86,28 +84,6 @@ fun PasswordLengthField() {
                     disabledThumbColor = Color.Black
                 ),
                 steps = options.size - 2,
-//                thumb = {
-//                    Box{
-////                        Image(
-////                            painterResource(id = R.drawable.circle),
-////                            modifier = Modifier.size(32.dp),
-////                            contentScale = ContentScale.FillWidth,
-////                            contentDescription = null
-////                        )
-//                        Spacer(
-//                            modifier = Modifier
-//                                .height(16.dp)
-//                                .width(2.dp)
-//                                .background(Color.White),
-//                        )
-//                        Text(
-//                            modifier = Modifier
-//                                .align(Alignment.BottomCenter)
-//                                .offset(y = 24.dp, x = -3.dp),
-//                            text = selectedOption.toString(),
-//                        )
-//                    }
-//                }
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
