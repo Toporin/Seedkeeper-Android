@@ -1,25 +1,31 @@
 package org.satochip.seedkeeper
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import org.satochip.seedkeeper.data.CardInformationItems
+import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
 import org.satochip.seedkeeper.ui.theme.SatoGray
+import org.satochip.seedkeeper.ui.views.backup.BackupView
 import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardEditPinCode
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
+import org.satochip.seedkeeper.ui.views.generate.GenerateView
 import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.settings.SettingsView
@@ -31,6 +37,7 @@ import org.satochip.seedkeeper.utils.webviewActivityIntent
 fun Navigation(
     context: Context
 ) {
+    val clipboardManager = LocalClipboardManager.current
     val navController = rememberNavController()
     val settings = context.getSharedPreferences("seedkeeper", Context.MODE_PRIVATE)
     val startDestination =
@@ -129,15 +136,14 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         MenuItems.BACK -> {
-                            navController.navigate(HomeView) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
-
                         MenuItems.CARD_INFORMATION -> {
                             navController.navigate(CardInformation)
                         }
-                        MenuItems.MAKE_A_BACKUP -> {}
+                        MenuItems.MAKE_A_BACKUP -> {
+                            navController.navigate(BackupView)
+                        }
                         MenuItems.SETTINGS -> {
                             navController.navigate(SettingsView)
                         }
@@ -169,9 +175,7 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         SettingsItems.BACK -> {
-                            navController.navigate(MenuView) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
                         SettingsItems.STARTER_INFO -> {
                             settings.edit().putBoolean(
@@ -194,20 +198,14 @@ fun Navigation(
             CardInformation(
                 onClick = { item ->
                     when (item) {
+                        CardInformationItems.BACK -> {
+                            navController.popBackStack()
+                        }
                         CardInformationItems.CARD_AUTHENTICITY -> {
-                            navController.navigate(CardAuthenticity) {
-                                popUpTo(0)
-                            }
+                            navController.navigate(CardAuthenticity)
                         }
                         CardInformationItems.EDIT_PIN_CODE -> {
-                            navController.navigate(CardEditPinCodeView) {
-                                popUpTo(0)
-                            }
-                        }
-                        CardInformationItems.BACK -> {
-                            navController.navigate(MenuView) {
-                                popUpTo(0)
-                            }
+                            navController.navigate(CardEditPinCodeView)
                         }
                         else -> {}
                     }
@@ -219,9 +217,7 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         CardInformationItems.BACK -> {
-                            navController.navigate(CardInformation) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
                         else -> {}
                     }
@@ -233,11 +229,33 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         CardInformationItems.BACK -> {
-                            navController.navigate(CardInformation) {
-                                popUpTo(0)
-                            }
+                            navController.popBackStack()
                         }
                         else -> {}
+                    }
+                }
+            )
+        }
+        composable<BackupView> {
+            BackupView(
+                onClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        composable<GenerateView> {
+            GenerateView (
+                onClick = { item, secret ->
+                    when(item) {
+                        GenerateViewItems.COPY_TO_CLIPBOARD -> {
+                            secret?.let {
+                                clipboardManager.setText(AnnotatedString(secret))
+                                Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        GenerateViewItems.BACK -> {
+                            navController.popBackStack()
+                        }
                     }
                 }
             )
@@ -247,30 +265,25 @@ fun Navigation(
 
 @Serializable
 object SplashView
-
 @Serializable
 object FirstWelcomeView
-
 @Serializable
 object SecondWelcomeView
-
 @Serializable
 object ThirdWelcomeView
-
 @Serializable
 object HomeView
-
 @Serializable
 object MenuView
-
 @Serializable
 object SettingsView
-
 @Serializable
 object CardInformation
-
 @Serializable
 object CardAuthenticity
-
 @Serializable
 object CardEditPinCodeView
+@Serializable
+object BackupView
+@Serializable
+object GenerateView
