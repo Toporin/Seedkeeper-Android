@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordLengthField() {
     val options = listOf(0, 8, 12, 16)
