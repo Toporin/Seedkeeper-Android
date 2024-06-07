@@ -15,6 +15,29 @@
     <string name="readyToScan">Prêt à scanner</string>
     <string name="nfcHoldSeedkeeper">Tenez votre Seedkeeper près de votre phone</string>
 
+    <!--Generate View-->
+    <string name="generate">Generate</string>
+    <string name="generateASecret">Generate a secret</string>
+    <string name="generateAMnemonicPhrase">Generate a mnemonic phrase</string>
+    <string name="generateAPassword">Generate a password</string>
+    <string name="generateExplanation">Allows you to quickly generate and import a new secret.</string>
+    <string name="generateSuccessful">The following secret has been successfully imported into your Seedkeeper</string>
+    <string name="importButton">Import</string>
+
+        <!--Mnemonic phrase-->
+        <string name="typeOfSecret">Type of secret</string>
+        <string name="mnemonicPhrase">Mnemonic phrase</string>
+        <string name="loginPassword">Login/Password</string>
+        <string name="label">Label</string>
+        <string name="mnemonicSize">Mnemonic size</string>
+        <string name="mnemonicWords"> words</string>
+        <string name="passphrase"> Passphrase (optional)</string>
+        <!--Login/Password-->
+        <string name="loginOptional">Login (optional)</string>
+        <string name="urlOptional">URL (optional)</string>
+        <string name="passwordLength">Password length</string>
+        <string name="passwordImport">Import</string>
+
     <!--Menu View-->
     <string name="cardInfo">Informations sur la carte</string>
     <string name="makeBackup">Faire une sauvegarde</string>
@@ -75,6 +98,6 @@
     <string name="pairingThirdStepDoneTitle">Perfect!</string>
     <string name="pairingThirdStepDoneText">You are now ready to copy the content of this card to your backup card using an encrypted communication.</string>
     <string name="pairingFourthStep">Please prepare your Seedkeeper backup card and click next to copy your backup.</string>
-    <string name="backupFifthTitle">Congratulations!</string>
+    <string name="congratulations">Congratulations!</string>
     <string name="backupFifthText">You have successfully made a backup of your Seedkeeper card.</string>
 </resources>
