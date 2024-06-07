@@ -119,7 +119,7 @@ fun Navigation(
                         }
                         HomeItems.REFRESH -> {}
                         HomeItems.MENU -> {
-                            navController.navigate(GenerateView)
+                            navController.navigate(MenuView)
                         }
                     }
                 },
