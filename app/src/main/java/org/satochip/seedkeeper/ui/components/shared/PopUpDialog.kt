@@ -27,6 +27,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
@@ -76,6 +77,9 @@ fun PopUpDialog(
                     color = Color.White,
                     shape = RoundedCornerShape(8.dp)
                 )
+                .clip(
+                    shape = RoundedCornerShape(8.dp)
+                )
         ) {
             Row(
                 modifier = Modifier
@@ -83,7 +87,8 @@ fun PopUpDialog(
                     .background(
                         SatoPurple.copy(alpha = 0.5f)
                     ),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     modifier = Modifier.padding(16.dp),
@@ -92,18 +97,19 @@ fun PopUpDialog(
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                 )
-                Text(
+                Image(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .background(Color.Transparent, shape = CircleShape)
                         .satoClickEffect(
                             onClick = {
                                 isOpen.value = !isOpen.value
                             }
-                        ),
-                    text = stringResource(id = R.string.done),
-                    fontSize = 18.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
+                        )
+                        .padding(16.dp)
+                        .width(24.dp),
+                    painter = painterResource(R.drawable.cancel),
+                    contentDescription =  null,
+                    colorFilter = ColorFilter.tint(Color.White),
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -196,7 +202,7 @@ fun PopUpDialog(
                                     )
                                     .width(16.dp),
                                 painter = painterResource(R.drawable.cancel),
-                                contentDescription = stringResource(id = R.string.back),
+                                contentDescription =  null,
                                 colorFilter = ColorFilter.tint(Color.Black),
                             )
                         }
