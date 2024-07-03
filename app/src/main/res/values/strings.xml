@@ -14,6 +14,7 @@
     <string name="cancel">Cancel</string>
     <string name="readyToScan">Ready to Scan</string>
     <string name="nfcHoldSeedkeeper">Hold your Seedkeeper near your phone</string>
+    <string name="done">Done</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>
@@ -23,6 +24,7 @@
     <string name="generateExplanation">Allows you to quickly generate and import a new secret.</string>
     <string name="generateSuccessful">The following secret has been successfully imported into your Seedkeeper</string>
     <string name="importButton">Import</string>
+    <string name="memorablePassword">Memorable password</string>
 
         <!--Mnemonic phrase-->
         <string name="typeOfSecret">Type of secret</string>
@@ -35,8 +37,14 @@
         <!--Login/Password-->
         <string name="loginOptional">Login (optional)</string>
         <string name="urlOptional">URL (optional)</string>
-        <string name="passwordLength">Password length</string>
+        <string name="passwordLength">Length</string>
         <string name="passwordImport">Import</string>
+        <string name="copiedToClipboard">Copied to clipboard</string>
+        <string name="selectMoreSets">Please select at least one character set</string>
+        <string name="emailListTitle">Previously used</string>
+        <string name="emailListNewEmail">Write new email</string>
+        <string name="emailListUseExisting">Or use existing:</string>
+        <string name="emailListWriteNewOne">Write a new one:</string>
 
     <!--Menu View-->
     <string name="cardInfo">Card\'s Information</string>

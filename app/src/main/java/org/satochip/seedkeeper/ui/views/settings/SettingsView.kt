@@ -32,13 +32,6 @@ fun SettingsView(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Image(
-            painter = painterResource(R.drawable.seedkeeper_background),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize(),
-            contentScale = ContentScale.FillBounds
-        )
         Column(
             modifier = Modifier
                 .fillMaxSize(),

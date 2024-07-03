@@ -68,6 +68,15 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //satochip libraries
+    implementation(files("libs/satochip-lib-0.0.4.jar"))
+    implementation(files("libs/javacryptotools-0.3.0.jar"))
+    implementation(files("libs/satochip-android-0.0.2.jar"))
+
+    // libs dependencies
+    implementation("org.bitcoinj:bitcoinj-core:0.16.2")
+    implementation("com.google.guava:guava:32.1.2-jre")
+
     //Type safe navigation
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

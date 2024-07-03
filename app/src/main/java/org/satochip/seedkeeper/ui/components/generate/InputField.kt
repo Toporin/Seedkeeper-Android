@@ -45,6 +45,9 @@ fun InputField(
     drawableId: Int = R.drawable.edit_icon,
     placeHolder: Int? = null,
     containerColor: Color = SatoPurple.copy(alpha = 0.5f),
+    isEmail: Boolean = false,
+    onClick: (() -> Unit)? = null,
+    onValueChange: (() -> Unit)? = null
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
@@ -57,11 +60,16 @@ fun InputField(
                 shape = RoundedCornerShape(50)
             )
             .clickable {
-                focusRequester.requestFocus()
-                keyboardController?.show()
+                if (onClick != null) {
+                    onClick()
+                }
+                if (isEditable) {
+                    focusRequester.requestFocus()
+                    keyboardController?.show()
+                }
             }
             .padding(horizontal = 20.dp, vertical = 6.dp),
-        horizontalArrangement = if (isEditable) Arrangement.SpaceBetween else Arrangement.Center,
+        horizontalArrangement = if (isEditable || isEmail) Arrangement.SpaceBetween else Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         BasicTextField(
@@ -70,6 +78,9 @@ fun InputField(
             value = curValue.value,
             onValueChange = {
                 curValue.value = it
+                if (onValueChange != null) {
+                    onValueChange()
+                }
             },
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
@@ -80,12 +91,13 @@ fun InputField(
                 keyboardType = KeyboardType.Text
             ),
             enabled = isEditable,
+            readOnly = !isEditable,
             textStyle = TextStyle(
                 color = Color.White,
                 fontSize = 16.sp,
                 lineHeight = 21.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = if (isEditable) TextAlign.Start else TextAlign.Center
+                textAlign = if (isEditable || isEmail) TextAlign.Start else TextAlign.Center
             ),
             decorationBox = { innerTextField ->
                 placeHolder?.let {
@@ -110,7 +122,7 @@ fun InputField(
                 innerTextField.invoke()
             }
         )
-        if (isEditable) {
+        if (isEditable || isEmail) {
             Image(
                 modifier = Modifier
                     .size(24.dp),

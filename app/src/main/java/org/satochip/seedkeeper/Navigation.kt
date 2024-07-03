@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,6 +33,7 @@ import org.satochip.seedkeeper.ui.views.settings.SettingsView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
 import org.satochip.seedkeeper.utils.webviewActivityIntent
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun Navigation(
@@ -47,6 +49,7 @@ fun Navigation(
         } else {
             HomeView
         }
+    val viewModel = SharedViewModel()
 
     NavHost(
         navController = navController,
@@ -115,7 +118,8 @@ fun Navigation(
                 onClick = { item ->
                     when (item) {
                         HomeItems.CARD_INFO -> {
-                            navController.navigate(CardAuthenticity)
+//                            navController.navigate(CardAuthenticity)
+                            navController.navigate(GenerateView)
                         }
                         HomeItems.REFRESH -> {}
                         HomeItems.MENU -> {
@@ -244,17 +248,43 @@ fun Navigation(
             )
         }
         composable<GenerateView> {
-            GenerateView (
-                onClick = { item, secret ->
-                    when(item) {
+            val copyText = stringResource(id = R.string.copiedToClipboard)
+            val selectMoreSets = stringResource(id = R.string.selectMoreSets)
+            GenerateView(
+                settings = settings,
+                onClick = { item, text, passwordOptions ->
+                    when (item) {
                         GenerateViewItems.COPY_TO_CLIPBOARD -> {
-                            secret?.let {
-                                clipboardManager.setText(AnnotatedString(secret))
-                                Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                            text?.let {
+                                clipboardManager.setText(AnnotatedString(text))
+                                Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                             }
+                            return@GenerateView ""
                         }
                         GenerateViewItems.BACK -> {
                             navController.popBackStack()
+                            return@GenerateView ""
+                        }
+                        GenerateViewItems.GENERATE_MNEMONIC_PHRASE -> {
+                            return@GenerateView ""
+                        }
+                        GenerateViewItems.GENERATE_A_PASSWORD -> {
+                            return@GenerateView passwordOptions?.let { options ->
+                                if (options.isMemorableSelected) {
+                                    viewModel.generateMemorablePassword(options)
+                                } else {
+                                    val password = viewModel.generatePassword(options)
+                                    password?.let {
+                                        it
+                                    } ?: run {
+                                        Toast.makeText(context, selectMoreSets, Toast.LENGTH_SHORT)
+                                            .show()
+                                        ""
+                                    }
+                                }
+                            } ?: run {
+                                ""
+                            }
                         }
                     }
                 }

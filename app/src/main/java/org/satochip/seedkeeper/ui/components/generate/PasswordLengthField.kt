@@ -1,7 +1,6 @@
 package org.satochip.seedkeeper.ui.components.generate
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,8 +13,9 @@ import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,21 +27,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 
 @Composable
-fun PasswordLengthField() {
-    val options = listOf(0, 8, 12, 16)
-    var sliderPosition by remember { mutableStateOf(1f) }
-
-    val selectedOption = options[sliderPosition.toInt()]
-
-    var includeLowerCase by remember { mutableStateOf(true) }
-    var includeUpperCase by remember { mutableStateOf(true) }
-    var includeNumbers by remember { mutableStateOf(true) }
-    var includeSpecialChars by remember { mutableStateOf(true) }
+fun PasswordLengthField(
+    passwordOptions: MutableState<PasswordOptions>
+) {
+    var sliderPosition by remember { mutableFloatStateOf(passwordOptions.value.passwordLength.toFloat()) }
 
     Column(
         modifier = Modifier
@@ -64,47 +59,73 @@ fun PasswordLengthField() {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Text(
                 modifier = Modifier
                     .weight(0.1f),
-                text = selectedOption.toString(),
+                text = passwordOptions.value.passwordLength.toString(),
             )
             Slider(
                 modifier = Modifier.weight(1f),
                 value = sliderPosition,
-                onValueChange = { sliderPosition = it },
-                valueRange = 0f..(options.size - 1).toFloat(),
+                onValueChange = {
+                    sliderPosition = it
+                    passwordOptions.value =
+                        passwordOptions.value.copy(passwordLength = sliderPosition.toInt())
+                },
+                valueRange = 4f..16f,
                 colors = SliderDefaults.colors(
-                    thumbColor = Color.Black,
+                    thumbColor = Color.White,
                     activeTrackColor = SatoActiveTracer,
                     inactiveTrackColor = SatoInactiveTracer,
                     disabledThumbColor = Color.Black
                 ),
-                steps = options.size - 2,
+                steps = 16,
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyRow(
-            horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ) {
             item {
-                ToggleOption(label = "abc ", isChecked = includeLowerCase) { includeLowerCase = it }
-            }
-            item {
-                ToggleOption(label = "ABC ", isChecked = includeUpperCase) { includeUpperCase = it }
-            }
-            item {
-                ToggleOption(label = "123 ", isChecked = includeNumbers) { includeNumbers = it }
+                ToggleOption(
+                    label = "abc",
+                    isChecked = passwordOptions.value.isLowercaseSelected
+                ) {
+                    passwordOptions.value = passwordOptions.value.copy(isLowercaseSelected = it)
+                }
             }
             item {
                 ToggleOption(
-                    label = "#$! ",
-                    isChecked = includeSpecialChars
-                ) { includeSpecialChars = it }
+                    label = "ABC",
+                    isChecked = passwordOptions.value.isUppercaseSelected
+                ) {
+                    passwordOptions.value = passwordOptions.value.copy(isUppercaseSelected = it)
+                }
             }
+            item {
+                ToggleOption(
+                    label = "123",
+                    isChecked = passwordOptions.value.isNumbersSelected
+                ) {
+                    passwordOptions.value = passwordOptions.value.copy(isNumbersSelected = it)
+                }
+            }
+            item {
+                ToggleOption(
+                    label = "#$!",
+                    isChecked = passwordOptions.value.isSymbolsSelected
+                ) {
+                    passwordOptions.value = passwordOptions.value.copy(isSymbolsSelected = it)
+                }
+            }
+        }
+        //Memorable password
+        ToggleOption(
+            label = stringResource(id = R.string.memorablePassword) + " ",
+            isChecked = passwordOptions.value.isMemorableSelected
+        ) {
+            passwordOptions.value = passwordOptions.value.copy(isMemorableSelected = it)
         }
     }
 }

@@ -45,7 +45,8 @@ fun EditableField(
     placeHolder: Int? = null,
     containerColor: Color = SatoLightPurple,
     isClickable: Boolean = false,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    textColor: Color = Color.White
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val trailingIcon: (@Composable () -> Unit)? =
@@ -57,7 +58,7 @@ fun EditableField(
                     painter = painterResource(id = drawableId),
                     contentDescription = null,
                     contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(Color.White)
+                    colorFilter = ColorFilter.tint(textColor)
                 )
             }
         } else null
@@ -103,7 +104,7 @@ fun EditableField(
                 curValue.value = it
             },
             textStyle = TextStyle(
-                color = Color.White,
+                color = textColor,
                 fontSize = 18.sp,
                 lineHeight = 22.sp,
                 fontWeight = FontWeight.Bold,
@@ -115,7 +116,7 @@ fun EditableField(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = placeHolder),
                         style = TextStyle(
-                            color = Color.White,
+                            color = textColor,
                             fontSize = 18.sp,
                             lineHeight = 22.sp,
                             fontWeight = FontWeight.Bold,
@@ -127,9 +128,9 @@ fun EditableField(
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = containerColor,
                 focusedContainerColor = containerColor,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                cursorColor = Color.White,
+                focusedTextColor = textColor,
+                unfocusedTextColor = textColor,
+                cursorColor = textColor,
                 focusedLabelColor = Color.White,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,

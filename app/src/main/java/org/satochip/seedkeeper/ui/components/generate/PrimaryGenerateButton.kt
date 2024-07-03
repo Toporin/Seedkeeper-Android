@@ -2,32 +2,25 @@ package org.satochip.seedkeeper.ui.components.generate
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.graphics.Color
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 
 @Composable
 fun PrimaryGenerateButton(
-    generateStatus: MutableState<GenerateStatus>,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    textColor: Color = Color.White,
+    enabled: Boolean = true,
+    text: Int,
 ) {
     SatoButton(
         onClick = {
-            onClick()
+            if (enabled) {
+                onClick()
+            }
         },
-        text = when (generateStatus.value) {
-            GenerateStatus.DEFAULT -> {
-                R.string.next
-            }
-            GenerateStatus.MNEMONIC_PHRASE_SECOND_STEP, GenerateStatus.LOGIN_PASSWORD_SECOND_STEP -> {
-                R.string.importButton
-            }
-            GenerateStatus.HOME -> {
-                R.string.home
-            }
-            else -> {
-                R.string.generate
-            }
-        }
+        text = text,
+        textColor = textColor
     )
 }

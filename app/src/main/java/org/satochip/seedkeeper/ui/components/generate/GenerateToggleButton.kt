@@ -1,9 +1,7 @@
 package org.satochip.seedkeeper.ui.components.generate
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -11,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.ui.theme.SatoDarkGray
@@ -32,6 +31,7 @@ fun ToggleOption(
         )
         Switch(
             modifier = Modifier
+                .scale(scale = 0.8f)
                 .rotate(180f),
             checked = isChecked,
             onCheckedChange = { onCheckedChange(it) },
