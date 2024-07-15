@@ -271,7 +271,7 @@ fun Navigation(
                         GenerateViewItems.GENERATE_A_PASSWORD -> {
                             return@GenerateView passwordOptions?.let { options ->
                                 if (options.isMemorableSelected) {
-                                    viewModel.generateMemorablePassword(options)
+                                    viewModel.generateMemorablePassword(options, context)
                                 } else {
                                     val password = viewModel.generatePassword(options)
                                     password?.let {

@@ -1,9 +1,11 @@
 package org.satochip.seedkeeper.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.StringConstants
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class SharedViewModel : ViewModel() {
 
@@ -26,7 +28,6 @@ class SharedViewModel : ViewModel() {
         if (characterSet.isEmpty())
             return null
 
-
         for (i in 0 until options.passwordLength) {
             val randomIndex = (characterSet.indices).random()
             password.append(characterSet[randomIndex])
@@ -35,11 +36,12 @@ class SharedViewModel : ViewModel() {
         return password.toString()
     }
 
-    fun generateMemorablePassword(options: PasswordOptions): String {
+    fun generateMemorablePassword(options: PasswordOptions, context: Context): String {
         val password = StringBuilder()
+        val wordList = getWordList(context)
 
         for (i in 0 until options.passwordLength) {
-            var randomMnemonic = MnemonicCode.INSTANCE.wordList.random()
+            var randomMnemonic = wordList.random()
             if (options.isUppercaseSelected) {
                 randomMnemonic = randomMnemonic.capitalize()
             }
@@ -55,5 +57,18 @@ class SharedViewModel : ViewModel() {
         }
 
         return password.toString()
+    }
+
+
+    private fun getWordList(context: Context): List<String> {
+        val wordList = mutableListOf<String>()
+        context.assets.open("password-replacement.txt").use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                reader.forEachLine { line ->
+                    wordList.add(line)
+                }
+            }
+        }
+        return wordList
     }
 }
