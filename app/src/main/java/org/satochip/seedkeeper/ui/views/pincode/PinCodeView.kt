@@ -1,5 +1,6 @@
-package org.satochip.seedkeeper.ui.views.cardinfo
+package org.satochip.seedkeeper.ui.views.pincode
 
+import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,9 +29,17 @@ import org.satochip.seedkeeper.ui.components.shared.InputPinField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 
 @Composable
-fun CardEditPinCode(
-    onClick: (CardInformationItems) -> Unit
+fun PinCodeView(
+    title: Int,
+    messageTitle: Int,
+    message: Int,
+    placeholderText: Int,
+    isMultiStep: Boolean,
+    onClick: (CardInformationItems, String?) -> Unit
 ) {
+    val curValue = remember {
+        mutableStateOf("")
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -41,9 +50,9 @@ fun CardEditPinCode(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(CardInformationItems.BACK)
+                    onClick(CardInformationItems.BACK, null)
                 },
-                titleText = R.string.setup
+                titleText = title
             )
         }
         Column(
@@ -59,11 +68,8 @@ fun CardEditPinCode(
                     .padding(32.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val curValue = remember {
-                    mutableStateOf("")
-                }
                 Text(
-                    text = stringResource(id = R.string.editPinCode),
+                    text = stringResource(id = messageTitle),
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 24.sp,
@@ -74,7 +80,7 @@ fun CardEditPinCode(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = stringResource(id = R.string.editPinCodeText),
+                    text = stringResource(id = message),
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 16.sp,
@@ -86,18 +92,22 @@ fun CardEditPinCode(
                 Spacer(modifier = Modifier.height(32.dp))
                 InputPinField(
                     curValue = curValue,
-                    placeHolder = R.string.enterCurrentPinCode
+                    placeHolder = placeholderText
                 )
-
-
             }
-            SatoButton(
-                modifier = Modifier,
-                onClick = {
-                    onClick(CardInformationItems.NEXT)
-                },
-                text = R.string.next
-            )
+            Column {
+                SatoButton(
+                    modifier = Modifier,
+                    onClick = {
+                        if (isMultiStep)
+                            onClick(CardInformationItems.NEXT, curValue.value)
+                        else
+                            onClick(CardInformationItems.CONFIRM, curValue.value)
+                    },
+                    text = if (isMultiStep) R.string.next else R.string.confirm
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }

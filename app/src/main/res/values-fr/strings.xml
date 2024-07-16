@@ -16,6 +16,16 @@
     <string name="nfcHoldSeedkeeper">Tenez votre Seedkeeper près de votre phone</string>
     <string name="done">Done</string>
 
+    <!--NFC code validation-->
+    <string name="nfcTitleSuccess"></string>
+    <string name="nfcOk">Opération réussie!</string>
+    <string name="nfcTitleWarning">Avertissement</string>
+    <string name="nfcErrorOccured">Une erreur est survenue, veuillez réessayer</string>
+    <string name="scanning">Numérisation</string>
+    <string name="nfcResultCodeNone">Aucun</string>
+    <string name="nfcResultCodeBusy">Occupé</string>
+    <string name="nfcResultCodeNfcError">Erreur lors de la numérisation de la carte</string>
+
     <!--Generate View-->
     <string name="generate">Generate</string>
     <string name="generateASecret">Generate a secret</string>
@@ -82,12 +92,20 @@
     <string name="showCardCertificate">Montrer le certificat de la carte</string>
     <string name="showCaCardCertificate">Afficher le certificat sous-CA</string>
 
-    <!--Card's Edit Pin Code View-->
+    <!--Pin Code View-->
     <string name="setup">Installation</string>
     <string name="editPinCode">Changer le code PIN</string>
     <string name="editPinCodeText">Modifiez le code PIN pour sécuriser l\'accès à votre carte à puce Seedkeeper.</string>
     <string name="enterCurrentPinCode">Entrez le code PIN actuel</string>
+    <string name="enterPinCode">Entrez votre code PIN</string>
+    <string name="createPinCode">Créer un code PIN</string>
+    <string name="createPinCodeText">Créez un code PIN pour sécuriser l\'accès à votre carte intelligente Seedkeeper.</string>
+    <string name="wrongPinCode">Code PIN incorrect !</string>
+    <string name="wrongPinCodeMessage">La valeur du code PIN ne correspond pas ! \n Veuillez réessayer</string>
+    <string name="confirmPinCode">Confirmez le code PIN</string>
+    <string name="confirmPinCodeText">Confirmez votre code PIN pour sécuriser l\'accès à votre carte intelligente Seedkeeper.</string>
     <string name="next">Suivant</string>
+    <string name="confirm">Confirmer</string>
 
     <!--Backup View-->
     <string name="backup">Backup</string>
@@ -108,4 +126,29 @@
     <string name="pairingFourthStep">Please prepare your Seedkeeper backup card and click next to copy your backup.</string>
     <string name="congratulations">Congratulations!</string>
     <string name="backupFifthText">You have successfully made a backup of your Seedkeeper card.</string>
+
+    <!--Home View-->
+    <string name="homeAuthenticatedText">Manage your crypto-related secrets at your fingertips with Seedkeeper.</string>
+    <string name="search">Search:</string>
+    <string name="mySecretList">My secrets list</string>
+
+    <!--Add Secret View-->
+    <string name="addSecret">Add secret</string>
+    <string name="addSecretMessage">Generate and save a new secret or simply import an existing one to your Seedkeeper.</string>
+    <string name="generateASecretMessage">Allows you to quickly generate and import a new secret.</string>
+    <string name="importASecret">Import a secret</string>
+    <string name="importASecretMessage">Allows you to import an existing secret into your Seedkeeper.</string>
+
+    <!--My Secret View-->
+    <string name="mySecret">My secret</string>
+    <string name="menageSecret">Menage your secret</string>
+    <string name="menageSecretMessage">Secret\’s information and related actions</string>
+    <string name="showSecret">Show</string>
+    <string name="deleteSecret">Delete</string>
+    <string name="seed">Seed</string>
+    <string name="seedQR">SeedQR</string>
+    <string name="xpub">Xpub</string>
+    <string name="login">Login</string>
+    <string name="url">URL</string>
+
 </resources>

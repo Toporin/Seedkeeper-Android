@@ -29,6 +29,7 @@ import org.satochip.seedkeeper.data.HomeItems
 
 @Composable
 fun HomeHeaderRow(
+    isCardDataAvailable: Boolean,
     onClick: (HomeItems) -> Unit,
 ) {
     Row(
@@ -49,8 +50,7 @@ fun HomeHeaderRow(
                 painter = painterResource(R.drawable.ic_sato_small),
                 contentDescription = "logo",
                 modifier = Modifier
-                    .size(45.dp), //.size(45.dp)
-                //.offset(x = 20.dp, y = 20.dp),
+                    .size(45.dp),
                 contentScale = ContentScale.Crop,
                 colorFilter = ColorFilter.tint(Color.Black)
             )
@@ -65,11 +65,30 @@ fun HomeHeaderRow(
                 lineHeight = 34.sp,
             ),
         )
-        // MENU BUTTON
-        IconButton(onClick = {
-            onClick(HomeItems.MENU)
-        }) {
-            Icon(Icons.Default.MoreVert, "", tint = Color.Black)
+        Row {
+            if (isCardDataAvailable) {
+                // RESCAN BUTTON
+                IconButton(
+                    onClick = {
+                        onClick(HomeItems.REFRESH)
+                    },
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.rescan),
+                        contentDescription = "logo",
+                        modifier = Modifier
+                            .size(16.dp),
+                        contentScale = ContentScale.Crop,
+                        colorFilter = ColorFilter.tint(Color.Black)
+                    )
+                }
+            }
+            // MENU BUTTON
+            IconButton(onClick = {
+                onClick(HomeItems.MENU)
+            }) {
+                Icon(Icons.Default.MoreVert, "", tint = Color.Black)
+            }
         }
     }
 }

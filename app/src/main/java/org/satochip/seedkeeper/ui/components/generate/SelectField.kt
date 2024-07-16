@@ -136,6 +136,9 @@ fun SelectField(
                         selectedValue = item
                         onClick(item.text)
                         isExpended = false
+                        item.prefix?.let {
+                            onClick(item.prefix)
+                        }
                     },
                     contentPadding = PaddingValues(vertical = 6.dp, horizontal = 24.dp)
                 )

@@ -6,5 +6,6 @@ enum class CardInformationItems {
     SHOW_CA_CERTIFICATE,
     EDIT_PIN_CODE,
     NEXT,
+    CONFIRM,
     BACK
 }

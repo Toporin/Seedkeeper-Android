@@ -1,6 +1,8 @@
 package org.satochip.seedkeeper
 
+import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,27 +15,43 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
+import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
+import org.satochip.client.seedkeeper.SeedkeeperSecretType
+import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.CardInformationItems
+import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.data.MenuItems
+import org.satochip.seedkeeper.data.MySecretItems
+import org.satochip.seedkeeper.data.NfcActionType
+import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
+import org.satochip.seedkeeper.services.SatoLog
+import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.theme.SatoGray
+import org.satochip.seedkeeper.ui.views.addsecret.AddSecretView
 import org.satochip.seedkeeper.ui.views.backup.BackupView
 import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
-import org.satochip.seedkeeper.ui.views.cardinfo.CardEditPinCode
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
 import org.satochip.seedkeeper.ui.views.generate.GenerateView
 import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
+import org.satochip.seedkeeper.ui.views.mysecret.MySecretView
+import org.satochip.seedkeeper.ui.views.pincode.PinCodeView
 import org.satochip.seedkeeper.ui.views.settings.SettingsView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
+import org.satochip.seedkeeper.utils.parseMnemonicCardData
+import org.satochip.seedkeeper.utils.parsePasswordCardData
 import org.satochip.seedkeeper.utils.webviewActivityIntent
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
+
+private const val TAG = "Navigation"
 
 @Composable
 fun Navigation(
@@ -50,6 +68,52 @@ fun Navigation(
             HomeView
         }
     val viewModel = SharedViewModel()
+    viewModel.setContext(context)
+
+    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
+
+    // NFC DIALOG
+    if (showNfcDialog.value) {
+        NfcDialog(
+            openDialogCustom = showNfcDialog,
+            resultCodeLive = viewModel.resultCodeLive,
+            isConnected = viewModel.isCardConnected
+        )
+    }
+
+    // FIRST TIME SETUP
+    if (viewModel.isSetupNeeded) {
+        SatoLog.d(TAG, "Navigation: Card needs to be setup!")
+        navController.navigate(
+            PinCodeView(
+                title = R.string.setup,
+                messageTitle = R.string.createPinCode,
+                message = R.string.createPinCodeText,
+                placeholderText = R.string.enterPinCode,
+            )
+        )
+    }
+
+    // PIN CODE
+    if (viewModel.isReadyForPinCode) {
+        SatoLog.d(TAG, "Navigation: Card needs to be verified!")
+        navController.navigate(
+            PinCodeView(
+                title = R.string.pinCode,
+                messageTitle = R.string.pinCode,
+                message = R.string.enterPinCode,
+                placeholderText = R.string.enterPinCode,
+                isMultiStep = false
+            )
+        )
+    }
+    LaunchedEffect(viewModel.isCardDataAvailable) {
+        if (viewModel.isCardDataAvailable) {
+            navController.navigate(HomeView) {
+                popUpTo(0)
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -115,15 +179,42 @@ fun Navigation(
         }
         composable<HomeView> {
             HomeView(
-                onClick = { item ->
+                isCardDataAvailable = viewModel.isCardDataAvailable,
+                secretHeaders = viewModel.secretHeaders,
+                onClick = { item, secret ->
                     when (item) {
                         HomeItems.CARD_INFO -> {
-//                            navController.navigate(CardAuthenticity)
-                            navController.navigate(GenerateView)
+                            navController.navigate(CardAuthenticity)
                         }
-                        HomeItems.REFRESH -> {}
+                        HomeItems.REFRESH -> {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.SCAN_CARD
+                            )
+                        }
                         HomeItems.MENU -> {
                             navController.navigate(MenuView)
+                        }
+                        HomeItems.SCAN_CARD -> {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.SCAN_CARD
+                            )
+                        }
+                        HomeItems.ADD_NEW_SECRET -> {
+                            navController.navigate(AddSecretView)
+                        }
+                        HomeItems.OPEN_SECRET -> {
+                            secret?.sid?.let {
+                                navController.navigate(
+                                    MySecretView(
+                                        sid = secret.sid,
+                                        type = secret.type.name
+                                    )
+                                )
+                            }
                         }
                     }
                 },
@@ -132,7 +223,7 @@ fun Navigation(
                         url = link,
                         context = context
                     )
-                }
+                },
             )
         }
         composable<MenuView> {
@@ -209,7 +300,13 @@ fun Navigation(
                             navController.navigate(CardAuthenticity)
                         }
                         CardInformationItems.EDIT_PIN_CODE -> {
-                            navController.navigate(CardEditPinCodeView)
+                            navController.navigate(
+                                PinCodeView(
+                                    title = R.string.setup,
+                                    messageTitle = R.string.editPinCode,
+                                    message = R.string.editPinCodeText
+                                )
+                            )
                         }
                         else -> {}
                     }
@@ -228,12 +325,28 @@ fun Navigation(
                 }
             )
         }
-        composable<CardEditPinCodeView> {
-            CardEditPinCode(
-                onClick = { item ->
+        composable<PinCodeView> {
+            val args = it.toRoute<PinCodeView>()
+            PinCodeView (
+                title = args.title,
+                messageTitle = args.messageTitle,
+                message = args.message,
+                placeholderText = args.placeholderText,
+                isMultiStep = args.isMultiStep,
+                onClick = { item, pinString ->
                     when (item) {
                         CardInformationItems.BACK -> {
                             navController.popBackStack()
+                        }
+                        CardInformationItems.CONFIRM -> {
+                            pinString?.let {
+                                showNfcDialog.value = true // NfcDialog
+                                viewModel.setupNewPinString(pinString)
+                                viewModel.scanCardForAction(
+                                    activity = context as Activity,
+                                    nfcActionType = NfcActionType.VERIFY_PIN
+                                )
+                            }
                         }
                         else -> {}
                     }
@@ -247,11 +360,96 @@ fun Navigation(
                 }
             )
         }
+        composable<AddSecretView> {
+            AddSecretView(
+                onClick = { item ->
+                    when (item) {
+                        AddSecretItems.GENERATE_A_SECRET -> {
+                            navController.navigate(GenerateView)
+                        }
+                        AddSecretItems.IMPORT_A_SECRET -> {
+
+                        }
+                        AddSecretItems.BACK -> {
+                            navController.popBackStack()
+                        }
+                    }
+                },
+                webViewAction = { link ->
+                    webviewActivityIntent(
+                        url = link,
+                        context = context
+                    )
+                }
+            )
+        }
+        composable<MySecretView> {
+            val args = it.toRoute<MySecretView>()
+            val data = remember {
+                mutableStateOf<GeneratePasswordData?>(null)
+            }
+            LaunchedEffect(Unit) {
+                data.value = null
+                showNfcDialog.value = true // NfcDialog
+                viewModel.setCurrentSecret(args.sid)
+                viewModel.scanCardForAction(
+                    activity = context as Activity,
+                    nfcActionType = NfcActionType.GET_SECRET
+                )
+            }
+            if (viewModel.currentSecretObject != null) {
+                viewModel.currentSecretObject?.let { secretObject ->
+                    if (args.type == SeedkeeperSecretType.BIP39_MNEMONIC.name) {
+                        data.value = parseMnemonicCardData(secretObject.secretBytes)
+                    } else {
+                        data.value = parsePasswordCardData(secretObject.secretBytes)
+                    }
+                    data.value?.label = secretObject.secretHeader.label
+                }
+            }
+            MySecretView(
+                secret = data,
+                type = args.type,
+                onClick = { item ->
+                    when (item) {
+                        MySecretItems.SEED -> {}
+                        MySecretItems.SEED_QR -> {}
+                        MySecretItems.X_PUB -> {}
+                        MySecretItems.SHOW -> {}
+                        MySecretItems.DELETE -> {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.setCurrentSecret(args.sid)
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.DELETE_SECRET
+                            )
+                        }
+                        MySecretItems.BACK -> {
+                            navController.popBackStack()
+                        }
+                    }
+                }
+            )
+        }
         composable<GenerateView> {
             val copyText = stringResource(id = R.string.copiedToClipboard)
             val selectMoreSets = stringResource(id = R.string.selectMoreSets)
+            val isImportDone = remember {
+                mutableStateOf(false)
+            }
+            val isImportInitiated = remember {
+                mutableStateOf(false)
+            }
+            LaunchedEffect(viewModel.resultCodeLive) {
+                if (viewModel.resultCodeLive == NfcResultCode.OK && isImportInitiated.value) {
+                    isImportDone.value = true
+                } else {
+                    isImportDone.value = false
+                }
+            }
             GenerateView(
                 settings = settings,
+                isImportDone = isImportDone,
                 onClick = { item, text, passwordOptions ->
                     when (item) {
                         GenerateViewItems.COPY_TO_CLIPBOARD -> {
@@ -266,7 +464,13 @@ fun Navigation(
                             return@GenerateView ""
                         }
                         GenerateViewItems.GENERATE_MNEMONIC_PHRASE -> {
-                            return@GenerateView ""
+                            Log.d("lista", "we work here: ${passwordOptions?.passwordLength}")
+
+                            return@GenerateView passwordOptions?.let { options ->
+                                viewModel.generateMnemonic(passwordOptions.passwordLength)
+                            } ?: run {
+                                ""
+                            }
                         }
                         GenerateViewItems.GENERATE_A_PASSWORD -> {
                             return@GenerateView passwordOptions?.let { options ->
@@ -286,7 +490,21 @@ fun Navigation(
                                 ""
                             }
                         }
+                        GenerateViewItems.HOME -> {
+                            navController.popBackStack()
+                            navController.popBackStack()
+                            return@GenerateView ""
+                        }
                     }
+                },
+                onImportSecret = { passwordData ->
+                    isImportInitiated.value = true
+                    viewModel.getPasswordData(passwordData)
+                    showNfcDialog.value = true // NfcDialog
+                    viewModel.scanCardForAction(
+                        activity = context as Activity,
+                        nfcActionType = NfcActionType.GENERATE_A_SECRET
+                    )
                 }
             )
         }
@@ -312,8 +530,25 @@ object CardInformation
 @Serializable
 object CardAuthenticity
 @Serializable
-object CardEditPinCodeView
-@Serializable
 object BackupView
 @Serializable
 object GenerateView
+@Serializable
+object AddSecretView
+
+@Serializable
+data class MySecretView (
+    val sid: Int,
+    val type: String
+//    val label: String,
+//    val fingerprintBytes: ByteArray
+)
+
+@Serializable
+data class PinCodeView (
+    val title: Int,
+    val messageTitle: Int,
+    val message: Int,
+    val placeholderText: Int = R.string.enterCurrentPinCode,
+    val isMultiStep: Boolean = true
+)
