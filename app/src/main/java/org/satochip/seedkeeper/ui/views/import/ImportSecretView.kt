@@ -1,4 +1,4 @@
-package org.satochip.seedkeeper.ui.views.generate
+package org.satochip.seedkeeper.ui.views.import
 
 import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Arrangement
@@ -25,15 +25,15 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
-import org.satochip.seedkeeper.data.GenerateViewItems
+import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SelectFieldItem
 import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.generate.InputField
-import org.satochip.seedkeeper.ui.components.generate.PasswordLengthField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.generate.SelectField
+import org.satochip.seedkeeper.ui.components.import.MnemonicImportField
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
@@ -46,10 +46,10 @@ import org.satochip.seedkeeper.utils.isClickable
 import org.satochip.seedkeeper.utils.isEmailCorrect
 
 @Composable
-fun GenerateView(
+fun ImportSecretView(
     settings: SharedPreferences,
     isImportDone: MutableState<Boolean>,
-    onClick: (GenerateViewItems, String?, PasswordOptions?) -> String,
+    onClick: (ImportViewItems, String?) -> Unit,
     onImportSecret: (GeneratePasswordData) -> Unit
 ) {
     val stringResourceMap = mapOf(
@@ -137,9 +137,9 @@ fun GenerateView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(GenerateViewItems.BACK, null, null)
+                    onClick(ImportViewItems.BACK, null)
                 },
-                titleText = R.string.generate
+                titleText = R.string.importHeader
             )
             Column(
                 modifier = Modifier
@@ -160,15 +160,25 @@ fun GenerateView(
                                 text = R.string.generateSuccessful
                             )
                         }
-
-                        else -> {
+                        GenerateStatus.LOGIN_PASSWORD -> {
                             TitleTextField(
-                                title = R.string.generateASecret,
-                                text = R.string.generateExplanation
+                                title = R.string.importAPassword,
+                                text = R.string.importAPasswordMessage
+                            )
+                        }
+                        GenerateStatus.MNEMONIC_PHRASE -> {
+                            TitleTextField(
+                                title = R.string.importAMnemonicPhrase,
+                                text = R.string.importAMnemonicPhraseMessage
+                            )
+                        }
+                        GenerateStatus.DEFAULT -> {
+                            TitleTextField(
+                                title = R.string.importASecret,
+                                text = R.string.importASecretMessage
                             )
                         }
                     }
-
                     Spacer(modifier = Modifier.height(8.dp))
                     when (generateStatus.value) {
                         GenerateStatus.DEFAULT -> {
@@ -185,7 +195,6 @@ fun GenerateView(
                                 }
                             )
                         }
-
                         GenerateStatus.MNEMONIC_PHRASE -> {
                             InputField(
                                 curValue = curValueLabel,
@@ -193,16 +202,9 @@ fun GenerateView(
                                 containerColor = SatoPurple.copy(alpha = 0.5f)
                             )
                             Spacer(modifier = Modifier.height(20.dp))
-                            SelectField(
-                                selectList = listOf(
-                                    SelectFieldItem(prefix = null, text = R.string.mnemonicSize),
-                                    SelectFieldItem(prefix = 12, text = R.string.mnemonicWords),
-                                    SelectFieldItem(prefix = 18, text = R.string.mnemonicWords),
-                                    SelectFieldItem(prefix = 24, text = R.string.mnemonicWords),
-                                ),
-                                onClick = { length ->
-                                    passwordOptions.value.passwordLength = length
-                                }
+                            MnemonicImportField(
+                                text = R.string.mnemonicType,
+                                type = R.string.bip,
                             )
                             Spacer(modifier = Modifier.height(20.dp))
                             InputField(
@@ -211,9 +213,7 @@ fun GenerateView(
                                 containerColor = SatoPurple.copy(alpha = 0.5f)
                             )
                         }
-
                         GenerateStatus.LOGIN_PASSWORD -> {
-
                             InputField(
                                 curValue = curValueLabel,
                                 placeHolder = R.string.label,
@@ -239,12 +239,7 @@ fun GenerateView(
                                 containerColor = SatoPurple.copy(alpha = 0.5f)
                             )
                             Spacer(modifier = Modifier.height(12.dp))
-                            PasswordLengthField(
-                                passwordOptions = passwordOptions
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
                         }
-
                         GenerateStatus.HOME -> {
                             InputField(
                                 isEditable = false,
@@ -265,7 +260,6 @@ fun GenerateView(
                         }
                     }
                 }
-
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -274,9 +268,11 @@ fun GenerateView(
                         GenerateStatus.DEFAULT, GenerateStatus.HOME -> {}
                         else -> {
                             SecretTextField(
+                                modifier = Modifier.height(200.dp),
                                 curValue = secret,
+                                isEditable = true,
                                 copyToClipboard = {
-                                    onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
+                                    onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
                                 }
                             )
                         }
@@ -311,62 +307,29 @@ fun GenerateView(
                                                 generateStatus.value =
                                                     GenerateStatus.MNEMONIC_PHRASE
                                             }
-
                                             TypeOfSecret.LOGIN_PASSWORD -> {
                                                 generateStatus.value =
                                                     GenerateStatus.LOGIN_PASSWORD
                                             }
-
                                             else -> {}
                                         }
                                     },
                                     text = R.string.next
                                 )
                             }
-
                             GenerateStatus.HOME -> {
                                 //Home
                                 SatoButton(
                                     onClick = {
-                                        onClick(GenerateViewItems.HOME, null, null)
+                                        onClick(ImportViewItems.HOME, null)
                                     },
                                     text = R.string.home
                                 )
                             }
-
                             else -> {
-                                //Generate
-                                SatoButton(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    onClick = {
-                                        //generate logic
-                                        when (generateStatus.value) {
-                                            GenerateStatus.MNEMONIC_PHRASE -> {
-                                                secret.value = onClick(
-                                                    GenerateViewItems.GENERATE_MNEMONIC_PHRASE,
-                                                    null,
-                                                    passwordOptions.value
-                                                )
-                                            }
-
-                                            GenerateStatus.LOGIN_PASSWORD -> {
-                                                secret.value = onClick(
-                                                    GenerateViewItems.GENERATE_A_PASSWORD,
-                                                    null,
-                                                    passwordOptions.value
-                                                )
-                                            }
-
-                                            else -> {}
-                                        }
-                                    },
-                                    text = R.string.generate,
-                                )
                                 //Import
                                 SatoButton(
-                                    modifier = Modifier
-                                        .weight(1f),
+                                    modifier = Modifier,
                                     onClick = {
                                         if (isClickable(secret, curValueLogin, curValueLabel)) {
                                             val type = getType(generateStatus.value)

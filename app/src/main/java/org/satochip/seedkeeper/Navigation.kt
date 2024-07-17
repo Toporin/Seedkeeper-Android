@@ -23,6 +23,7 @@ import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
+import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.NfcActionType
@@ -38,6 +39,7 @@ import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
 import org.satochip.seedkeeper.ui.views.generate.GenerateView
 import org.satochip.seedkeeper.ui.views.home.HomeView
+import org.satochip.seedkeeper.ui.views.import.ImportSecretView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.mysecret.MySecretView
 import org.satochip.seedkeeper.ui.views.pincode.PinCodeView
@@ -106,13 +108,6 @@ fun Navigation(
             )
         )
     }
-//    LaunchedEffect(viewModel.isCardDataAvailable) {
-//        if (viewModel.isCardDataAvailable) {
-//            navController.navigate(HomeView) {
-//                popUpTo(0)
-//            }
-//        }
-//    }
 
     NavHost(
         navController = navController,
@@ -376,7 +371,7 @@ fun Navigation(
                             navController.navigate(GenerateView)
                         }
                         AddSecretItems.IMPORT_A_SECRET -> {
-
+                            navController.navigate(ImportSecretView)
                         }
                         AddSecretItems.BACK -> {
                             navController.popBackStack()
@@ -429,9 +424,6 @@ fun Navigation(
                 type = args.type,
                 onClick = { item ->
                     when (item) {
-                        MySecretItems.SEED -> {}
-                        MySecretItems.SEED_QR -> {}
-                        MySecretItems.X_PUB -> {}
                         MySecretItems.SHOW -> {
                             showNfcDialog.value = true // NfcDialog
                             viewModel.setCurrentSecret(args.sid)
@@ -535,6 +527,51 @@ fun Navigation(
                 }
             )
         }
+        composable<ImportSecretView> {
+            val isImportDone = remember {
+                mutableStateOf(false)
+            }
+            val isImportInitiated = remember {
+                mutableStateOf(false)
+            }
+            LaunchedEffect(viewModel.resultCodeLive) {
+                if (viewModel.resultCodeLive == NfcResultCode.OK && isImportInitiated.value) {
+                    isImportDone.value = true
+                } else {
+                    isImportDone.value = false
+                }
+            }
+            ImportSecretView(
+                settings = settings,
+                isImportDone = isImportDone,
+                onClick = { item, text ->
+                    when (item) {
+                        ImportViewItems.COPY_TO_CLIPBOARD -> {
+                            text?.let {
+                                clipboardManager.setText(AnnotatedString(text))
+                                Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        ImportViewItems.HOME -> {
+                            navController.popBackStack()
+                            navController.popBackStack()
+                        }
+                        ImportViewItems.BACK -> {
+                            navController.popBackStack()
+                        }
+                    }
+                },
+                onImportSecret = { passwordData ->
+                    isImportInitiated.value = true
+                    viewModel.setPasswordData(passwordData)
+                    showNfcDialog.value = true // NfcDialog
+                    viewModel.scanCardForAction(
+                        activity = context as Activity,
+                        nfcActionType = NfcActionType.GENERATE_A_SECRET
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -560,6 +597,8 @@ object CardAuthenticity
 object BackupView
 @Serializable
 object GenerateView
+@Serializable
+object ImportSecretView
 @Serializable
 object AddSecretView
 

@@ -113,6 +113,12 @@ fun parsePasswordCardData(bytes: ByteArray): GeneratePasswordData? {
     )
 }
 
+fun getType(
+    generateStatus: GenerateStatus
+): SeedkeeperSecretType {
+    return if (generateStatus == GenerateStatus.LOGIN_PASSWORD) SeedkeeperSecretType.PASSWORD else SeedkeeperSecretType.BIP39_MNEMONIC
+}
+
 fun countWords(mnemonic: String): Int {
     return mnemonic.split("\\s+".toRegex()).filter { it.isNotEmpty() }.size
 }

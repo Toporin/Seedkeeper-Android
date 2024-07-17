@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import kotlinx.coroutines.delay
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.shared.BottomDrawer
 import kotlin.time.Duration.Companion.seconds
 
@@ -24,12 +25,12 @@ fun NfcDialog(
         showSheet = openDialogCustom
     ) {
         LaunchedEffect(resultCodeLive) {
-            Log.d(TAG, "LaunchedEffect START ${resultCodeLive}")
+            SatoLog.d(TAG, "LaunchedEffect START ${resultCodeLive}")
             while (resultCodeLive == NfcResultCode.BUSY || resultCodeLive == NfcResultCode.NONE) {
-                Log.d(TAG, "LaunchedEffect in while delay 2s ${resultCodeLive}")
+                SatoLog.d(TAG, "LaunchedEffect in while delay 2s ${resultCodeLive}")
                 delay(2.seconds)
             }
-            Log.d(TAG, "LaunchedEffect after while delay ${resultCodeLive}")
+            SatoLog.d(TAG, "LaunchedEffect after while delay ${resultCodeLive}")
         }
         if (resultCodeLive == NfcResultCode.BUSY) {
             if (isConnected) {

@@ -21,6 +21,7 @@ import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.StringConstants
 import org.satochip.seedkeeper.services.NFCCardService
+import org.satochip.seedkeeper.services.SatoLog
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -93,12 +94,12 @@ class SharedViewModel : ViewModel() {
     }
 
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {
-        Log.d(TAG, "scanCardForAction START")
+        SatoLog.d(TAG, "scanCardForAction START")
         NFCCardService.actionType = nfcActionType
         viewModelScope.launch {
             resetIsCardAvailable()
             NFCCardService.scanCardForAction(activity)
-            Log.d(TAG, "scanCardForAction END")
+            SatoLog.d(TAG, "scanCardForAction END")
         }
     }
 

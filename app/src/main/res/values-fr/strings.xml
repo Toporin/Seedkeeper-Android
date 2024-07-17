@@ -56,6 +56,17 @@
         <string name="emailListUseExisting">Or use existing:</string>
         <string name="emailListWriteNewOne">Write a new one:</string>
 
+    <!--Import View-->
+    <string name="importHeader">Import</string>
+    <string name="importAMnemonicPhrase">Import a mnemonic phrase</string>
+    <string name="importAMnemonicPhraseMessage">Import a mnemonic phrase</string>
+    <string name="importAPassword">Import a mnemonic phrase</string>
+    <string name="importAPasswordMessage">Import a mnemonic phrase</string>
+    <string name="enterYourMnemonic">Enter your mnemonic:</string>
+    <string name="enterYourPassword">Enter your password:</string>
+    <string name="mnemonicType">Mnemonic type</string>
+    <string name="bip">BIP39</string>
+
     <!--Menu View-->
     <string name="cardInfo">Informations sur la carte</string>
     <string name="makeBackup">Faire une sauvegarde</string>
