@@ -2,7 +2,6 @@ package org.satochip.seedkeeper
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,7 +17,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
-import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.CardInformationItems
@@ -60,6 +58,7 @@ fun Navigation(
     val clipboardManager = LocalClipboardManager.current
     val navController = rememberNavController()
     val settings = context.getSharedPreferences("seedkeeper", Context.MODE_PRIVATE)
+    val copyText = stringResource(id = R.string.copiedToClipboard)
     val startDestination =
         if (settings.getBoolean(SeedkeeperPreferences.FIRST_TIME_LAUNCH.name, true)) {
             settings.edit().putBoolean(SeedkeeperPreferences.FIRST_TIME_LAUNCH.name, false).apply()
@@ -107,13 +106,13 @@ fun Navigation(
             )
         )
     }
-    LaunchedEffect(viewModel.isCardDataAvailable) {
-        if (viewModel.isCardDataAvailable) {
-            navController.navigate(HomeView) {
-                popUpTo(0)
-            }
-        }
-    }
+//    LaunchedEffect(viewModel.isCardDataAvailable) {
+//        if (viewModel.isCardDataAvailable) {
+//            navController.navigate(HomeView) {
+//                popUpTo(0)
+//            }
+//        }
+//    }
 
     NavHost(
         navController = navController,
@@ -208,10 +207,12 @@ fun Navigation(
                         }
                         HomeItems.OPEN_SECRET -> {
                             secret?.sid?.let {
+                                viewModel.resetIsCardAvailable()
                                 navController.navigate(
                                     MySecretView(
                                         sid = secret.sid,
-                                        type = secret.type.name
+                                        type = secret.type.name,
+                                        label = secret.label
                                     )
                                 )
                             }
@@ -327,6 +328,13 @@ fun Navigation(
         }
         composable<PinCodeView> {
             val args = it.toRoute<PinCodeView>()
+            LaunchedEffect(viewModel.isCardDataAvailable) {
+                if (viewModel.isCardDataAvailable) {
+                    navController.navigate(HomeView) {
+                        popUpTo(0)
+                    }
+                }
+            }
             PinCodeView (
                 title = args.title,
                 messageTitle = args.messageTitle,
@@ -388,15 +396,24 @@ fun Navigation(
             val data = remember {
                 mutableStateOf<GeneratePasswordData?>(null)
             }
+            LaunchedEffect(viewModel.isCardDataAvailable) {
+                if (viewModel.isCardDataAvailable) {
+                    navController.navigate(HomeView) {
+                        popUpTo(0)
+                    }
+                }
+            }
             LaunchedEffect(Unit) {
-                data.value = null
-                showNfcDialog.value = true // NfcDialog
-                viewModel.setCurrentSecret(args.sid)
-                viewModel.scanCardForAction(
-                    activity = context as Activity,
-                    nfcActionType = NfcActionType.GET_SECRET
+                data.value = GeneratePasswordData(
+                    password = "",
+                    login = "",
+                    url = "",
+                    label = args.label,
+                    type = SeedkeeperSecretType.valueOf(args.type),
+                    size = 0
                 )
             }
+
             if (viewModel.currentSecretObject != null) {
                 viewModel.currentSecretObject?.let { secretObject ->
                     if (args.type == SeedkeeperSecretType.BIP39_MNEMONIC.name) {
@@ -415,7 +432,14 @@ fun Navigation(
                         MySecretItems.SEED -> {}
                         MySecretItems.SEED_QR -> {}
                         MySecretItems.X_PUB -> {}
-                        MySecretItems.SHOW -> {}
+                        MySecretItems.SHOW -> {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.setCurrentSecret(args.sid)
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.GET_SECRET
+                            )
+                        }
                         MySecretItems.DELETE -> {
                             showNfcDialog.value = true // NfcDialog
                             viewModel.setCurrentSecret(args.sid)
@@ -425,14 +449,18 @@ fun Navigation(
                             )
                         }
                         MySecretItems.BACK -> {
+                            viewModel.resetCurrentSecretObject()
                             navController.popBackStack()
                         }
                     }
+                },
+                copyToClipboard = { secret ->
+                    clipboardManager.setText(AnnotatedString(secret))
+                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                 }
             )
         }
         composable<GenerateView> {
-            val copyText = stringResource(id = R.string.copiedToClipboard)
             val selectMoreSets = stringResource(id = R.string.selectMoreSets)
             val isImportDone = remember {
                 mutableStateOf(false)
@@ -464,7 +492,6 @@ fun Navigation(
                             return@GenerateView ""
                         }
                         GenerateViewItems.GENERATE_MNEMONIC_PHRASE -> {
-                            Log.d("lista", "we work here: ${passwordOptions?.passwordLength}")
 
                             return@GenerateView passwordOptions?.let { options ->
                                 viewModel.generateMnemonic(passwordOptions.passwordLength)
@@ -499,7 +526,7 @@ fun Navigation(
                 },
                 onImportSecret = { passwordData ->
                     isImportInitiated.value = true
-                    viewModel.getPasswordData(passwordData)
+                    viewModel.setPasswordData(passwordData)
                     showNfcDialog.value = true // NfcDialog
                     viewModel.scanCardForAction(
                         activity = context as Activity,
@@ -539,9 +566,8 @@ object AddSecretView
 @Serializable
 data class MySecretView (
     val sid: Int,
-    val type: String
-//    val label: String,
-//    val fingerprintBytes: ByteArray
+    val type: String,
+    val label: String
 )
 
 @Serializable

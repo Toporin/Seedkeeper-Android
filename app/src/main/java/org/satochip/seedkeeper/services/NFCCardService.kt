@@ -161,10 +161,10 @@ object NFCCardService {
         SatoLog.d(TAG, "Card setup start")
 
         cmdSet.applicationStatus ?: return
-        var respApdu = APDUResponse(ByteArray(0), 0x00, 0x00)
+        APDUResponse(ByteArray(0), 0x00, 0x00)
         val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
         try {
-            respApdu = cmdSet.cardSetup(5, pinBytes) ?: respApdu
+            cmdSet.cardSetup(5, pinBytes)
         } catch (error: Exception) {
             SatoLog.e(TAG, "Couldn't setup card, error: $error")
         }
@@ -182,7 +182,7 @@ object NFCCardService {
     ) {
         SatoLog.d(TAG, "Card verification start")
 
-        var respApdu = APDUResponse(ByteArray(0), 0x00, 0x00)
+        APDUResponse(ByteArray(0), 0x00, 0x00)
         val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
 
         cmdSet.cardSelect("seedkeeper").checkOK()
@@ -315,7 +315,6 @@ object NFCCardService {
                 getSecretsList()
                 SatoLog.d(TAG, "new secret list")
                 currentSecretObject.postValue(null)
-                isCardDataAvailable.postValue(false)
                 isCardDataAvailable.postValue(true)
             }
         } catch (e: Exception) {

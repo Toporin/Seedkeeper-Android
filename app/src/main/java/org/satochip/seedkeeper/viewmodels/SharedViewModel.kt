@@ -76,7 +76,7 @@ class SharedViewModel : ViewModel() {
         NFCCardService.pinString = pinString
     }
 
-    fun getPasswordData(passwordData: GeneratePasswordData) {
+    fun setPasswordData(passwordData: GeneratePasswordData) {
         NFCCardService.passwordData = passwordData
     }
 
@@ -84,10 +84,19 @@ class SharedViewModel : ViewModel() {
         NFCCardService.currentSecretId = sid
     }
 
+    fun resetIsCardAvailable() {
+        NFCCardService.isCardDataAvailable.postValue(false)
+    }
+
+    fun resetCurrentSecretObject() {
+        NFCCardService.currentSecretObject.postValue(null)
+    }
+
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {
         Log.d(TAG, "scanCardForAction START")
         NFCCardService.actionType = nfcActionType
         viewModelScope.launch {
+            resetIsCardAvailable()
             NFCCardService.scanCardForAction(activity)
             Log.d(TAG, "scanCardForAction END")
         }

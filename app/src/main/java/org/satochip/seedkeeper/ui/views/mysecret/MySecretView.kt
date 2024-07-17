@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.mysecret
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,13 +20,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
-import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
+import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
@@ -35,7 +35,8 @@ import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 fun MySecretView(
     secret: MutableState<GeneratePasswordData?>,
     type: String,
-    onClick: (MySecretItems) -> Unit
+    onClick: (MySecretItems) -> Unit,
+    copyToClipboard: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
@@ -49,7 +50,9 @@ fun MySecretView(
         secret.value?.password?.let { password ->
             secretText.value = password
         }
-
+    BackHandler {
+        onClick(MySecretItems.BACK)
+    }
 
     Box(
         modifier = Modifier
@@ -82,16 +85,13 @@ fun MySecretView(
                 Column {
                     SecretInfoField(
                         title = R.string.label,
-                        text = "${secret.value?.label}"
+                        text = secret.value?.label ?: ""
                     )
-
                     GetSpecificSecretInfoFields(
                         type = type,
                         secret = secret
                     )
-
                     Spacer(modifier = Modifier.height(16.dp))
-
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
@@ -125,14 +125,12 @@ fun MySecretView(
                         }
                     }
                 }
-
                 SecretTextField(
                     curValue = secretText,
                     copyToClipboard = {
-//                        onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
+                        copyToClipboard(secretText.value)
                     }
                 )
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -149,7 +147,9 @@ fun MySecretView(
                     )
                     SatoButton(
                         modifier = Modifier.weight(1f),
-                        onClick = {},
+                        onClick = {
+                            onClick(MySecretItems.SHOW)
+                        },
                         text = R.string.showSecret,
                         image = R.drawable.show_password
                     )
@@ -159,30 +159,3 @@ fun MySecretView(
     }
 }
 
-@Composable
-fun GetSpecificSecretInfoFields(
-    type: String,
-    secret: MutableState<GeneratePasswordData?>,
-) {
-    if (type == SeedkeeperSecretType.BIP39_MNEMONIC.name) {
-        SecretInfoField(
-            title = R.string.mnemonicSize,
-            text = "${secret.value?.size}"
-        )
-
-        SecretInfoField(
-            title = R.string.passphrase,
-            text = "${secret.value?.password}"
-        )
-    } else {
-        SecretInfoField(
-            title = R.string.login,
-            text = "${secret.value?.login}"
-        )
-
-        SecretInfoField(
-            title = R.string.url,
-            text = "${secret.value?.url}"
-        )
-    }
-}

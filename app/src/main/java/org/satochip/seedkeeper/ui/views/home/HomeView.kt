@@ -33,12 +33,12 @@ fun HomeView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeaderRow(
-                isCardDataAvailable = isCardDataAvailable,
+                isCardDataAvailable = !secretHeaders.isEmpty(),
                 onClick = { homeItems ->
                     onClick(homeItems, null)
                 },
             )
-            if (isCardDataAvailable) {
+            if (!secretHeaders.isEmpty()) {
                 SecretsList(
                     secretHeaders = secretHeaders,
                     addNewSecret = {
