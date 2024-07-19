@@ -1,4 +1,5 @@
 <resources>
+    <!--General-->
     <string name="app_name">Seedkeeper</string>
     <string name="title_activity_webview">WebviewActivity</string>
     <string name="welcome">Welcome</string>
@@ -15,6 +16,9 @@
     <string name="readyToScan">Ready to Scan</string>
     <string name="nfcHoldSeedkeeper">Hold your Seedkeeper near your phone</string>
     <string name="done">Done</string>
+    <string name="cardNeedToBeScannedTitle">No scanned card</string>
+    <string name="cardNeedToBeScannedMessage">You need to scan a card to display its information</string>
+    <string name="close">Close</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess"></string>
@@ -25,6 +29,9 @@
     <string name="nfcResultCodeNone">None</string>
     <string name="nfcResultCodeBusy">Busy</string>
     <string name="nfcResultCodeNfcError">Error during card scan</string>
+    <string name="nfcSeedkeeperNeedsSetup">Your Seedkeeper needs to be setup!</string>
+    <string name="nfcWrongPin">Wrong Pin</string>
+    <string name="nfcCardBlocked">Too many incorrect PIN attempts! Your card has been blocked.</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>
@@ -106,17 +113,18 @@
     <!--Pin Code View-->
     <string name="setup">Setup</string>
     <string name="editPinCode">Change the PIN code</string>
-    <string name="editPinCodeText">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
+    <string name="editPinCodeMessage">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="enterCurrentPinCode">Enter the current PIN code</string>
     <string name="enterPinCode">Enter your PIN code</string>
     <string name="createPinCode">Create a PIN code</string>
-    <string name="createPinCodeText">Create a PIN code to secure access to your Seedkeeper smart card.</string>
+    <string name="createPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="wrongPinCode">Wrong PIN code!</string>
     <string name="wrongPinCodeMessage">The PIN code value does not match! \n please try again</string>
     <string name="confirmPinCode">Confirm a PIN code</string>
-    <string name="confirmPinCodeText">Create a PIN code to secure access to your Seedkeeper smart card.</string>
+    <string name="confirmPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="next">Next</string>
     <string name="confirm">Confirm</string>
+    <string name="restartTheSetup">Restart the setup</string>
 
     <!--Backup View-->
     <string name="backup">Backup</string>

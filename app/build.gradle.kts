@@ -86,4 +86,7 @@ dependencies {
 
     //Material lib for slider
     implementation(libs.androidx.material)
+
+    //QR string to image converter
+    implementation("io.github.g0dkar:qrcode-kotlin-android:3.3.0")
 }

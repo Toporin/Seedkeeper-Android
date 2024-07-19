@@ -13,6 +13,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,13 +27,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.HomeItems
+import org.satochip.seedkeeper.ui.theme.SatoGreen
 
 @Composable
 fun HomeHeaderRow(
     isCardDataAvailable: Boolean,
+    authenticityStatus: AuthenticityStatus,
     onClick: (HomeItems) -> Unit,
 ) {
+    val logoColor = remember {
+        mutableStateOf(Color.Black)
+    }
+    logoColor.value = when (authenticityStatus) {
+        AuthenticityStatus.AUTHENTIC -> {
+            SatoGreen
+        }
+        AuthenticityStatus.NOT_AUTHENTIC -> {
+            Color.Red
+        }
+        AuthenticityStatus.UNKNOWN -> {
+            Color.Black
+        }
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,7 +71,7 @@ fun HomeHeaderRow(
                 modifier = Modifier
                     .size(45.dp),
                 contentScale = ContentScale.Crop,
-                colorFilter = ColorFilter.tint(Color.Black)
+                colorFilter = ColorFilter.tint(logoColor.value)
             )
         }
         // TITLE

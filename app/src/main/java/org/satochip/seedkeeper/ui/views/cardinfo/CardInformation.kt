@@ -14,9 +14,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.CardInformationItems
+import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.shared.EditableField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
@@ -24,8 +28,27 @@ import org.satochip.seedkeeper.ui.theme.SatoGreen
 
 @Composable
 fun CardInformation(
-    onClick: (CardInformationItems) -> Unit,
+    authenticityStatus: AuthenticityStatus,
+    cardLabel: String,
+    onClick: (CardInformationItems, String?) -> Unit,
 ) {
+    val logoColor = remember {
+        mutableStateOf(Color.Black)
+    }
+    val cardAuthenticityText = remember {
+        mutableStateOf(0)
+    }
+     when (authenticityStatus) {
+        AuthenticityStatus.AUTHENTIC -> {
+            cardAuthenticityText.value = R.string.cardIsGenuine
+            logoColor.value = SatoGreen
+        }
+        AuthenticityStatus.NOT_AUTHENTIC -> {
+            cardAuthenticityText.value = R.string.cardIsNotGenuine
+            logoColor.value = Color.Red
+        }
+        AuthenticityStatus.UNKNOWN -> {}
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +61,7 @@ fun CardInformation(
             HeaderAlternateRow(
                 titleText = R.string.cardInfo,
                 onClick = {
-                    onClick(CardInformationItems.BACK)
+                    onClick(CardInformationItems.BACK, null)
                 }
             )
             LazyColumn(
@@ -47,29 +70,24 @@ fun CardInformation(
                     .padding(horizontal = 16.dp)
             ) {
                 item {
-                    // Mocked data
-                    val curValue = remember {
-                        mutableStateOf("Seedkeeper v0.1")
-                    }
-                    EditableField(
-                        isEditable = false,
-                        isIconShown = false,
-                        title = R.string.cardVersion,
-                        curValue = curValue,
+                    InfoField(
+                        text = "Seedkeeper v0.1",
                         onClick = {}
                     )
                 }
                 item {
                     // Mocked data
                     val curValue = remember {
-                        mutableStateOf("")
+                        mutableStateOf(cardLabel)
                     }
                     EditableField(
                         isEditable = true,
                         isIconShown = true,
                         title = R.string.cardLabel,
                         curValue = curValue,
-                        onClick = {}
+                        onClick = {
+                            onClick(CardInformationItems.EDIT_CARD_LABEL, curValue.value)
+                        }
                     )
                 }
                 item {
@@ -85,7 +103,7 @@ fun CardInformation(
                         placeHolder = R.string.changePinCode,
                         isClickable = true,
                         onClick = {
-                            onClick(CardInformationItems.EDIT_PIN_CODE)
+                            onClick(CardInformationItems.EDIT_PIN_CODE, null)
                         }
                     )
                 }
@@ -99,21 +117,14 @@ fun CardInformation(
                     )
                 }
                 item {
-                    // Mocked data
-                    val curValue = remember {
-                        mutableStateOf("")
-                    }
-                    EditableField(
-                        isEditable = false,
-                        isIconShown = false,
+                    InfoField(
                         title = R.string.cardAuthenticity,
-                        curValue = curValue,
-                        placeHolder = R.string.cardIsGenuine,
-                        containerColor = SatoGreen,
-                        isClickable = true,
+                        text = stringResource(id = cardAuthenticityText.value),
                         onClick = {
-                            onClick(CardInformationItems.CARD_AUTHENTICITY)
-                        }
+                            onClick(CardInformationItems.CARD_AUTHENTICITY, null)
+                        },
+                        containerColor = logoColor.value,
+                        isClickable = true
                     )
                 }
             }

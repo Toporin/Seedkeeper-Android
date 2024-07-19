@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.BackupStatus
+import org.satochip.seedkeeper.data.BackupViewItems
 import org.satochip.seedkeeper.ui.components.backup.BackupText
 import org.satochip.seedkeeper.ui.components.backup.BackupTransferImages
 import org.satochip.seedkeeper.ui.components.backup.MainBackupButton
@@ -26,7 +27,7 @@ import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 
 @Composable
 fun BackupView(
-    onClick: () -> Unit
+    onClick: (BackupViewItems) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -47,12 +48,6 @@ fun BackupView(
                 title.intValue = R.string.backup
             }
         }
-
-//        if (showNfcDialog.value) {
-//            NfcDialog(
-//                openDialogCustom = showNfcDialog,
-//            )
-//        }
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -60,7 +55,7 @@ fun BackupView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick()
+                    onClick(BackupViewItems.BACK)
                 },
                 titleText = title.intValue
             )
@@ -98,7 +93,9 @@ fun BackupView(
                     MainBackupButton(
                         backupStatus = backupStatus,
                         showNfcDialog = showNfcDialog,
-                        onClick = onClick
+                        onClick = {
+                            onClick(BackupViewItems.SCAN_BACKUP)
+                        }
                     )
                 }
             }

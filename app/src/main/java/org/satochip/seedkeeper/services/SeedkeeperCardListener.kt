@@ -38,8 +38,6 @@ object SatochipCardListenerForAction : CardListener {
 
     override fun onDisconnected() {
         NFCCardService.isConnected.postValue(false)
-        NFCCardService.resultCodeLive.postValue(NfcResultCode.OK)
-
         SatoLog.d(TAG, "onDisconnected: Card disconnected!")
     }
 }

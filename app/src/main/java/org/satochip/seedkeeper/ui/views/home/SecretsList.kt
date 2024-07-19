@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,7 +41,6 @@ import org.satochip.seedkeeper.ui.components.home.SecretsFilter
 
 @Composable
 fun SecretsList(
-    modifier: Modifier = Modifier,
     secretHeaders: SnapshotStateList<SeedkeeperSecretHeader?>,
     addNewSecret: () -> Unit,
     onSecretClick: (SeedkeeperSecretHeader) -> Unit,
@@ -53,6 +53,7 @@ fun SecretsList(
     var filteredList by remember {
         mutableStateOf(secretHeaders.toList())
     }
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -157,31 +158,28 @@ fun SecretsList(
                 )
             )
         }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
+        Column(
             horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(state = scrollState)
         ) {
-            item {
+            SecretButton(
+                onClick = {
+                    addNewSecret()
+                }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            filteredList.forEach { secret ->
                 SecretButton(
+                    secretHeader = secret,
                     onClick = {
-                        addNewSecret()
+                        secret?.let {
+                            onSecretClick(secret)
+                        }
                     }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-            }
-            filteredList.forEachIndexed { index, secret ->
-                item {
-                    SecretButton(
-                        secretHeader = secret,
-                        onClick = {
-                            secret?.let {
-                                onSecretClick(secret)
-                            }
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
             }
         }
     }

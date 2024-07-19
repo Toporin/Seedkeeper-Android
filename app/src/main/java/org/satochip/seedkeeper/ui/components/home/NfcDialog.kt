@@ -62,7 +62,7 @@ fun NfcDialog(
                 image = resultCodeLive.resImage,
                 message = resultCodeLive.resMsg,
                 colorFilter = if (resultCodeLive.resTitle == R.string.nfcTitleWarning) ColorFilter.tint(
-                    Color.Yellow
+                    Color.Red
                 ) else null
             )
             LaunchedEffect(Unit) {

@@ -91,7 +91,10 @@ fun EditableField(
                     }
                 },
             keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
+                onDone = {
+                    keyboardController?.hide()
+                    onClick()
+                }
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,

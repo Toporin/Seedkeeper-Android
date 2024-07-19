@@ -24,8 +24,10 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.MySecretItems
+import org.satochip.seedkeeper.data.MySecretStatus
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
+import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
@@ -41,6 +43,9 @@ fun MySecretView(
     val scrollState = rememberScrollState()
     val secretText = remember {
         mutableStateOf("")
+    }
+    val mySecretStatus = remember {
+        mutableStateOf(MySecretStatus.SEED)
     }
     if (type == SeedkeeperSecretType.BIP39_MNEMONIC.name)
         secret.value?.mnemonic?.let { mnemonic ->
@@ -99,7 +104,9 @@ fun MySecretView(
                         item {
                             SatoButton(
                                 modifier = Modifier,
-                                onClick = {},
+                                onClick = {
+                                    mySecretStatus.value = MySecretStatus.SEED
+                                },
                                 text = R.string.seed,
                                 image = R.drawable.seed_icon,
                                 horizontalPadding = 2.dp
@@ -108,7 +115,9 @@ fun MySecretView(
                         item {
                             SatoButton(
                                 modifier = Modifier,
-                                onClick = {},
+                                onClick = {
+                                    mySecretStatus.value = MySecretStatus.SEED_QR
+                                },
                                 text = R.string.seedQR,
                                 image = R.drawable.seedqr_icon,
                                 horizontalPadding = 2.dp
@@ -117,7 +126,9 @@ fun MySecretView(
                         item {
                             SatoButton(
                                 modifier = Modifier,
-                                onClick = {},
+                                onClick = {
+                                    mySecretStatus.value = MySecretStatus.X_PUB
+                                },
                                 text = R.string.xpub,
                                 image = R.drawable.xpub_icon,
                                 horizontalPadding = 2.dp
@@ -125,12 +136,30 @@ fun MySecretView(
                         }
                     }
                 }
-                SecretTextField(
-                    curValue = secretText,
-                    copyToClipboard = {
-                        copyToClipboard(secretText.value)
+                when (mySecretStatus.value) {
+                    MySecretStatus.SEED -> {
+                        SecretTextField(
+                            curValue = secretText,
+                            copyToClipboard = {
+                                copyToClipboard(secretText.value)
+                            }
+                        )
                     }
-                )
+                    MySecretStatus.SEED_QR -> {
+                        SecretImageField(
+                            curValue = secretText
+                        )
+                    }
+                    MySecretStatus.X_PUB -> {
+                        SecretTextField(
+                            curValue = secretText,
+                            copyToClipboard = {
+                                copyToClipboard(secretText.value)
+                            }
+                        )
+                    }
+                }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),

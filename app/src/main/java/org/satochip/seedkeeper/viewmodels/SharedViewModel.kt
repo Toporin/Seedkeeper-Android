@@ -3,7 +3,6 @@ package org.satochip.seedkeeper.viewmodels
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
+import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
@@ -37,7 +37,10 @@ class SharedViewModel : ViewModel() {
     var isCardConnected by mutableStateOf(false)
     var isCardDataAvailable by mutableStateOf(false)
     var currentSecretObject by mutableStateOf<SeedkeeperSecretObject?>(null)
+    var authenticityStatus by mutableStateOf(AuthenticityStatus.UNKNOWN)
+    var currentSecretId by mutableStateOf<Int?>(null)
     var resultCodeLive by mutableStateOf(NfcResultCode.BUSY)
+    var cardLabel by mutableStateOf("")
     var updateSecretsJob: Job? = null
 
     init {
@@ -59,6 +62,15 @@ class SharedViewModel : ViewModel() {
         NFCCardService.currentSecretObject.observeForever {
             currentSecretObject = it
         }
+        NFCCardService.currentSecretId.observeForever {
+            currentSecretId = it
+        }
+        NFCCardService.cardLabel.observeForever {
+            cardLabel = it
+        }
+        NFCCardService.authenticityStatus.observeForever {
+            authenticityStatus = it
+        }
         NFCCardService.secretHeaders.observeForever{
             updateSecretsJob?.cancel()
             updateSecretsJob = viewModelScope.launch {
@@ -73,8 +85,17 @@ class SharedViewModel : ViewModel() {
         NFCCardService.context = context
     }
 
-    fun setupNewPinString(pinString: String) {
+    fun setNewPinString(pinString: String) {
+        NFCCardService.oldPinString = NFCCardService.pinString
         NFCCardService.pinString = pinString
+    }
+
+    fun getCurrentPinString(): String {
+        return NFCCardService.pinString ?: ""
+    }
+
+    fun setupNewCardLabel(cardLabel: String) {
+        NFCCardService.cardLabel.postValue(cardLabel)
     }
 
     fun setPasswordData(passwordData: GeneratePasswordData) {
@@ -82,11 +103,7 @@ class SharedViewModel : ViewModel() {
     }
 
     fun setCurrentSecret(sid: Int) {
-        NFCCardService.currentSecretId = sid
-    }
-
-    fun resetIsCardAvailable() {
-        NFCCardService.isCardDataAvailable.postValue(false)
+        NFCCardService.currentSecretId.postValue(sid)
     }
 
     fun resetCurrentSecretObject() {
@@ -97,7 +114,6 @@ class SharedViewModel : ViewModel() {
         SatoLog.d(TAG, "scanCardForAction START")
         NFCCardService.actionType = nfcActionType
         viewModelScope.launch {
-            resetIsCardAvailable()
             NFCCardService.scanCardForAction(activity)
             SatoLog.d(TAG, "scanCardForAction END")
         }

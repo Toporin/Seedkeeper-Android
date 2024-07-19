@@ -15,6 +15,9 @@
     <string name="readyToScan">Prêt à scanner</string>
     <string name="nfcHoldSeedkeeper">Tenez votre Seedkeeper près de votre phone</string>
     <string name="done">Done</string>
+    <string name="cardNeedToBeScannedTitle">Aucune carte scannée</string>
+    <string name="cardNeedToBeScannedMessage">Vous devez scanner une carte pour afficher les informations de celle-ci.</string>
+    <string name="close">Fermer</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess"></string>
@@ -25,6 +28,9 @@
     <string name="nfcResultCodeNone">Aucun</string>
     <string name="nfcResultCodeBusy">Occupé</string>
     <string name="nfcResultCodeNfcError">Erreur lors de la numérisation de la carte</string>
+    <string name="nfcSeedkeeperNeedsSetup">Your Seedkeeper needs to be setup!</string>
+    <string name="nfcWrongPin">Wrong Pin</string>
+    <string name="nfcCardBlocked">Too many incorrect PIN attempts! Your card has been blocked.</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>
@@ -106,17 +112,18 @@
     <!--Pin Code View-->
     <string name="setup">Installation</string>
     <string name="editPinCode">Changer le code PIN</string>
-    <string name="editPinCodeText">Modifiez le code PIN pour sécuriser l\'accès à votre carte à puce Seedkeeper.</string>
+    <string name="editPinCodeMessage">Modifiez le code PIN pour sécuriser l\'accès à votre carte à puce Seedkeeper.</string>
     <string name="enterCurrentPinCode">Entrez le code PIN actuel</string>
     <string name="enterPinCode">Entrez votre code PIN</string>
     <string name="createPinCode">Créer un code PIN</string>
-    <string name="createPinCodeText">Créez un code PIN pour sécuriser l\'accès à votre carte intelligente Seedkeeper.</string>
+    <string name="createPinCodeMessage">Créez un code PIN pour sécuriser l\'accès à votre carte intelligente Seedkeeper.</string>
     <string name="wrongPinCode">Code PIN incorrect !</string>
     <string name="wrongPinCodeMessage">La valeur du code PIN ne correspond pas ! \n Veuillez réessayer</string>
     <string name="confirmPinCode">Confirmez le code PIN</string>
-    <string name="confirmPinCodeText">Confirmez votre code PIN pour sécuriser l\'accès à votre carte intelligente Seedkeeper.</string>
+    <string name="confirmPinCodeMessage">Confirmez votre code PIN pour sécuriser l\'accès à votre carte intelligente Seedkeeper.</string>
     <string name="next">Suivant</string>
     <string name="confirm">Confirmer</string>
+    <string name="restartTheSetup">Restart the setup</string>
 
     <!--Backup View-->
     <string name="backup">Backup</string>

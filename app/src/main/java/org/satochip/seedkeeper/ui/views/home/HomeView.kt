@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.ui.components.home.HomeHeaderRow
 import org.satochip.seedkeeper.ui.components.home.SatoGradientButton
@@ -19,6 +20,7 @@ import org.satochip.seedkeeper.ui.components.home.SatoRoundButton
 fun HomeView(
     isCardDataAvailable: Boolean,
     secretHeaders: SnapshotStateList<SeedkeeperSecretHeader?>,
+    authenticityStatus: AuthenticityStatus,
     onClick: (HomeItems, SeedkeeperSecretHeader?) -> Unit,
     webViewAction: (String) -> Unit
 ) {
@@ -33,12 +35,13 @@ fun HomeView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeaderRow(
-                isCardDataAvailable = !secretHeaders.isEmpty(),
+                isCardDataAvailable = isCardDataAvailable,
+                authenticityStatus = authenticityStatus,
                 onClick = { homeItems ->
                     onClick(homeItems, null)
                 },
             )
-            if (!secretHeaders.isEmpty()) {
+            if (isCardDataAvailable) {
                 SecretsList(
                     secretHeaders = secretHeaders,
                     addNewSecret = {

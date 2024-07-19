@@ -340,7 +340,6 @@ fun GenerateView(
                                     modifier = Modifier
                                         .weight(1f),
                                     onClick = {
-                                        //generate logic
                                         when (generateStatus.value) {
                                             GenerateStatus.MNEMONIC_PHRASE -> {
                                                 secret.value = onClick(

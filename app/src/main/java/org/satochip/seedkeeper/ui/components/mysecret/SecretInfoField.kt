@@ -40,6 +40,7 @@ fun SecretInfoField(
                 textAlign = TextAlign.Center
             )
         )
+        Spacer(modifier = Modifier.height(6.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()

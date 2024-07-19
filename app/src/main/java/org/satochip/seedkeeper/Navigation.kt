@@ -28,15 +28,18 @@ import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.PinCodeStatus
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
+import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.theme.SatoGray
 import org.satochip.seedkeeper.ui.views.addsecret.AddSecretView
 import org.satochip.seedkeeper.ui.views.backup.BackupView
 import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
+import org.satochip.seedkeeper.ui.views.editpincode.EditPinCodeView
 import org.satochip.seedkeeper.ui.views.generate.GenerateView
 import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.import.ImportSecretView
@@ -72,6 +75,7 @@ fun Navigation(
     viewModel.setContext(context)
 
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
+    val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
 
     // NFC DIALOG
     if (showNfcDialog.value) {
@@ -82,15 +86,21 @@ fun Navigation(
         )
     }
 
+    // INFO DIALOG
+    if (showInfoDialog.value) {
+        InfoPopUpDialog(
+            isOpen = showInfoDialog,
+            title = R.string.cardNeedToBeScannedTitle,
+            message = R.string.cardNeedToBeScannedMessage
+        )
+    }
+
     // FIRST TIME SETUP
     if (viewModel.isSetupNeeded) {
         SatoLog.d(TAG, "Navigation: Card needs to be setup!")
         navController.navigate(
-            PinCodeView(
-                title = R.string.setup,
-                messageTitle = R.string.createPinCode,
-                message = R.string.createPinCodeText,
-                placeholderText = R.string.enterPinCode,
+            NewPinCodeView(
+                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name
             )
         )
     }
@@ -175,10 +185,15 @@ fun Navigation(
             HomeView(
                 isCardDataAvailable = viewModel.isCardDataAvailable,
                 secretHeaders = viewModel.secretHeaders,
+                authenticityStatus = viewModel.authenticityStatus,
                 onClick = { item, secret ->
                     when (item) {
                         HomeItems.CARD_INFO -> {
-                            navController.navigate(CardAuthenticity)
+                            if (viewModel.isCardDataAvailable) {
+                                navController.navigate(CardAuthenticity)
+                            } else {
+                                showInfoDialog.value = !showInfoDialog.value
+                            }
                         }
                         HomeItems.REFRESH -> {
                             showNfcDialog.value = true // NfcDialog
@@ -202,7 +217,7 @@ fun Navigation(
                         }
                         HomeItems.OPEN_SECRET -> {
                             secret?.sid?.let {
-                                viewModel.resetIsCardAvailable()
+                                viewModel.setCurrentSecret(secret.sid)
                                 navController.navigate(
                                     MySecretView(
                                         sid = secret.sid,
@@ -230,10 +245,18 @@ fun Navigation(
                             navController.popBackStack()
                         }
                         MenuItems.CARD_INFORMATION -> {
-                            navController.navigate(CardInformation)
+                            if (viewModel.isCardDataAvailable) {
+                                navController.navigate(CardInformation)
+                            } else {
+                                showInfoDialog.value = !showInfoDialog.value
+                            }
                         }
                         MenuItems.MAKE_A_BACKUP -> {
-                            navController.navigate(BackupView)
+                            if (viewModel.isCardDataAvailable) {
+                                navController.navigate(BackupView)
+                            } else {
+                                showInfoDialog.value = !showInfoDialog.value
+                            }
                         }
                         MenuItems.SETTINGS -> {
                             navController.navigate(SettingsView)
@@ -287,7 +310,9 @@ fun Navigation(
         }
         composable<CardInformation> {
             CardInformation(
-                onClick = { item ->
+                authenticityStatus = viewModel.authenticityStatus,
+                cardLabel = viewModel.cardLabel,
+                onClick = { item, cardLabel ->
                     when (item) {
                         CardInformationItems.BACK -> {
                             navController.popBackStack()
@@ -297,12 +322,20 @@ fun Navigation(
                         }
                         CardInformationItems.EDIT_PIN_CODE -> {
                             navController.navigate(
-                                PinCodeView(
-                                    title = R.string.setup,
-                                    messageTitle = R.string.editPinCode,
-                                    message = R.string.editPinCodeText
+                                EditPinCodeView(
+                                    pinCodeStatus = PinCodeStatus.CURRENT_PIN_CODE.name
                                 )
                             )
+                        }
+                        CardInformationItems.EDIT_CARD_LABEL -> {
+                            if (cardLabel != null) {
+                                showNfcDialog.value = true // NfcDialog
+                                viewModel.setupNewCardLabel(cardLabel)
+                                viewModel.scanCardForAction(
+                                    activity = context as Activity,
+                                    nfcActionType = NfcActionType.EDIT_CARD_LABEL
+                                )
+                            }
                         }
                         else -> {}
                     }
@@ -311,6 +344,7 @@ fun Navigation(
         }
         composable<CardAuthenticity> {
             CardAuthenticity(
+                authenticityStatus = viewModel.authenticityStatus,
                 onClick = { item ->
                     when (item) {
                         CardInformationItems.BACK -> {
@@ -318,6 +352,85 @@ fun Navigation(
                         }
                         else -> {}
                     }
+                }
+            )
+        }
+        composable<NewPinCodeView> {
+            val args = it.toRoute<NewPinCodeView>()
+            LaunchedEffect(viewModel.isCardDataAvailable) {
+                if (viewModel.isCardDataAvailable) {
+                    navController.navigate(HomeView) {
+                        popUpTo(0)
+                    }
+                }
+            }
+            EditPinCodeView(
+                placeholderText = R.string.enterPinCode,
+                pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
+                onClick = { item, pinString ->
+                    when (item) {
+                        CardInformationItems.CONFIRM -> {
+                            pinString?.let {
+                                showNfcDialog.value = true // NfcDialog
+                                viewModel.setNewPinString(pinString)
+                                viewModel.scanCardForAction(
+                                    activity = context as Activity,
+                                    nfcActionType = NfcActionType.SETUP_CARD
+                                )
+                            }
+                        }
+                        CardInformationItems.BACK -> {
+                            navController.popBackStack()
+                        }
+                        else -> {}
+                    }
+                    return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
+                }
+            )
+        }
+        composable<EditPinCodeView> {
+            val args = it.toRoute<EditPinCodeView>()
+            LaunchedEffect(viewModel.resultCodeLive) {
+                when (viewModel.resultCodeLive) {
+                    NfcResultCode.PIN_CHANGED -> {
+                        navController.navigate(HomeView) {
+                            popUpTo(0)
+                        }
+                    }
+                    else -> {}
+                }
+            }
+
+            val wrongPinText = stringResource(id = R.string.wrongPinCode)
+            EditPinCodeView(
+                placeholderText = R.string.enterPinCode,
+                pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
+                onClick = { item, pinString ->
+                    when (item) {
+                        CardInformationItems.EDIT_PIN_CODE -> {
+                            if (pinString == viewModel.getCurrentPinString()) {
+                                return@EditPinCodeView PinCodeStatus.INPUT_NEW_PIN_CODE
+                            } else {
+                                Toast.makeText(context, wrongPinText, Toast.LENGTH_SHORT).show()
+                                return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
+                            }
+                        }
+                        CardInformationItems.CONFIRM -> {
+                            pinString?.let {
+                                showNfcDialog.value = true // NfcDialog
+                                viewModel.setNewPinString(pinString)
+                                viewModel.scanCardForAction(
+                                    activity = context as Activity,
+                                    nfcActionType = NfcActionType.CHANGE_PIN
+                                )
+                            }
+                        }
+                        CardInformationItems.BACK -> {
+                            navController.popBackStack()
+                        }
+                        else -> {}
+                    }
+                    return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
                 }
             )
         }
@@ -344,11 +457,16 @@ fun Navigation(
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
                                 showNfcDialog.value = true // NfcDialog
-                                viewModel.setupNewPinString(pinString)
+                                viewModel.setNewPinString(pinString)
                                 viewModel.scanCardForAction(
                                     activity = context as Activity,
                                     nfcActionType = NfcActionType.VERIFY_PIN
                                 )
+                            }
+                        }
+                        CardInformationItems.EDIT_CARD_LABEL -> {
+                            if (pinString == viewModel.getCurrentPinString()) {
+
                             }
                         }
                         else -> {}
@@ -391,8 +509,8 @@ fun Navigation(
             val data = remember {
                 mutableStateOf<GeneratePasswordData?>(null)
             }
-            LaunchedEffect(viewModel.isCardDataAvailable) {
-                if (viewModel.isCardDataAvailable) {
+            LaunchedEffect(viewModel.currentSecretId) {
+                if (viewModel.currentSecretId == null) {
                     navController.navigate(HomeView) {
                         popUpTo(0)
                     }
@@ -426,7 +544,6 @@ fun Navigation(
                     when (item) {
                         MySecretItems.SHOW -> {
                             showNfcDialog.value = true // NfcDialog
-                            viewModel.setCurrentSecret(args.sid)
                             viewModel.scanCardForAction(
                                 activity = context as Activity,
                                 nfcActionType = NfcActionType.GET_SECRET
@@ -434,7 +551,6 @@ fun Navigation(
                         }
                         MySecretItems.DELETE -> {
                             showNfcDialog.value = true // NfcDialog
-                            viewModel.setCurrentSecret(args.sid)
                             viewModel.scanCardForAction(
                                 activity = context as Activity,
                                 nfcActionType = NfcActionType.DELETE_SECRET
@@ -610,10 +726,21 @@ data class MySecretView (
 )
 
 @Serializable
+data class EditPinCodeView (
+    val pinCodeStatus: String
+)
+
+@Serializable
+data class NewPinCodeView (
+    val pinCodeStatus: String
+)
+
+@Serializable
 data class PinCodeView (
     val title: Int,
     val messageTitle: Int,
     val message: Int,
     val placeholderText: Int = R.string.enterCurrentPinCode,
-    val isMultiStep: Boolean = true
+    val isMultiStep: Boolean = true,
+    val isPinChange: Boolean = false
 )
