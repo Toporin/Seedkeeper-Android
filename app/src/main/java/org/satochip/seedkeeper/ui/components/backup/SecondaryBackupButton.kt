@@ -9,25 +9,12 @@ import org.satochip.seedkeeper.ui.components.shared.SatoButton
 
 @Composable
 fun SecondaryBackupButton(
-    backupStatus: MutableState<BackupStatus>
+    backupStatus: MutableState<BackupStatus>,
+    goBack: () -> Unit,
 ) {
     SatoButton(
         onClick = {
-            when (backupStatus.value) {
-                BackupStatus.FIRST_STEP -> {
-                    backupStatus.value = BackupStatus.DEFAULT
-                }
-                BackupStatus.SECOND_STEP -> {
-                    backupStatus.value = BackupStatus.FIRST_STEP
-                }
-                BackupStatus.THIRD_STEP -> {
-                    backupStatus.value = BackupStatus.FIRST_STEP
-                }
-                BackupStatus.FOURTH_STEP -> {
-                    backupStatus.value = BackupStatus.FIRST_STEP
-                }
-                else -> {}
-            }
+            goBack()
         },
         buttonColor = Color.Transparent,
         textColor = Color.Black,

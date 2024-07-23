@@ -5,7 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.nfc.NfcAdapter
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.runBlocking
 import org.satochip.android.NFCCardManager
 import org.satochip.client.ApplicationStatus
 import org.satochip.client.SatochipCommandSet
@@ -17,6 +20,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretOrigin
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.io.APDUResponse
 import org.satochip.seedkeeper.data.AuthenticityStatus
+import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
@@ -41,6 +45,11 @@ object NFCCardService {
     var currentSecretId = MutableLiveData<Int?>()
     var pinString: String? = null
     var oldPinString: String? = null
+
+    //BACKUP
+    var secretsList: MutableList<SeedkeeperSecretHeader> = mutableListOf()
+    var backupSecretObjects: MutableList<SeedkeeperSecretObject> = mutableListOf()
+    var backupStatus = MutableLiveData(BackupStatus.DEFAULT)
 
     //GENERATE SECRET
     var passwordData: GeneratePasswordData? = null
@@ -93,6 +102,15 @@ object NFCCardService {
             }
             NfcActionType.EDIT_CARD_LABEL -> {
                 editCardLabel()
+            }
+            NfcActionType.SCAN_BACKUP_CARD -> {
+                backupCardScan()
+            }
+            NfcActionType.SCAN_MASTER_CARD -> {
+                masterCardScan()
+            }
+            NfcActionType.TRANSFER_TO_BACKUP -> {
+                backupCardImportNewSecrets()
             }
         }
     }
@@ -183,8 +201,6 @@ object NFCCardService {
 
     fun cardSetup() {
         SatoLog.d(TAG, "cardSetup start")
-
-//        parser = cmdSet.parser
         try {
             val respdu: APDUResponse = cmdSet.cardSelect("seedkeeper").checkOK()
             val rapduStatus = cmdSet.cardGetStatus()
@@ -212,27 +228,12 @@ object NFCCardService {
             SatoLog.e(TAG, "verifyPin exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
-
-//        val rapduStatus = cmdSet.cardGetStatus()//To update status if it's not the first reading
-//
-//        cardStatus = cmdSet.applicationStatus ?: return
-//        cardStatus = ApplicationStatus(rapduStatus)
-////        cmdSet.applicationStatus ?: return
-////        APDUResponse(ByteArray(0), 0x00, 0x00)
-//        Log.d("lista", "provera stringa ovdeka: $pinString")
-//        val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
-//        try {
-//            cmdSet.cardSetup(5, pinBytes)
-//        } catch (error: Exception) {
-//            SatoLog.e(TAG, "Couldn't setup card, error: $error")
-//        }
-
-//        isCardDataAvailable.postValue(true)
         SatoLog.d(TAG, "Card setup successful")
     }
 
     fun verifyPin(
-        shouldUpdateDataState: Boolean = true
+        shouldUpdateDataState: Boolean = true,
+        shouldUpdateResultCodeLive: Boolean = true
     ) {
         SatoLog.d(TAG, "verifyPin start")
         try {
@@ -243,14 +244,17 @@ object NFCCardService {
             cmdSet.setPin0(pinBytes)
             cmdSet.cardVerifyPIN()
 
-            getSecretsList()
-
+            runBlocking {
+                getSecretsList()
+            }
             isReadyForPinCode.postValue(false)
             if (shouldUpdateDataState) {
                 cardLabel.postValue(cmdSet.cardLabel)
                 isCardDataAvailable.postValue(true)
             }
-            resultCodeLive.postValue(NfcResultCode.OK)
+            if (shouldUpdateResultCodeLive) {
+                resultCodeLive.postValue(NfcResultCode.OK)
+            }
             SatoLog.d(TAG, "verifyPin successful")
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
@@ -280,7 +284,9 @@ object NFCCardService {
     fun getSecretsList() {
         SatoLog.d(TAG, "Get secret headers")
         try {
-            secretHeaders.postValue(cmdSet.seedkeeperListSecretHeaders())
+            secretsList.clear()
+            secretsList.addAll(cmdSet.seedkeeperListSecretHeaders())
+            secretHeaders.postValue(secretsList)
             resultCodeLive.postValue(NfcResultCode.OK)
             SatoLog.d(TAG, "getSecretsList successful")
         } catch (e: Exception) {
@@ -428,6 +434,137 @@ object NFCCardService {
             resultCodeLive.postValue(NfcResultCode.OK)
         } catch (e: Exception) {
             SatoLog.e(TAG, "getXpub exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+    }
+
+    fun backupCardImportNewSecrets() {
+        SatoLog.d(TAG, "backupCardImportNewSecrets start")
+        try {
+            val masterCardObjects: List<SeedkeeperSecretObject> = backupSecretObjects.toList()
+            val backupPin = pinString
+            pinString = oldPinString
+            oldPinString = backupPin
+            verifyPin(
+                shouldUpdateResultCodeLive = false
+            )
+            backupCardGetSecrets()
+            val uniqueNewSecrets = masterCardObjects.filterNot { newSecret ->
+                backupSecretObjects.any {
+                    it.fingerprintFromSecret.contentEquals(newSecret.fingerprintFromSecret)
+                }
+            }
+
+            for (item in uniqueNewSecrets) {
+                cmdSet.seedkeeperImportSecret(item)
+            }
+            backupSecretObjects.clear()
+
+            backupStatus.postValue(BackupStatus.FIFTH_STEP)
+            resultCodeLive.postValue(NfcResultCode.OK)
+        } catch (e: Exception) {
+            SatoLog.e(TAG, "backupCardImportNewSecrets exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+    }
+
+    fun masterCardScan() {
+        try {
+            isCardDataAvailable.postValue(false)
+            cmdSet.cardSelect("seedkeeper").checkOK()
+            val rapduStatus = cmdSet.cardGetStatus()
+            cardStatus = cmdSet.applicationStatus ?: return
+            cardStatus = ApplicationStatus(rapduStatus)
+            SatoLog.d(TAG, "card status: $cardStatus")
+            SatoLog.d(TAG, "is setup done: ${cardStatus.isSetupDone}")
+
+            if (!cardStatus.isSetupDone) {
+                throw Exception("Card should've been already setup")
+            } else {
+                val backupPin = pinString
+                pinString = oldPinString
+                oldPinString = backupPin
+                verifyPin(
+                    shouldUpdateDataState = false,
+                    shouldUpdateResultCodeLive = false
+                )
+                backupCardGetSecrets()
+            }
+            resultCodeLive.postValue(NfcResultCode.OK)
+            backupStatus.postValue(BackupStatus.THIRD_STEP)
+        } catch (e: Exception) {
+            SatoLog.e(TAG, "scanBackupCard exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+    }
+
+    fun backupCardScan() {
+        SatoLog.d(TAG, "scanBackupCard start")
+        try {
+            isCardDataAvailable.postValue(false)
+            cmdSet.cardSelect("seedkeeper").checkOK()
+            val rapduStatus = cmdSet.cardGetStatus()
+            cardStatus = cmdSet.applicationStatus ?: return
+            cardStatus = ApplicationStatus(rapduStatus)
+            SatoLog.d(TAG, "card status: $cardStatus")
+            SatoLog.d(TAG, "is setup done: ${cardStatus.isSetupDone}")
+
+            if (!cardStatus.isSetupDone) {
+                SatoLog.d(TAG, "CardVersionInt: ${getCardVersionInt(cardStatus)}, setup not done")
+                oldPinString = pinString
+                backupCardSetup()
+            } else {
+                oldPinString = pinString
+                isReadyForPinCode.postValue(true)
+            }
+
+            resultCodeLive.postValue(NfcResultCode.OK)
+            backupStatus.postValue(BackupStatus.SECOND_STEP)
+        } catch (e: Exception) {
+            SatoLog.e(TAG, "scanBackupCard exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+    }
+
+    fun backupCardSetup() {
+        SatoLog.d(TAG, "backupCardSetup start")
+        try {
+            cmdSet.cardSelect("seedkeeper").checkOK()
+            val rapduStatus = cmdSet.cardGetStatus()
+
+            cardStatus = cmdSet.applicationStatus ?: return
+            cardStatus = ApplicationStatus(rapduStatus)
+
+            val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
+            var respApdu = APDUResponse(ByteArray(0), 0x00, 0x00)
+
+            try {
+                cmdSet.cardSetup(5, pinBytes) ?: respApdu
+            } catch (error: Exception) {
+                SatoLog.e(TAG, "backupCardSetup: Error: $error")
+            }
+            verifyPin(
+                shouldUpdateResultCodeLive = false
+            )
+        } catch (e: Exception) {
+            resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
+            SatoLog.e(TAG, "backupCardSetup exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+        SatoLog.d(TAG, "backupCardSetup successful")
+    }
+
+    fun backupCardGetSecrets() {
+        try {
+            backupSecretObjects.clear()
+            if (secretsList.isNotEmpty()) {
+                for (item in secretsList) {
+                    val secretObject = cmdSet.seedkeeperExportSecret(item.sid, null)
+                    backupSecretObjects.add(secretObject)
+                }
+            }
+        } catch (e: Exception) {
+            SatoLog.e(TAG, "backupCardGetSecrets exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }

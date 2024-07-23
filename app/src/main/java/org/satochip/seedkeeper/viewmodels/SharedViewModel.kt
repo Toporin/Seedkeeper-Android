@@ -15,6 +15,7 @@ import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.seedkeeper.data.AuthenticityStatus
+import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
@@ -40,6 +41,7 @@ class SharedViewModel : ViewModel() {
     var authenticityStatus by mutableStateOf(AuthenticityStatus.UNKNOWN)
     var currentSecretId by mutableStateOf<Int?>(null)
     var resultCodeLive by mutableStateOf(NfcResultCode.BUSY)
+    var backupStatusState by mutableStateOf(BackupStatus.DEFAULT)
     var cardLabel by mutableStateOf("")
     var updateSecretsJob: Job? = null
 
@@ -55,6 +57,9 @@ class SharedViewModel : ViewModel() {
         }
         NFCCardService.resultCodeLive.observeForever {
             resultCodeLive = it
+        }
+        NFCCardService.backupStatus.observeForever {
+            backupStatusState = it
         }
         NFCCardService.isCardDataAvailable.observeForever {
             isCardDataAvailable = it
@@ -108,6 +113,10 @@ class SharedViewModel : ViewModel() {
 
     fun resetCurrentSecretObject() {
         NFCCardService.currentSecretObject.postValue(null)
+    }
+
+    fun setBackupStatus(backupStatus: BackupStatus) {
+        NFCCardService.backupStatus.postValue(backupStatus)
     }
 
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {

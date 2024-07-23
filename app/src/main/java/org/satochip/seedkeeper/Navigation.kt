@@ -2,6 +2,7 @@ package org.satochip.seedkeeper
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +20,8 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.BackupStatus
+import org.satochip.seedkeeper.data.BackupViewItems
 import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateViewItems
@@ -105,20 +108,6 @@ fun Navigation(
         )
     }
 
-    // PIN CODE
-    if (viewModel.isReadyForPinCode) {
-        SatoLog.d(TAG, "Navigation: Card needs to be verified!")
-        navController.navigate(
-            PinCodeView(
-                title = R.string.pinCode,
-                messageTitle = R.string.pinCode,
-                message = R.string.enterPinCode,
-                placeholderText = R.string.enterPinCode,
-                isMultiStep = false
-            )
-        )
-    }
-
     NavHost(
         navController = navController,
         startDestination = SplashView
@@ -182,6 +171,21 @@ fun Navigation(
             )
         }
         composable<HomeView> {
+            LaunchedEffect(viewModel.isReadyForPinCode) {
+                // PIN CODE
+                if (viewModel.isReadyForPinCode) {
+                    SatoLog.d(TAG, "Navigation: Card needs to be verified!")
+                    navController.navigate(
+                        PinCodeView(
+                            title = R.string.pinCode,
+                            messageTitle = R.string.pinCode,
+                            message = R.string.enterPinCode,
+                            placeholderText = R.string.enterPinCode,
+                            isMultiStep = false
+                        )
+                    )
+                }
+            }
             HomeView(
                 isCardDataAvailable = viewModel.isCardDataAvailable,
                 secretHeaders = viewModel.secretHeaders,
@@ -438,9 +442,7 @@ fun Navigation(
             val args = it.toRoute<PinCodeView>()
             LaunchedEffect(viewModel.isCardDataAvailable) {
                 if (viewModel.isCardDataAvailable) {
-                    navController.navigate(HomeView) {
-                        popUpTo(0)
-                    }
+                    navController.popBackStack()
                 }
             }
             PinCodeView (
@@ -475,9 +477,67 @@ fun Navigation(
             )
         }
         composable<BackupView> {
+            LaunchedEffect(viewModel.isReadyForPinCode) {
+                if (viewModel.isReadyForPinCode) {
+                    SatoLog.d(TAG, "Navigation: Card needs to be verified!")
+                    navController.navigate(
+                        PinCodeView(
+                            title = R.string.pinCode,
+                            messageTitle = R.string.pinCode,
+                            message = R.string.enterPinCode,
+                            placeholderText = R.string.enterPinCode,
+                            isMultiStep = false
+                        )
+                    )
+                }
+            }
             BackupView(
-                onClick = {
-                    navController.popBackStack()
+                backupStatusState = viewModel.backupStatusState,
+                onClick = { item ->
+                    when (item) {
+                        BackupStatus.DEFAULT -> {
+                            viewModel.setBackupStatus(BackupStatus.FIRST_STEP)
+                        }
+                        BackupStatus.FIRST_STEP -> {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.SCAN_BACKUP_CARD
+                            )
+                        }
+                        BackupStatus.SECOND_STEP -> {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.SCAN_MASTER_CARD
+                            )
+                        }
+                        BackupStatus.THIRD_STEP -> {
+                            viewModel.setBackupStatus(BackupStatus.FOURTH_STEP)
+
+                        }
+                        BackupStatus.FOURTH_STEP -> {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.TRANSFER_TO_BACKUP
+                            )
+                        }
+                        BackupStatus.FIFTH_STEP -> {
+                            viewModel.setBackupStatus(BackupStatus.DEFAULT)
+                            navController.popBackStack()
+                        }
+                    }
+                },
+                goBack = {
+                    when (viewModel.backupStatusState) {
+                        BackupStatus.FIRST_STEP -> {
+                            viewModel.setBackupStatus(BackupStatus.DEFAULT)
+                        }
+                        else -> {
+                            viewModel.setBackupStatus(BackupStatus.FIRST_STEP)
+                        }
+                    }
                 }
             )
         }

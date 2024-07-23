@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,12 +23,13 @@ import org.satochip.seedkeeper.ui.components.backup.BackupText
 import org.satochip.seedkeeper.ui.components.backup.BackupTransferImages
 import org.satochip.seedkeeper.ui.components.backup.MainBackupButton
 import org.satochip.seedkeeper.ui.components.backup.SecondaryBackupButton
-import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 
 @Composable
 fun BackupView(
-    onClick: (BackupViewItems) -> Unit
+    backupStatusState: BackupStatus,
+    onClick: (BackupStatus) -> Unit,
+    goBack: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -36,10 +38,10 @@ fun BackupView(
         val title = remember {
             mutableIntStateOf(R.string.backup)
         }
-        val showNfcDialog = remember { mutableStateOf(false) }
-        val backupStatus = remember {
+        val backupStatus = rememberSaveable {
             mutableStateOf(BackupStatus.DEFAULT)
         }
+        backupStatus.value = backupStatusState
         when (backupStatus.value) {
             BackupStatus.FIRST_STEP -> {
                 title.intValue = R.string.pairing
@@ -55,7 +57,7 @@ fun BackupView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(BackupViewItems.BACK)
+                    onClick(BackupStatus.FIFTH_STEP)
                 },
                 titleText = title.intValue
             )
@@ -87,14 +89,14 @@ fun BackupView(
                 ) {
                     if (!(backupStatus.value == BackupStatus.DEFAULT || backupStatus.value == BackupStatus.FIFTH_STEP)) {
                         SecondaryBackupButton(
-                            backupStatus = backupStatus
+                            backupStatus = backupStatus,
+                            goBack = goBack
                         )
                     }
                     MainBackupButton(
                         backupStatus = backupStatus,
-                        showNfcDialog = showNfcDialog,
                         onClick = {
-                            onClick(BackupViewItems.SCAN_BACKUP)
+                            onClick(backupStatus.value)
                         }
                     )
                 }
