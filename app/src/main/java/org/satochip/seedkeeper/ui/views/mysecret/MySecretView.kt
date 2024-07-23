@@ -84,8 +84,8 @@ fun MySecretView(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 TitleTextField(
-                    title = R.string.menageSecret,
-                    text = R.string.menageSecretMessage
+                    title = R.string.manageSecret,
+                    text = R.string.manageSecretMessage
                 )
                 Column {
                     SecretInfoField(
