@@ -13,12 +13,10 @@ const val TAG = "Utlis"
 //Generate view
 fun isClickable(
     secret: MutableState<String>,
-    curValueLogin: MutableState<String>,
     curValueLabel: MutableState<String>
 ): Boolean {
-    return secret.value.isNotEmpty() && curValueLabel.value.isNotEmpty() &&
-            (curValueLogin.value.isEmpty() || Patterns.EMAIL_ADDRESS.matcher(curValueLogin.value)
-                .matches())
+    return secret.value.isNotEmpty()
+            && curValueLabel.value.isNotEmpty()
 }
 
 fun isEmailCorrect(

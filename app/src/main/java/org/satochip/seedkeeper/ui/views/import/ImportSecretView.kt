@@ -43,7 +43,6 @@ import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 import org.satochip.seedkeeper.utils.getType
 import org.satochip.seedkeeper.utils.isClickable
-import org.satochip.seedkeeper.utils.isEmailCorrect
 
 @Composable
 fun ImportSecretView(
@@ -331,7 +330,7 @@ fun ImportSecretView(
                                 SatoButton(
                                     modifier = Modifier,
                                     onClick = {
-                                        if (isClickable(secret, curValueLogin, curValueLabel)) {
+                                        if (isClickable(secret, curValueLabel)) {
                                             val type = getType(generateStatus.value)
                                             var password: String = ""
                                             var mnemonic: String? = null
@@ -353,7 +352,7 @@ fun ImportSecretView(
                                                 )
                                             )
                                         }
-                                        if (isEmailCorrect(curValueLogin)) {
+                                        if (curValueLogin.value.isNotEmpty()) {
                                             val stringSet = listOf(curValueLogin.value).toSet()
                                             retrievedSet.value += stringSet
                                             settings.edit().putStringSet(
@@ -366,7 +365,6 @@ fun ImportSecretView(
                                     textColor = if (
                                         isClickable(
                                             secret,
-                                            curValueLogin,
                                             curValueLabel
                                         )
                                     ) Color.White else SatoActiveTracer

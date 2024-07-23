@@ -367,7 +367,7 @@ fun GenerateView(
                                     modifier = Modifier
                                         .weight(1f),
                                     onClick = {
-                                        if (isClickable(secret, curValueLogin, curValueLabel)) {
+                                        if (isClickable(secret, curValueLabel)) {
                                             val type = getType(generateStatus.value)
                                             var password: String = ""
                                             var mnemonic: String? = null
@@ -389,7 +389,7 @@ fun GenerateView(
                                                 )
                                             )
                                         }
-                                        if (isEmailCorrect(curValueLogin)) {
+                                        if (curValueLogin.value.isNotEmpty()) {
                                             val stringSet = listOf(curValueLogin.value).toSet()
                                             retrievedSet.value += stringSet
                                             settings.edit().putStringSet(
@@ -402,7 +402,6 @@ fun GenerateView(
                                     textColor = if (
                                         isClickable(
                                             secret,
-                                            curValueLogin,
                                             curValueLabel
                                         )
                                     ) Color.White else SatoActiveTracer
