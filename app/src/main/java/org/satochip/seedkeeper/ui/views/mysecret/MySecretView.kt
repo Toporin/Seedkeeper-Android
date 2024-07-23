@@ -97,43 +97,40 @@ fun MySecretView(
                         secret = secret
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        item {
-                            SatoButton(
-                                modifier = Modifier,
-                                onClick = {
-                                    mySecretStatus.value = MySecretStatus.SEED
-                                },
-                                text = R.string.seed,
-                                image = R.drawable.seed_icon,
-                                horizontalPadding = 2.dp
-                            )
-                        }
-                        item {
-                            SatoButton(
-                                modifier = Modifier,
-                                onClick = {
-                                    mySecretStatus.value = MySecretStatus.SEED_QR
-                                },
-                                text = R.string.seedQR,
-                                image = R.drawable.seedqr_icon,
-                                horizontalPadding = 2.dp
-                            )
-                        }
-                        item {
-                            SatoButton(
-                                modifier = Modifier,
-                                onClick = {
-                                    mySecretStatus.value = MySecretStatus.X_PUB
-                                },
-                                text = R.string.xpub,
-                                image = R.drawable.xpub_icon,
-                                horizontalPadding = 2.dp
-                            )
-                        }
+                        SatoButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                mySecretStatus.value = MySecretStatus.SEED
+                            },
+                            text = R.string.seed,
+                            image = R.drawable.seed_icon,
+                            horizontalPadding = 2.dp
+                        )
+                        SatoButton(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                mySecretStatus.value = MySecretStatus.SEED_QR
+                            },
+                            text = R.string.seedQR,
+                            image = R.drawable.seedqr_icon,
+                            horizontalPadding = 2.dp
+                        )
+                        // todo: logic should be changed
+//                        SatoButton(
+//                            modifier = Modifier,
+//                            onClick = {
+//                                mySecretStatus.value = MySecretStatus.X_PUB
+//                            },
+//                            text = R.string.xpub,
+//                            image = R.drawable.xpub_icon,
+//                            horizontalPadding = 2.dp
+//                        )
                     }
                 }
                 when (mySecretStatus.value) {

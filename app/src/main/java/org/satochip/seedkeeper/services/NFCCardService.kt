@@ -383,8 +383,9 @@ object NFCCardService {
             verifyPin(false)
             currentSecretId.value?.let { sid ->
                 val secretObject = cmdSet.seedkeeperExportSecret(sid, null)
-                getXpub()
                 currentSecretObject.postValue(secretObject)
+                // todo: logic should be changed
+//                getXpub()
             }
             resultCodeLive.postValue(NfcResultCode.OK)
         } catch (e: Exception) {

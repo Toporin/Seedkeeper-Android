@@ -28,9 +28,13 @@ fun isEmailCorrect(
 fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
     var index = 0
 
-    val mnemonicSize = bytes[index].toInt()
+    if (bytes.isEmpty()) {
+        SatoLog.e(TAG, "Byte array is empty")
+        return null
+    }
+    val mnemonicSize = bytes[index].toUByte().toInt()
     index += 1
-    if (index + mnemonicSize > bytes.size) {
+    if (mnemonicSize < 0 || index + mnemonicSize > bytes.size) {
         SatoLog.e(TAG, "Invalid mnemonic size")
         return null
     }
@@ -44,7 +48,7 @@ fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
 
     var passphrase: String? = null
     if (index < bytes.size) {
-        val passphraseSize = bytes[index].toInt()
+        val passphraseSize = bytes[index].toUByte().toInt()
         index += 1
         if (passphraseSize > 0 && index + passphraseSize <= bytes.size) {
             val passphraseBytes = bytes.copyOfRange(index, index + passphraseSize)
@@ -53,8 +57,8 @@ fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
         }
     }
 
-    return  GeneratePasswordData(
-        password = "$passphrase",
+    return GeneratePasswordData(
+        password = passphrase ?: "",
         mnemonic = mnemonic,
         size = countWords(mnemonic),
         label = "",
