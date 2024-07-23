@@ -5,8 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.nfc.NfcAdapter
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.runBlocking
 import org.satochip.android.NFCCardManager
@@ -245,7 +243,7 @@ object NFCCardService {
             cmdSet.cardVerifyPIN()
 
             runBlocking {
-                getSecretsList()
+                getSecretsList(shouldUpdateResultCodeLive)
             }
             isReadyForPinCode.postValue(false)
             if (shouldUpdateDataState) {
@@ -281,13 +279,17 @@ object NFCCardService {
         }
     }
 
-    fun getSecretsList() {
+    fun getSecretsList(
+        shouldUpdateResultCodeLive: Boolean = true
+    ) {
         SatoLog.d(TAG, "Get secret headers")
         try {
             secretsList.clear()
             secretsList.addAll(cmdSet.seedkeeperListSecretHeaders())
             secretHeaders.postValue(secretsList)
-            resultCodeLive.postValue(NfcResultCode.OK)
+            if (shouldUpdateResultCodeLive) {
+                resultCodeLive.postValue(NfcResultCode.OK)
+            }
             SatoLog.d(TAG, "getSecretsList successful")
         } catch (e: Exception) {
             secretHeaders.postValue(emptyList())
@@ -456,13 +458,15 @@ object NFCCardService {
                 }
             }
 
+            secretHeaders.postValue(masterCardObjects.map { it.secretHeader })
+
             for (item in uniqueNewSecrets) {
                 cmdSet.seedkeeperImportSecret(item)
             }
             backupSecretObjects.clear()
 
-            backupStatus.postValue(BackupStatus.FIFTH_STEP)
             resultCodeLive.postValue(NfcResultCode.OK)
+            backupStatus.postValue(BackupStatus.FIFTH_STEP)
         } catch (e: Exception) {
             SatoLog.e(TAG, "backupCardImportNewSecrets exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
@@ -485,12 +489,14 @@ object NFCCardService {
                 val backupPin = pinString
                 pinString = oldPinString
                 oldPinString = backupPin
+
                 verifyPin(
                     shouldUpdateDataState = false,
                     shouldUpdateResultCodeLive = false
                 )
                 backupCardGetSecrets()
             }
+
             resultCodeLive.postValue(NfcResultCode.OK)
             backupStatus.postValue(BackupStatus.THIRD_STEP)
         } catch (e: Exception) {
