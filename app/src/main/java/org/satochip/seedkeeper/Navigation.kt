@@ -50,6 +50,7 @@ import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.mysecret.MySecretView
 import org.satochip.seedkeeper.ui.views.pincode.PinCodeView
 import org.satochip.seedkeeper.ui.views.settings.SettingsView
+import org.satochip.seedkeeper.ui.views.showlogs.ShowLogsView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
 import org.satochip.seedkeeper.utils.parseMnemonicCardData
@@ -67,6 +68,10 @@ fun Navigation(
     val navController = rememberNavController()
     val settings = context.getSharedPreferences("seedkeeper", Context.MODE_PRIVATE)
     val copyText = stringResource(id = R.string.copiedToClipboard)
+    val debugMode = remember {
+        mutableStateOf(settings.getBoolean(SeedkeeperPreferences.DEBUG_MODE.name, false))
+    }
+    SatoLog.isDebugModeActivated = debugMode.value
     val startDestination =
         if (settings.getBoolean(SeedkeeperPreferences.FIRST_TIME_LAUNCH.name, true)) {
             settings.edit().putBoolean(SeedkeeperPreferences.FIRST_TIME_LAUNCH.name, false).apply()
@@ -284,9 +289,7 @@ fun Navigation(
                     )
                 )
             }
-            val debugMode = remember {
-                mutableStateOf(settings.getBoolean(SeedkeeperPreferences.DEBUG_MODE.name, false))
-            }
+            val logsDisabledText = stringResource(id = R.string.logsDisabledText)
             SettingsView(
                 starterIntro = starterIntro,
                 debugMode = debugMode,
@@ -307,7 +310,12 @@ fun Navigation(
                                 debugMode.value
                             ).apply()
                         }
-                        SettingsItems.SHOW_LOGS -> {}
+                        SettingsItems.SHOW_LOGS -> {
+                            navController.navigate(ShowLogsView)
+                        }
+                        SettingsItems.SHOW_TOAST -> {
+                            Toast.makeText(context, logsDisabledText, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             )
@@ -748,6 +756,17 @@ fun Navigation(
                 }
             )
         }
+        composable<ShowLogsView> {
+            ShowLogsView(
+                onClick = {
+                    navController.navigateUp()
+                },
+                copyToClipboard = { logsText ->
+                    clipboardManager.setText(AnnotatedString(logsText))
+                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
     }
 }
 
@@ -777,6 +796,8 @@ object GenerateView
 object ImportSecretView
 @Serializable
 object AddSecretView
+@Serializable
+object ShowLogsView
 
 @Serializable
 data class MySecretView (

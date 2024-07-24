@@ -170,4 +170,9 @@
     <string name="login">Login</string>
     <string name="url">URL</string>
 
+    <!--Show Logs View-->
+    <string name="logs">Journaux</string>
+    <string name="logsEntriesnumber">Nombre d\'entrées:</string>
+    <string name="logsDisabledText">Veuillez activer le mode débogage</string>
+
 </resources>

@@ -170,4 +170,9 @@
     <string name="login">Login</string>
     <string name="url">URL</string>
 
+    <!--Show Logs View-->
+    <string name="logs">Logs</string>
+    <string name="logsEntriesnumber">Number of entries:</string>
+    <string name="logsDisabledText">Please enable debug mode</string>
+
 </resources>

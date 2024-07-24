@@ -5,7 +5,6 @@ import androidx.compose.runtime.MutableState
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.services.SatoLog
 
 const val TAG = "Utlis"
