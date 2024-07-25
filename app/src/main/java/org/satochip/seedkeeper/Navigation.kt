@@ -193,6 +193,7 @@ fun Navigation(
             }
             HomeView(
                 isCardDataAvailable = viewModel.isCardDataAvailable,
+                cardLabel = viewModel.cardLabel,
                 secretHeaders = viewModel.secretHeaders,
                 authenticityStatus = viewModel.authenticityStatus,
                 onClick = { item, secret ->
@@ -324,6 +325,7 @@ fun Navigation(
             CardInformation(
                 authenticityStatus = viewModel.authenticityStatus,
                 cardLabel = viewModel.cardLabel,
+                cardAppletVersion = viewModel.getAppletVersion(),
                 onClick = { item, cardLabel ->
                     when (item) {
                         CardInformationItems.BACK -> {
@@ -590,8 +592,7 @@ fun Navigation(
                     login = "",
                     url = "",
                     label = args.label,
-                    type = SeedkeeperSecretType.valueOf(args.type),
-                    size = 0
+                    type = SeedkeeperSecretType.valueOf(args.type)
                 )
             }
 

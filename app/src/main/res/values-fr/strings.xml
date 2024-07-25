@@ -35,6 +35,7 @@
 
     <!--Generate View-->
     <string name="generate">Générer</string>
+    <string name="regenerate">Régénérer</string>
     <string name="generateASecret">Générer un secret</string>
     <string name="generateAMnemonicPhrase">Générer une seedphrase</string>
     <string name="generateAPassword">Générer un mot de passe</string>

@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,12 +23,14 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.times
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -41,6 +44,7 @@ import org.satochip.seedkeeper.ui.components.home.SecretsFilter
 
 @Composable
 fun SecretsList(
+    cardLabel: String,
     secretHeaders: SnapshotStateList<SeedkeeperSecretHeader?>,
     addNewSecret: () -> Unit,
     onSecretClick: (SeedkeeperSecretHeader) -> Unit,
@@ -54,12 +58,37 @@ fun SecretsList(
         mutableStateOf(secretHeaders.toList())
     }
     val scrollState = rememberScrollState()
+
+    var isFilterFieldNeeded by remember {
+        mutableStateOf(false)
+    }
+    val itemHeight = 50.dp
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val totalHeight = (secretHeaders.size * (itemHeight + 10.dp)) + itemHeight
+    isFilterFieldNeeded = totalHeight >= (screenHeight / 2)
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp)
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = cardLabel,
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 24.sp,
+                    lineHeight = 40.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = stringResource(id = R.string.homeAuthenticatedText),
@@ -73,73 +102,75 @@ fun SecretsList(
         )
         Spacer(modifier = Modifier.height(32.dp))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier,
-                text = stringResource(id = R.string.search),
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.W500,
-                    textAlign = TextAlign.Center
-                )
-            )
-            SearchSecretsField(
+        if (isFilterFieldNeeded) {
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp),
-                curValue = curValue,
-                onValueChange = {
-                    coroutineScope.launch {
-                        val searchQueryFlow = MutableStateFlow(searchQueryState.value)
-                        searchQueryFlow
-                            .debounce(500)
-                            .distinctUntilChanged()
-                            .collect { query ->
-                                filteredList = if (curValue.value.isEmpty()) {
-                                    secretHeaders.toList()
-                                } else {
-                                    secretHeaders.toList().filter {
-                                        it?.label?.contains(
-                                            curValue.value,
-                                            ignoreCase = true
-                                        ) == true
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(id = R.string.search),
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight.W500,
+                        textAlign = TextAlign.Center
+                    )
+                )
+                SearchSecretsField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
+                    curValue = curValue,
+                    onValueChange = {
+                        coroutineScope.launch {
+                            val searchQueryFlow = MutableStateFlow(searchQueryState.value)
+                            searchQueryFlow
+                                .debounce(500)
+                                .distinctUntilChanged()
+                                .collect { query ->
+                                    filteredList = if (curValue.value.isEmpty()) {
+                                        secretHeaders.toList()
+                                    } else {
+                                        secretHeaders.toList().filter {
+                                            it?.label?.contains(
+                                                curValue.value,
+                                                ignoreCase = true
+                                            ) == true
+                                        }
                                     }
                                 }
-                            }
+                        }
                     }
-                }
-            )
-            SecretsFilter(
-                onClick = { filter ->
-                    when (filter) {
-                        SeedkeeperSecretType.DEFAULT_TYPE -> {
-                            filteredList = secretHeaders.toList()
-                        }
-
-                        SeedkeeperSecretType.PASSWORD -> {
-                            filteredList = secretHeaders.toList()
-                            filteredList = secretHeaders.toList().filter {
-                                it?.type == filter
+                )
+                SecretsFilter(
+                    onClick = { filter ->
+                        when (filter) {
+                            SeedkeeperSecretType.DEFAULT_TYPE -> {
+                                filteredList = secretHeaders.toList()
                             }
-                        }
 
-                        SeedkeeperSecretType.BIP39_MNEMONIC -> {
-                            filteredList = secretHeaders.toList()
-                            filteredList = secretHeaders.toList().filter {
-                                it?.type == filter
+                            SeedkeeperSecretType.PASSWORD -> {
+                                filteredList = secretHeaders.toList()
+                                filteredList = secretHeaders.toList().filter {
+                                    it?.type == filter
+                                }
                             }
-                        }
 
-                        else -> {}
+                            SeedkeeperSecretType.BIP39_MNEMONIC -> {
+                                filteredList = secretHeaders.toList()
+                                filteredList = secretHeaders.toList().filter {
+                                    it?.type == filter
+                                }
+                            }
+
+                            else -> {}
+                        }
                     }
-                }
-            )
+                )
+            }
         }
         Row(
             modifier = Modifier
@@ -181,6 +212,7 @@ fun SecretsList(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
+
         }
     }
 }

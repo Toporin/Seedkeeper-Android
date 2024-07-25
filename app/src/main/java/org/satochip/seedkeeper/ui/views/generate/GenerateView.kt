@@ -360,7 +360,7 @@ fun GenerateView(
                                             else -> {}
                                         }
                                     },
-                                    text = R.string.generate,
+                                    text = if(secret.value.isNotEmpty()) R.string.regenerate else R.string.generate,
                                 )
                                 //Import
                                 SatoButton(

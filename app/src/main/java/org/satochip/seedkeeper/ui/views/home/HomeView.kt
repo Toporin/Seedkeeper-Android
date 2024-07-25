@@ -19,6 +19,7 @@ import org.satochip.seedkeeper.ui.components.home.SatoRoundButton
 @Composable
 fun HomeView(
     isCardDataAvailable: Boolean,
+    cardLabel: String,
     secretHeaders: SnapshotStateList<SeedkeeperSecretHeader?>,
     authenticityStatus: AuthenticityStatus,
     onClick: (HomeItems, SeedkeeperSecretHeader?) -> Unit,
@@ -43,6 +44,7 @@ fun HomeView(
             )
             if (isCardDataAvailable) {
                 SecretsList(
+                    cardLabel = cardLabel,
                     secretHeaders = secretHeaders,
                     addNewSecret = {
                         onClick(HomeItems.ADD_NEW_SECRET, null)

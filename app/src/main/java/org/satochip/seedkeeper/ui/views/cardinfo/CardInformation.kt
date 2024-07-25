@@ -30,6 +30,7 @@ import org.satochip.seedkeeper.ui.theme.SatoGreen
 fun CardInformation(
     authenticityStatus: AuthenticityStatus,
     cardLabel: String,
+    cardAppletVersion: String,
     onClick: (CardInformationItems, String?) -> Unit,
 ) {
     val logoColor = remember {
@@ -71,7 +72,7 @@ fun CardInformation(
             ) {
                 item {
                     InfoField(
-                        text = "Seedkeeper v0.1",
+                        text = cardAppletVersion,
                         onClick = {}
                     )
                 }

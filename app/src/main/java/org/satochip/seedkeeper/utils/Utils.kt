@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
+import org.satochip.seedkeeper.services.NFCCardService
 import org.satochip.seedkeeper.services.SatoLog
 
 const val TAG = "Utlis"
@@ -123,4 +124,7 @@ fun getType(
 fun countWords(mnemonic: String): Int {
     return mnemonic.split("\\s+".toRegex()).filter { it.isNotEmpty() }.size
 }
+
+
+
 

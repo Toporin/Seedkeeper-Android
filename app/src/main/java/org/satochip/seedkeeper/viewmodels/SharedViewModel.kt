@@ -119,6 +119,10 @@ class SharedViewModel : ViewModel() {
         NFCCardService.backupStatus.postValue(backupStatus)
     }
 
+    fun getAppletVersion(): String {
+       return NFCCardService.cardAppletVersion
+    }
+
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {
         SatoLog.d(TAG, "scanCardForAction START")
         NFCCardService.actionType = nfcActionType

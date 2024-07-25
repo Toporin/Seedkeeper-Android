@@ -57,6 +57,7 @@ object NFCCardService {
 
     var authenticityStatus = MutableLiveData(AuthenticityStatus.UNKNOWN)
     var certificateList = MutableLiveData<MutableList<String>>()
+    var cardAppletVersion: String = "undefined"
 
     private lateinit var cardStatus: ApplicationStatus
 
@@ -149,6 +150,17 @@ object NFCCardService {
         }
     }
 
+    fun getCardVersionString(rapdu: APDUResponse) {
+        val data = rapdu.data
+        val protocolMajorVersion = data[0]
+        val protocolMinorVersion = data[1]
+        val appletMajorVersion = data[2]
+        val appletMinorVersion = data[3]
+        val versionString =
+            "$protocolMajorVersion.$protocolMinorVersion-$appletMajorVersion.$appletMinorVersion"
+        cardAppletVersion = "Seedkeeper v${versionString}"
+    }
+
     fun readCard() {
         SatoLog.d(TAG, "readCard Start")
         try {
@@ -157,6 +169,7 @@ object NFCCardService {
             val rapduStatus = cmdSet.cardGetStatus()
             cardStatus = cmdSet.applicationStatus ?: return
             cardStatus = ApplicationStatus(rapduStatus)
+            getCardVersionString(rapduStatus)
             SatoLog.d(TAG, "card status: $cardStatus")
             SatoLog.d(TAG, "is setup done: ${cardStatus.isSetupDone}")
 

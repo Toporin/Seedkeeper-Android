@@ -4,7 +4,7 @@ import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 
 data class GeneratePasswordData(
-    var size: Int,
+    var size: Int? = null,
     var type: SeedkeeperSecretType,
     var password: String,
     var label: String,
