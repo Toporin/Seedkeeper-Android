@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -42,10 +41,8 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.theme.SatoPurple
-import org.satochip.seedkeeper.ui.theme.SatoToggleGray
 import org.satochip.seedkeeper.utils.satoClickEffect
 
 @Composable
@@ -155,7 +152,12 @@ fun PopUpDialog(
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            Divider()
+            Spacer(
+                modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(color = Color.LightGray)
+            )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -206,7 +208,12 @@ fun PopUpDialog(
                                 colorFilter = ColorFilter.tint(Color.Black),
                             )
                         }
-                        Divider()
+                        Spacer(
+                            modifier = Modifier
+                                .height(1.dp)
+                                .fillMaxWidth()
+                                .background(color = Color.LightGray)
+                        )
                     }
                 }
             }

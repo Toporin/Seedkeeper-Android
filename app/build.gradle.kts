@@ -84,9 +84,6 @@ dependencies {
     implementation("io.coil-kt:coil-gif:2.0.0-rc02")
     implementation("io.coil-kt:coil-compose:2.0.0-rc02")
 
-    //Material lib for slider
-    implementation(libs.androidx.material)
-
     //QR string to image converter
     implementation("io.github.g0dkar:qrcode-kotlin-android:3.3.0")
 }
