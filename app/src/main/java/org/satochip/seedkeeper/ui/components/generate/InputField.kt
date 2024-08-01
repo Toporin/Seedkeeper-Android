@@ -46,6 +46,7 @@ fun InputField(
     placeHolder: Int? = null,
     containerColor: Color = SatoPurple.copy(alpha = 0.5f),
     isEmail: Boolean = false,
+    textColor: Color = Color.White,
     onClick: (() -> Unit)? = null,
     onValueChange: (() -> Unit)? = null
 ) {
@@ -93,7 +94,7 @@ fun InputField(
             enabled = isEditable,
             readOnly = !isEditable,
             textStyle = TextStyle(
-                color = Color.White,
+                color = textColor,
                 fontSize = 16.sp,
                 lineHeight = 21.sp,
                 fontWeight = FontWeight.Bold,
@@ -109,7 +110,7 @@ fun InputField(
                                 modifier = Modifier.align(Alignment.CenterStart),
                                 text = stringResource(id = placeHolder),
                                 style = TextStyle(
-                                    color = Color.White,
+                                    color = textColor,
                                     fontSize = 16.sp,
                                     lineHeight = 21.sp,
                                     fontWeight = FontWeight.Bold,
@@ -129,7 +130,7 @@ fun InputField(
                 painter = painterResource(id = drawableId),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(Color.White)
+                colorFilter = ColorFilter.tint(textColor)
             )
         }
     }

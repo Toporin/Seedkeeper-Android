@@ -1,18 +1,24 @@
 package org.satochip.seedkeeper.ui.components.generate
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SliderState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -32,6 +38,7 @@ import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordLengthField(
     passwordOptions: MutableState<PasswordOptions>
@@ -59,31 +66,62 @@ fun PasswordLengthField(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                modifier = Modifier
-                    .weight(0.1f),
-                text = passwordOptions.value.passwordLength.toString(),
-            )
+            val sliderState = remember {
+                SliderState(
+                    value = 4f,
+                    valueRange = 4f..16f,
+                    onValueChangeFinished = {
+                        passwordOptions.value =
+                            passwordOptions.value.copy(passwordLength = sliderPosition.toInt())
+                    }
+                )
+            }
+            LaunchedEffect(sliderState.value) {
+                sliderPosition = sliderState.value
+                passwordOptions.value =
+                    passwordOptions.value.copy(passwordLength = sliderState.value.toInt())
+            }
+
             Slider(
-                modifier = Modifier.weight(1f),
-                value = sliderPosition,
-                onValueChange = {
-                    sliderPosition = it
-                    passwordOptions.value =
-                        passwordOptions.value.copy(passwordLength = sliderPosition.toInt())
+                state = sliderState,
+                track = {
+                    SliderDefaults.Track(
+                        modifier = Modifier.height(4.dp),
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color.White,
+                            activeTrackColor = SatoActiveTracer,
+                            inactiveTrackColor = SatoInactiveTracer,
+                            disabledActiveTrackColor = SatoActiveTracer,
+                            disabledInactiveTrackColor = SatoInactiveTracer,
+                            disabledThumbColor = Color.Black
+                        ),
+                        sliderState = sliderState,
+                        thumbTrackGapSize = 0.dp,
+                    )
                 },
-                valueRange = 4f..16f,
-                colors = SliderDefaults.colors(
-                    thumbColor = Color.White,
-                    activeTrackColor = SatoActiveTracer,
-                    inactiveTrackColor = SatoInactiveTracer,
-                    disabledThumbColor = Color.Black
-                ),
-                steps = 16,
+                thumb = {
+                    Column(
+                        modifier = Modifier.offset(y = 2.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(50)
+                                ),
+                        )
+
+                        Text(
+                            modifier = Modifier,
+                            text = passwordOptions.value.passwordLength.toString(),
+                        )
+                    }
+                },
             )
         }
-        Spacer(modifier = Modifier.height(16.dp))
-
         LazyRow(
             modifier = Modifier.fillMaxWidth()
         ) {

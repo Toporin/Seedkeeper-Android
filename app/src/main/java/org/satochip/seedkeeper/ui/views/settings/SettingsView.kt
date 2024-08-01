@@ -21,6 +21,8 @@ import org.satochip.seedkeeper.ui.components.settings.SatoDescriptionField
 import org.satochip.seedkeeper.ui.components.settings.SatoToggleButton
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
+import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 
 @Composable
 fun SettingsView(
@@ -81,8 +83,15 @@ fun SettingsView(
                     .padding(
                         horizontal = 6.dp
                     ),
-                onClick = { onClick(SettingsItems.SHOW_LOGS) },
-                text = R.string.showLogs
+                onClick = {
+                    if (debugMode.value) {
+                        onClick(SettingsItems.SHOW_LOGS)
+                    } else {
+                        onClick(SettingsItems.SHOW_TOAST)
+                    }
+                },
+                text = R.string.showLogs,
+                buttonColor = if (debugMode.value) SatoButtonBlue else SatoInactiveTracer,
             )
         }
     }

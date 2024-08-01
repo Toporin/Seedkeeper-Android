@@ -1,7 +1,6 @@
 package org.satochip.seedkeeper.ui.views.generate
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,13 +14,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -32,7 +34,6 @@ import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.PasswordLengthField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.generate.SelectField
-import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
@@ -40,13 +41,16 @@ import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
+import org.satochip.seedkeeper.utils.getType
 import org.satochip.seedkeeper.utils.isClickable
 import org.satochip.seedkeeper.utils.isEmailCorrect
 
 @Composable
 fun GenerateView(
     settings: SharedPreferences,
-    onClick: (GenerateViewItems, String?, PasswordOptions?) -> String
+    isImportDone: MutableState<Boolean>,
+    onClick: (GenerateViewItems, String?, PasswordOptions?) -> String,
+    onImportSecret: (GeneratePasswordData) -> Unit
 ) {
     val stringResourceMap = mapOf(
         R.string.loginPassword to "loginPassword",
@@ -59,7 +63,6 @@ fun GenerateView(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val showNfcDialog = remember { mutableStateOf(false) }
         val generateStatus = remember {
             mutableStateOf(GenerateStatus.DEFAULT)
         }
@@ -97,11 +100,8 @@ fun GenerateView(
             emptySet()
         ) ?: emptySet()
 
-
-        if (showNfcDialog.value) {
-            NfcDialog(
-                openDialogCustom = showNfcDialog,
-            )
+        if (isImportDone.value) {
+            generateStatus.value = GenerateStatus.HOME
         }
 
         if (isPopUpOpened.value) {
@@ -200,7 +200,9 @@ fun GenerateView(
                                     SelectFieldItem(prefix = 18, text = R.string.mnemonicWords),
                                     SelectFieldItem(prefix = 24, text = R.string.mnemonicWords),
                                 ),
-                                onClick = { }
+                                onClick = { length ->
+                                    passwordOptions.value.passwordLength = length
+                                }
                             )
                             Spacer(modifier = Modifier.height(20.dp))
                             InputField(
@@ -287,6 +289,8 @@ fun GenerateView(
                                 secret.value = ""
                                 generateStatus.value = GenerateStatus.DEFAULT
                                 typeOfSecret.value = TypeOfSecret.TYPE_OF_SECRET
+                                passwordOptions.value.passwordLength = 4
+
                             },
                             buttonColor = Color.Transparent,
                             textColor = Color.Black,
@@ -324,7 +328,7 @@ fun GenerateView(
                                 //Home
                                 SatoButton(
                                     onClick = {
-                                        onClick(GenerateViewItems.BACK, null, null)
+                                        onClick(GenerateViewItems.HOME, null, null)
                                     },
                                     text = R.string.home
                                 )
@@ -336,13 +340,12 @@ fun GenerateView(
                                     modifier = Modifier
                                         .weight(1f),
                                     onClick = {
-                                        //generate logic
                                         when (generateStatus.value) {
                                             GenerateStatus.MNEMONIC_PHRASE -> {
-                                                onClick(
+                                                secret.value = onClick(
                                                     GenerateViewItems.GENERATE_MNEMONIC_PHRASE,
                                                     null,
-                                                    null
+                                                    passwordOptions.value
                                                 )
                                             }
 
@@ -357,18 +360,36 @@ fun GenerateView(
                                             else -> {}
                                         }
                                     },
-                                    text = R.string.generate,
+                                    text = if(secret.value.isNotEmpty()) R.string.regenerate else R.string.generate,
                                 )
                                 //Import
                                 SatoButton(
                                     modifier = Modifier
                                         .weight(1f),
                                     onClick = {
-                                        if (isClickable(secret, curValueLogin, curValueLabel)) {
-                                            generateStatus.value = GenerateStatus.HOME
-                                            showNfcDialog.value = !showNfcDialog.value
+                                        if (isClickable(secret, curValueLabel)) {
+                                            val type = getType(generateStatus.value)
+                                            var password: String = ""
+                                            var mnemonic: String? = null
+                                            if (type == SeedkeeperSecretType.BIP39_MNEMONIC || type == SeedkeeperSecretType.MASTERSEED) {
+                                                mnemonic = secret.value
+                                                password = curValuePassphrase.value
+                                            } else {
+                                                password = secret.value
+                                            }
+                                            onImportSecret(
+                                                GeneratePasswordData(
+                                                    size = passwordOptions.value.passwordLength,
+                                                    type = getType(generateStatus.value),
+                                                    password = password,
+                                                    label = curValueLabel.value,
+                                                    login = curValueLogin.value,
+                                                    url = curValueUrl.value,
+                                                    mnemonic = mnemonic
+                                                )
+                                            )
                                         }
-                                        if (isEmailCorrect(curValueLogin)) {
+                                        if (curValueLogin.value.isNotEmpty()) {
                                             val stringSet = listOf(curValueLogin.value).toSet()
                                             retrievedSet.value += stringSet
                                             settings.edit().putStringSet(
@@ -381,7 +402,6 @@ fun GenerateView(
                                     textColor = if (
                                         isClickable(
                                             secret,
-                                            curValueLogin,
                                             curValueLabel
                                         )
                                     ) Color.White else SatoActiveTracer

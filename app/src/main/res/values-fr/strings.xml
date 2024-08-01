@@ -1,111 +1,179 @@
 <resources>
+    <!--General-->
     <string name="app_name">Seedkeeper</string>
     <string name="title_activity_webview">WebviewActivity</string>
-    <string name="welcome">Bienvenu</string>
-    <string name="welcomeInfo">Seedkeeper vous permet de générer, importer et exporter facilement une variété de secrets liés à la cryptographie.</string>
-    <string name="seedphraseManager">Votre gestionnaire de phrases de départ</string>
-    <string name="seedphraseManagerInfo">N’écrivez plus vos phrases de départ sur un morceau de papier ! Nous vous proposons une solution matérielle avancée pour les stocker correctement.</string>
-    <string name="usingNfc">Utiliser le NFC</string>
-    <string name="usingNfcInfo">Pour l\'utiliser, placez la carte sur votre téléphone lorsque vous y êtes invité et conservez-la sur le lecteur tout au long de l\'opération.</string>
-    <string name="start">Commencer</string>
+    <string name="welcome">Bienvenue</string>
+    <string name="welcomeInfo">Seedkeeper vous permet de générer, importer et exporter facilement une variété de secrets liés à la crypto.</string>
+    <string name="seedphraseManager">Votre gestionnaire de seedphrases</string>
+    <string name="seedphraseManagerInfo">Ne notez plus vos phrases de récupération sur un morceau de papier ! Nous vous offrons une solution matérielle avancée pour les stocker correctement.</string>
+    <string name="usingNfc">Utilisation du NFC</string>
+    <string name="usingNfcInfo">Pour l\'utiliser, placez la carte sur votre téléphone lorsque vous y êtes invité et maintenez-la sur le lecteur pendant toute l\'opération.</string>
+    <string name="start">Start</string>
     <string name="seedkeeper">Seedkeeper</string>
-    <string name="noSeedkeeper">Pas encore de carte Seedkeeper ? \nCliquez ici pour en acheter un.</string>
-    <string name="scan">Cliquez\n&amp;\nScannez</string>
+    <string name="noSeedkeeper">Pas encore de carte Seedkeeper ? \nCliquez ici pour en acheter une.</string>
+    <string name="scan">Click\n&amp;\nScan</string>
     <string name="cancel">Annuler</string>
     <string name="readyToScan">Prêt à scanner</string>
-    <string name="nfcHoldSeedkeeper">Tenez votre Seedkeeper près de votre phone</string>
-    <string name="done">Done</string>
+    <string name="nfcHoldSeedkeeper">Tenez votre Seedkeeper contre votre téléphone</string>
+    <string name="done">Opération réussie !</string>
+    <string name="cardNeedToBeScannedTitle">Pas de carte scannée</string>
+    <string name="cardNeedToBeScannedMessage">Vous devez scanner une carte pour afficher ses informations.</string>
+    <string name="close">Fermer</string>
+
+    <!--NFC code validation-->
+    <string name="nfcTitleSuccess"></string>
+    <string name="nfcOk">Opération réussie !</string>
+    <string name="nfcTitleWarning">Attention</string>
+    <string name="nfcErrorOccured">Une erreur s\'est produite, veuillez réessayer</string>
+    <string name="scanning">Scanning</string>
+    <string name="nfcResultCodeNone">Aucun</string>
+    <string name="nfcResultCodeBusy">Occupé</string>
+    <string name="nfcResultCodeNfcError">Erreur lors de la lecture de la carte</string>
+    <string name="nfcSeedkeeperNeedsSetup">Votre Seedkeeper doit être configurée !</string>
+    <string name="nfcWrongPin">Mauvais PIN</string>
+    <string name="nfcCardBlocked">Trop de tentatives incorrectes de saisie du code PIN ! Votre carte a été bloquée.</string>
 
     <!--Generate View-->
-    <string name="generate">Generate</string>
-    <string name="generateASecret">Generate a secret</string>
-    <string name="generateAMnemonicPhrase">Generate a mnemonic phrase</string>
-    <string name="generateAPassword">Generate a password</string>
-    <string name="generateExplanation">Allows you to quickly generate and import a new secret.</string>
-    <string name="generateSuccessful">The following secret has been successfully imported into your Seedkeeper</string>
-    <string name="importButton">Import</string>
+    <string name="generate">Générer</string>
+    <string name="regenerate">Régénérer</string>
+    <string name="generateASecret">Générer un secret</string>
+    <string name="generateAMnemonicPhrase">Générer une seedphrase</string>
+    <string name="generateAPassword">Générer un mot de passe</string>
+    <string name="generateExplanation">Permet de générer et d\'importer rapidement un nouveau mot de passe.</string>
+    <string name="generateSuccessful">Le secret suivant a été importé avec succès dans votre Seedkeeper</string>
+    <string name="importButton">Importer</string>
     <string name="memorablePassword">Mot de passe mémorisable</string>
 
         <!--Mnemonic phrase-->
-        <string name="typeOfSecret">Type of secret</string>
-        <string name="mnemonicPhrase">Mnemonic phrase</string>
-        <string name="loginPassword">Login/Password</string>
+        <string name="typeOfSecret">Type de secret</string>
+        <string name="mnemonicPhrase">Phrase mnémotechnique</string>
+        <string name="loginPassword">Mot de passe</string>
         <string name="label">Label</string>
-        <string name="mnemonicSize">Mnemonic size</string>
-        <string name="mnemonicWords"> words</string>
-        <string name="passphrase"> Passphrase (optional)</string>
+        <string name="mnemonicSize">Sélectionnez la taille</string>
+        <string name="mnemonicWords">%d mots</string>
+        <string name="passphrase"> Passphrase (optionel)</string>
         <!--Login/Password-->
-        <string name="loginOptional">Login (optional)</string>
+        <string name="loginOptional">Login (optionel)</string>
         <string name="urlOptional">URL (optional)</string>
-        <string name="passwordLength">Length</string>
-        <string name="passwordImport">Import</string>
-        <string name="copiedToClipboard">Copied to clipboard</string>
-        <string name="selectMoreSets">Please select at least one character set</string>
-        <string name="emailListTitle">Previously used</string>
-        <string name="emailListNewEmail">Write new email</string>
-        <string name="emailListUseExisting">Or use existing:</string>
-        <string name="emailListWriteNewOne">Write a new one:</string>
+        <string name="passwordLength">Longueur</string>
+        <string name="passwordImport">Importer</string>
+        <string name="copiedToClipboard">Copié</string>
+        <string name="selectMoreSets">Veuillez sélectionner au moins un jeu de caractères</string>
+        <string name="emailListTitle">Précédemment utilisé</string>
+        <string name="emailListNewEmail">Insérer un nouveau login</string>
+        <string name="emailListUseExisting">Utiliser un existant :</string>
+        <string name="emailListWriteNewOne">Rédiger un nouveau :</string>
+
+    <!--Import View-->
+    <string name="importHeader">Importer</string>
+    <string name="importAMnemonicPhrase">Importer une seedphrase</string>
+    <string name="importAMnemonicPhraseMessage">Importer une seedphrase</string>
+    <string name="importAPassword">Importer une seedphrase</string>
+    <string name="importAPasswordMessage">Importer une seedphrase</string>
+    <string name="enterYourMnemonic">Entrer votre seedphrase :</string>
+    <string name="enterYourPassword">Entrer votre mot de passe :</string>
+    <string name="mnemonicType">Type de seedphrase</string>
+    <string name="bip">BIP39</string>
 
     <!--Menu View-->
-    <string name="cardInfo">Informations sur la carte</string>
+    <string name="cardInfo">Informations de la carte</string>
     <string name="makeBackup">Faire une sauvegarde</string>
     <string name="useSeedkeeper">Comment utiliser Seedkeeper</string>
     <string name="tos">Conditions d\'utilisation</string>
     <string name="privacyPolicy">Politique de confidentialité</string>
-    <string name="allOurProducs">Tous nos \nproduits</string>
+    <string name="allOurProducs">Tous nos produits</string>
 
     <!--Settings View-->
-    <string name="settings">Parametres</string>
+    <string name="settings">Paramètres</string>
     <string name="showInstructionScreens">Afficher les écrans d\'introduction</string>
     <string name="restartApplication">Vous devez redémarrer l\'application</string>
     <string name="starterIntro">Introduction de démarrage</string>
     <string name="debugMode">Mode débogage</string>
-    <string name="verbouseLogs">Activer la collection de journaux détaillés</string>
+    <string name="verbouseLogs">Activez la collecte des journaux détaillés</string>
     <string name="showLogs">Afficher les journaux</string>
 
     <!--Card's Information View-->
-    <string name="cardVersion">Version carte</string>
+    <string name="cardVersion">Version de la carte</string>
     <string name="cardLabel">Etiquette de la carte</string>
     <string name="pinCode">Code PIN</string>
     <string name="changePinCode">Changer le code PIN</string>
     <string name="cardAuthenticity">Authenticité de la carte</string>
-    <string name="cardIsGenuine">cette carte est authentique</string>
-    <string name="cardIsNotGenuine">cette carte n\'est pas authentique</string>
+    <string name="cardIsGenuine">Cette carte est authentique</string>
+    <string name="cardIsNotGenuine">Cette carte n\'est pas authentique</string>
 
     <!--Card's Authenticity View-->
-    <string name="cardAuthFailed">L\'authentification de la carte a échoué!</string>
-    <string name="cardAuthFailedText">Impossible d\'authentifier l\'émetteur de cette carte. Il n\'a pas été délivré par Satochip S.R.L.</string>
-    <string name="cardAuthFailedUsage">Si vous n\'avez pas chargé la carte vous-même, soyez extrêmement prudent !</string>
-    <string name="cardAuthSuccessful">Authentification de la carte réussie!</string>
+    <string name="cardAuthFailed">Echec de l\'authentification de la carte !</string>
+    <string name="cardAuthFailedText">Impossible d\'authentifier l\'émetteur de cette carte. Elle n\'a pas été émise par Satochip S.R.L.</string>
+    <string name="cardAuthFailedUsage">Si vous n\'avez pas vous-même chargé la carte, soyez extrêmement prudent!</string>
+    <string name="cardAuthSuccessful">Carte authentifiée avec succès !</string>
     <string name="cardAuthSuccessfulText">Cette carte a été émise par Satochip S.R.L.</string>
     <string name="cardAuthSuccessfulUsage">Vous pouvez l\'utiliser en toute sécurité.</string>
-    <string name="showCardCertificate">Montrer le certificat de la carte</string>
-    <string name="showCaCardCertificate">Afficher le certificat sous-CA</string>
+    <string name="showCardCertificate">Afficher le certificat de la carte</string>
+    <string name="showCaCardCertificate">Afficher le certificat de sub-CA</string>
 
-    <!--Card's Edit Pin Code View-->
-    <string name="setup">Installation</string>
-    <string name="editPinCode">Changer le code PIN</string>
-    <string name="editPinCodeText">Modifiez le code PIN pour sécuriser l\'accès à votre carte à puce Seedkeeper.</string>
-    <string name="enterCurrentPinCode">Entrez le code PIN actuel</string>
+    <!--Pin Code View-->
+    <string name="setup">Configuration</string>
+    <string name="editPinCode">Modifier le code PIN</string>
+    <string name="editPinCodeMessage">Modifiez le code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
+    <string name="enterCurrentPinCode">Saisir le code PIN actuel</string>
+    <string name="enterPinCode">Saisir le code PIN</string>
+    <string name="createPinCode">Créer un code PIN</string>
+    <string name="createPinCodeMessage">Créez un code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
+    <string name="wrongPinCode">Code PIN erroné! </string>
+    <string name="wrongPinCodeMessage">Les codes PIN ne correspondent pas. Veuillez réessayer.</string>
+    <string name="confirmPinCode">Confirmer le code PIN</string>
+    <string name="confirmPinCodeMessage">Confirmez votre code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
     <string name="next">Suivant</string>
+    <string name="confirm">Confirmer</string>
+    <string name="restartTheSetup">Redémarrez la configuration</string>
 
     <!--Backup View-->
     <string name="backup">Backup</string>
-    <string name="pairing">Pairing</string>
-    <string name="masterCard">Master Card</string>
-    <string name="backupCard">Backup Card</string>
-    <string name="home">Home</string>
-    <string name="back">Back</string>
+    <string name="pairing">Appairage</string>
+    <string name="masterCard">Carte principale</string>
+    <string name="backupCard">Carte de backup</string>
+    <string name="home">Accueil</string>
+    <string name="back">Retour</string>
     <string name="restart">Restart</string>
-    <string name="scanMySeedkeeper">Scan my seedkeeper</string>
-    <string name="makeTheBackup">Make the backup</string>
-    <string name="backupDescription">In order to make a backup of your Seedkeeper (master card) to another one, you’ll first need to pair the backup card.</string>
-    <string name="pairingStartProcess">Start the backup process and follow the wizard.</string>
-    <string name="pairingFirstStep">Please prepare your Seedkeeper backup card and click next to pair the card.</string>
-    <string name="pairingSecondStep">Now that your backup card has been paired, please rescan your Seedkeeper card.</string>
-    <string name="pairingThirdStepDoneTitle">Perfect!</string>
-    <string name="pairingThirdStepDoneText">You are now ready to copy the content of this card to your backup card using an encrypted communication.</string>
-    <string name="pairingFourthStep">Please prepare your Seedkeeper backup card and click next to copy your backup.</string>
-    <string name="congratulations">Congratulations!</string>
-    <string name="backupFifthText">You have successfully made a backup of your Seedkeeper card.</string>
+    <string name="scanMySeedkeeper">Scanner ma Seedkeeper</string>
+    <string name="makeTheBackup">Initier le backup</string>
+    <string name="backupDescription">Pour effectuer une sauvegarde de votre Seedkeeper (carte principale) sur une autre carte, vous devez d\'abord appairer la carte de sauvegarde.</string>
+    <string name="pairingStartProcess">Lancez la procédure de sauvegarde et suivez les instructions.</string>
+    <string name="pairingFirstStep">Veuillez préparer votre carte de sauvegarde Seedkeeper et cliquez sur suivant pour appairer la carte.</string>
+    <string name="pairingSecondStep">Maintenant que votre carte de backup a été appariée, veuillez scanner à nouveau votre carte Seedkeeper principale.</string>
+    <string name="pairingThirdStepDoneTitle">Parfait!</string>
+    <string name="pairingThirdStepDoneText">Vous êtes maintenant prêt à copier le contenu de cette carte sur votre carte de sauvegarde en utilisant une communication cryptée.</string>
+    <string name="pairingFourthStep">Veuillez préparer votre carte de sauvegarde Seedkeeper et cliquez sur suivant pour copier votre sauvegarde.</string>
+    <string name="congratulations">Félicitations !</string>
+    <string name="backupFifthText">Vous avez réussi à faire une sauvegarde de votre carte Seedkeeper.</string>
+
+    <!--Home View-->
+    <string name="homeAuthenticatedText">Gérez vos secrets liés à la crypto avec Seedkeeper.</string>
+    <string name="search">Recherche :</string>
+    <string name="mySecretList">Ma liste de secrets</string>
+
+    <!--Add Secret View-->
+    <string name="addSecret">Ajouter un secret</string>
+    <string name="addSecretMessage">Générez et enregistrez un nouveau secret ou importez-en simplement un existant dans votre Seedkeeper.</string>
+    <string name="generateASecretMessage">APermet de générer et importer rapidement un nouveau secret.</string>
+    <string name="importASecret">Importer un secret</string>
+    <string name="importASecretMessage">Permet d\'importer un secret existant dans votre Seedkeeper.</string>
+
+    <!--My Secret View-->
+    <string name="mySecret">Mes secrets</string>
+    <string name="manageSecret">Gérez votre secret</string>
+    <string name="manageSecretMessage">Informations et actions liées au secret</string>
+    <string name="showSecret">Voir</string>
+    <string name="deleteSecret">Supprimer</string>
+    <string name="seed">Seed</string>
+    <string name="seedQR">SeedQR</string>
+    <string name="xpub">Xpub</string>
+    <string name="login">Login</string>
+    <string name="url">URL</string>
+
+    <!--Show Logs View-->
+    <string name="logs">Journaux</string>
+    <string name="logsEntriesnumber">Nombre d\'entrées:</string>
+    <string name="logsDisabledText">Veuillez activer le mode débogage</string>
+
 </resources>

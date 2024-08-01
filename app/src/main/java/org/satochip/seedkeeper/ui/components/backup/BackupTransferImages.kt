@@ -25,7 +25,7 @@ fun BackupTransferImages(
             BackupTransferImage(
                 image = R.drawable.first_welcome_card,
                 text = R.string.masterCard,
-                alpha = if (backupStatus == BackupStatus.FIRST_STEP || backupStatus == BackupStatus.THIRD_STEP) 0.3f else 1f
+                alpha = if (backupStatus == BackupStatus.FIRST_STEP || backupStatus == BackupStatus.FOURTH_STEP) 0.3f else 1f
             )
             BackupTransferImage(
                 modifier = Modifier
