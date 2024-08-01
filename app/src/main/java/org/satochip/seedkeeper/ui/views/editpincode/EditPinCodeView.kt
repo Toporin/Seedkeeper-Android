@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,6 +30,7 @@ import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.InputPinField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
+import org.satochip.seedkeeper.ui.components.shared.rememberImeState
 
 @Composable
 fun EditPinCodeView(
@@ -49,6 +51,7 @@ fun EditPinCodeView(
     val curPinCode = remember {
         mutableStateOf("")
     }
+    val imeState = rememberImeState()
 
     when (pinCodeStatus.value) {
         PinCodeStatus.CURRENT_PIN_CODE -> {
@@ -127,56 +130,85 @@ fun EditPinCodeView(
                     curValue = curValue,
                     placeHolder = placeholderText
                 )
+                if (imeState.value) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    EditPinButtons(
+                        pinCodeStatus = pinCodeStatus,
+                        curPinCode = curPinCode,
+                        curValue = curValue,
+                        buttonText = buttonText,
+                        onClick = onClick
+                    )
+                }
             }
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (pinCodeStatus.value == PinCodeStatus.WRONG_PIN_CODE) {
-                    //Back
-                    SatoButton(
-                        onClick = {
-                            pinCodeStatus.value = PinCodeStatus.INPUT_NEW_PIN_CODE
-                        },
-                        buttonColor = Color.Transparent,
-                        textColor = Color.Black,
-                        text = R.string.restartTheSetup
-                    )
-                }
-                SatoButton(
-                    modifier = Modifier,
-                    onClick = {
-                        when (pinCodeStatus.value) {
-                            PinCodeStatus.CURRENT_PIN_CODE -> {
-                                pinCodeStatus.value = onClick(CardInformationItems.EDIT_PIN_CODE, curValue.value)
-                            }
-                            PinCodeStatus.INPUT_NEW_PIN_CODE -> {
-                                curPinCode.value = curValue.value
-                                pinCodeStatus.value = PinCodeStatus.CONFIRM_PIN_CODE
-                                curValue.value = ""
-                            }
-                            PinCodeStatus.CONFIRM_PIN_CODE -> {
-                                if (curPinCode.value == curValue.value) {
-                                    onClick(CardInformationItems.CONFIRM, curValue.value)
-                                } else {
-                                    curValue.value = ""
-                                    pinCodeStatus.value = PinCodeStatus.WRONG_PIN_CODE
-                                }
-                            }
-                            PinCodeStatus.WRONG_PIN_CODE -> {
-                                if (curPinCode.value == curValue.value) {
-                                    onClick(CardInformationItems.CONFIRM, curValue.value)
-                                } else {
-                                    curValue.value = ""
-                                }
-                            }
-                        }
-                    },
-                    text = buttonText.value
+                EditPinButtons(
+                    pinCodeStatus = pinCodeStatus,
+                    curPinCode = curPinCode,
+                    curValue = curValue,
+                    buttonText = buttonText,
+                    onClick = onClick
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
+}
+
+@Composable
+fun EditPinButtons(
+    pinCodeStatus: MutableState<PinCodeStatus>,
+    curPinCode: MutableState<String>,
+    curValue: MutableState<String>,
+    buttonText: MutableState<Int>,
+    onClick: (CardInformationItems, String?) -> PinCodeStatus
+    ) {
+
+    if (pinCodeStatus.value == PinCodeStatus.WRONG_PIN_CODE) {
+        //Back
+        SatoButton(
+            onClick = {
+                pinCodeStatus.value = PinCodeStatus.INPUT_NEW_PIN_CODE
+            },
+            buttonColor = Color.Transparent,
+            textColor = Color.Black,
+            text = R.string.restartTheSetup
+        )
+    }
+    SatoButton(
+        modifier = Modifier,
+        onClick = {
+            when (pinCodeStatus.value) {
+                PinCodeStatus.CURRENT_PIN_CODE -> {
+                    pinCodeStatus.value = onClick(CardInformationItems.EDIT_PIN_CODE, curValue.value)
+                }
+                PinCodeStatus.INPUT_NEW_PIN_CODE -> {
+                    curPinCode.value = curValue.value
+                    pinCodeStatus.value = PinCodeStatus.CONFIRM_PIN_CODE
+                    curValue.value = ""
+                }
+                PinCodeStatus.CONFIRM_PIN_CODE -> {
+                    if (curPinCode.value == curValue.value) {
+                        onClick(CardInformationItems.CONFIRM, curValue.value)
+                    } else {
+                        curValue.value = ""
+                        pinCodeStatus.value = PinCodeStatus.WRONG_PIN_CODE
+                    }
+                }
+                PinCodeStatus.WRONG_PIN_CODE -> {
+                    if (curPinCode.value == curValue.value) {
+                        onClick(CardInformationItems.CONFIRM, curValue.value)
+                    } else {
+                        curValue.value = ""
+                    }
+                }
+            }
+        },
+        text = buttonText.value
+    )
 }

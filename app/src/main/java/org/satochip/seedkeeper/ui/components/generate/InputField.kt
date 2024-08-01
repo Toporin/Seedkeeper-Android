@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 
 @Composable
@@ -110,7 +111,7 @@ fun InputField(
                                 modifier = Modifier.align(Alignment.CenterStart),
                                 text = stringResource(id = placeHolder),
                                 style = TextStyle(
-                                    color = textColor,
+                                    color = Color.LightGray,
                                     fontSize = 16.sp,
                                     lineHeight = 21.sp,
                                     fontWeight = FontWeight.Bold,

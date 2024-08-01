@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.ui.views.pincode
 
-import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +26,7 @@ import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.InputPinField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
+import org.satochip.seedkeeper.ui.components.shared.rememberImeState
 
 @Composable
 fun PinCodeView(
@@ -40,6 +40,7 @@ fun PinCodeView(
     val curValue = remember {
         mutableStateOf("")
     }
+    val imeState = rememberImeState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -94,6 +95,19 @@ fun PinCodeView(
                     curValue = curValue,
                     placeHolder = placeholderText
                 )
+                if (imeState.value) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SatoButton(
+                        modifier = Modifier,
+                        onClick = {
+                            if (isMultiStep)
+                                onClick(CardInformationItems.NEXT, curValue.value)
+                            else
+                                onClick(CardInformationItems.CONFIRM, curValue.value)
+                        },
+                        text = if (isMultiStep) R.string.next else R.string.confirm
+                    )
+                }
             }
             Column {
                 SatoButton(
