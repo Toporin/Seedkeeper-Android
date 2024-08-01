@@ -188,18 +188,17 @@ class SharedViewModel : ViewModel() {
     }
 
     fun generateMnemonic(mnemonicSize: Int): String {
-        val password = StringBuilder()
-
-        for (i in 0 until mnemonicSize) {
-            val randomMnemonic = MnemonicCode.INSTANCE.wordList.random()
-            password.append(randomMnemonic)
-
-            if (i != mnemonicSize - 1) {
-                password.append(" ")
-            }
+        val entropyBits = when (mnemonicSize) {
+            12 -> 128
+            18 -> 192
+            24 -> 256
+            else -> throw IllegalArgumentException("Invalid mnemonic size. Must be 12, 18, or 24 words.")
         }
+        val entropy = ByteArray(entropyBits / 8)
+        java.security.SecureRandom().nextBytes(entropy)
+        val mnemonic = MnemonicCode.INSTANCE.toMnemonic(entropy)
 
-        return password.toString()
+        return mnemonic.joinToString(" ")
     }
 
 

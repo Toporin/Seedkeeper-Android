@@ -7,6 +7,7 @@ import android.nfc.NfcAdapter
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.runBlocking
+import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.android.NFCCardManager
 import org.satochip.client.ApplicationStatus
 import org.satochip.client.SatochipCommandSet
@@ -22,6 +23,7 @@ import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.utils.stringToList
 
 private const val TAG = "NFCCardService"
 
@@ -43,6 +45,8 @@ object NFCCardService {
     var currentSecretId = MutableLiveData<Int?>()
     var pinString: String? = null
     var oldPinString: String? = null
+
+    var authentikeyHex: String?  = null
 
     //BACKUP
     var secretsList: MutableList<SeedkeeperSecretHeader> = mutableListOf()
@@ -170,6 +174,8 @@ object NFCCardService {
             cardStatus = cmdSet.applicationStatus ?: return
             cardStatus = ApplicationStatus(rapduStatus)
             getCardVersionString(rapduStatus)
+//            cmdSet.cardGetAuthentikey()
+//            authentikeyHex = cmdSet.authentikeyHex
             SatoLog.d(TAG, "card status: $cardStatus")
             SatoLog.d(TAG, "is setup done: ${cardStatus.isSetupDone}")
 
@@ -315,42 +321,90 @@ object NFCCardService {
         val secretBytes = mutableListOf<Byte>()
 
         passwordData?.let { data ->
-            if (data.type == SeedkeeperSecretType.BIP39_MNEMONIC) {
-                data.mnemonic?.let { mnemonic ->
-                    val mnemonicBytes = mnemonic.toByteArray(Charsets.UTF_8)
-                    val mnemonicSize = mnemonicBytes.size.toByte()
-                    secretBytes.add(mnemonicSize)
-                    secretBytes.addAll(mnemonicBytes.toList())
-                    if (data.password.isNotEmpty()) {
+            when (data.type) {
+                SeedkeeperSecretType.MASTERSEED -> {
+                    data.mnemonic?.let { mnemonic ->
+                        val masterseedBytes = MnemonicCode.toSeed(stringToList(mnemonic), data.password)
+                        val masterseedSize = masterseedBytes.size.toByte()
+                        val entropyBytes = MnemonicCode.INSTANCE.toEntropy(stringToList(mnemonic))
+                        val entropySize = entropyBytes.size.toByte()
                         val passphraseBytes = data.password.toByteArray(Charsets.UTF_8)
                         val passphraseSize = passphraseBytes.size.toByte()
+                        secretBytes.add(masterseedSize)
+                        secretBytes.addAll(masterseedBytes.toList())
+                        secretBytes.add(0x00.toByte())
+                        secretBytes.add(entropySize)
+                        secretBytes.addAll(entropyBytes.toList())
                         secretBytes.add(passphraseSize)
                         secretBytes.addAll(passphraseBytes.toList())
                     }
                 }
-            } else {
-                val passwordBytes = data.password.toByteArray(Charsets.UTF_8)
-                val passwordSize = passwordBytes.size.toByte()
-                secretBytes.add(passwordSize)
-                secretBytes.addAll(passwordBytes.toList())
-                data.login?.let {
-                    val loginBytes = it.toByteArray(Charsets.UTF_8)
-                    val loginSize = loginBytes.size.toByte()
-                    secretBytes.add(loginSize)
-                    secretBytes.addAll(loginBytes.toList())
+                SeedkeeperSecretType.BIP39_MNEMONIC -> {
+                    data.mnemonic?.let { mnemonic ->
+                        val mnemonicBytes = mnemonic.toByteArray(Charsets.UTF_8)
+                        val mnemonicSize = mnemonicBytes.size.toByte()
+                        secretBytes.add(mnemonicSize)
+                        secretBytes.addAll(mnemonicBytes.toList())
+                        if (data.password.isNotEmpty()) {
+                            val passphraseBytes = data.password.toByteArray(Charsets.UTF_8)
+                            val passphraseSize = passphraseBytes.size.toByte()
+                            secretBytes.add(passphraseSize)
+                            secretBytes.addAll(passphraseBytes.toList())
+                        }
+                    }
                 }
-                data.url?.let {
-                    val urlBytes = it.toByteArray(Charsets.UTF_8)
-                    val urlSize = urlBytes.size.toByte()
-                    secretBytes.add(urlSize)
-                    secretBytes.addAll(urlBytes.toList())
+                SeedkeeperSecretType.PASSWORD -> {
+                    val passwordBytes = data.password.toByteArray(Charsets.UTF_8)
+                    val passwordSize = passwordBytes.size.toByte()
+                    secretBytes.add(passwordSize)
+                    secretBytes.addAll(passwordBytes.toList())
+                    data.login?.let {
+                        val loginBytes = it.toByteArray(Charsets.UTF_8)
+                        val loginSize = loginBytes.size.toByte()
+                        secretBytes.add(loginSize)
+                        secretBytes.addAll(loginBytes.toList())
+                    }
+                    data.url?.let {
+                        val urlBytes = it.toByteArray(Charsets.UTF_8)
+                        val urlSize = urlBytes.size.toByte()
+                        secretBytes.add(urlSize)
+                        secretBytes.addAll(urlBytes.toList())
+                    }
                 }
+                else -> {}
             }
         }
 
         return secretBytes.toByteArray()
     }
 
+    fun createSecretObject(
+        secretBytes: ByteArray,
+        secretFingerprintBytes: ByteArray,
+        data: GeneratePasswordData
+    ): SeedkeeperSecretObject {
+        //else is for password or Masterseed
+        val subType =
+            if (data.type == SeedkeeperSecretType.BIP39_MNEMONIC) 0x00.toByte() else 0x01.toByte()
+        val secretHeader = SeedkeeperSecretHeader(
+            0,
+            data.type,
+            subType,
+            SeedkeeperSecretOrigin.PLAIN_IMPORT,
+            SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED,
+            0x00.toByte(),
+            0x00.toByte(),
+            0x00.toByte(),
+            secretFingerprintBytes,
+            data.label
+        )
+        return SeedkeeperSecretObject(
+            secretBytes,
+            secretHeader,
+            false,
+            null
+        )
+    }
 
     fun generateASecret() {
         SatoLog.d(TAG, "generateASecret start")
@@ -358,30 +412,10 @@ object NFCCardService {
             verifyPin(false)
             val secretBytes = getSecretBytes()
             val secretFingerprintBytes = SeedkeeperSecretHeader.getFingerprintBytes(secretBytes)
-
             passwordData?.let { data ->
-                val subType =
-                    if (data.type == SeedkeeperSecretType.BIP39_MNEMONIC) 0x00.toByte() else 0x01.toByte() //else is for password
-                val secretHeader = SeedkeeperSecretHeader(
-                    0,
-                    data.type,
-                    subType,
-                    SeedkeeperSecretOrigin.PLAIN_IMPORT,
-                    SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED,
-                    0x00.toByte(),
-                    0x00.toByte(),
-                    0x00.toByte(),
-                    secretFingerprintBytes,
-                    data.label
-                )
-                val secretObject = SeedkeeperSecretObject(
-                    secretBytes,
-                    secretHeader,
-                    false,
-                    null
-                )
+                val secretObject = createSecretObject(secretBytes, secretFingerprintBytes, data)
                 cmdSet.seedkeeperImportSecret(secretObject)
-                SatoLog.d(TAG, "import secret success?")
+                SatoLog.d(TAG, "import secret success")
                 getSecretsList()
                 SatoLog.d(TAG, "new secret list")
                 resultCodeLive.postValue(NfcResultCode.OK)

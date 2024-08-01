@@ -371,7 +371,7 @@ fun GenerateView(
                                             val type = getType(generateStatus.value)
                                             var password: String = ""
                                             var mnemonic: String? = null
-                                            if (type == SeedkeeperSecretType.BIP39_MNEMONIC) {
+                                            if (type == SeedkeeperSecretType.BIP39_MNEMONIC || type == SeedkeeperSecretType.MASTERSEED) {
                                                 mnemonic = secret.value
                                                 password = curValuePassphrase.value
                                             } else {

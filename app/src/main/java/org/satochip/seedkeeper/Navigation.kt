@@ -2,7 +2,6 @@ package org.satochip.seedkeeper
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +20,6 @@ import kotlinx.serialization.Serializable
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.BackupStatus
-import org.satochip.seedkeeper.data.BackupViewItems
 import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateViewItems
@@ -53,6 +51,7 @@ import org.satochip.seedkeeper.ui.views.settings.SettingsView
 import org.satochip.seedkeeper.ui.views.showlogs.ShowLogsView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
+import org.satochip.seedkeeper.utils.parseMasterseedMnemonicCardData
 import org.satochip.seedkeeper.utils.parseMnemonicCardData
 import org.satochip.seedkeeper.utils.parsePasswordCardData
 import org.satochip.seedkeeper.utils.webviewActivityIntent
@@ -595,17 +594,26 @@ fun Navigation(
                     type = SeedkeeperSecretType.valueOf(args.type)
                 )
             }
-
-            if (viewModel.currentSecretObject != null) {
-                viewModel.currentSecretObject?.let { secretObject ->
-                    if (args.type == SeedkeeperSecretType.BIP39_MNEMONIC.name) {
-                        data.value = parseMnemonicCardData(secretObject.secretBytes)
-                    } else {
-                        data.value = parsePasswordCardData(secretObject.secretBytes)
+            LaunchedEffect(viewModel.currentSecretObject) {
+                if (viewModel.currentSecretObject != null) {
+                    viewModel.currentSecretObject?.let { secretObject ->
+                        when (SeedkeeperSecretType.valueOf(args.type)) {
+                            SeedkeeperSecretType.MASTERSEED -> {
+                                data.value = parseMasterseedMnemonicCardData(secretObject.secretBytes)
+                            }
+                            SeedkeeperSecretType.BIP39_MNEMONIC -> {
+                                data.value = parseMnemonicCardData(secretObject.secretBytes)
+                            }
+                            SeedkeeperSecretType.PASSWORD -> {
+                                data.value = parsePasswordCardData(secretObject.secretBytes)
+                            }
+                            else -> {}
+                        }
+                        data.value?.label = secretObject.secretHeader.label
                     }
-                    data.value?.label = secretObject.secretHeader.label
                 }
             }
+
             MySecretView(
                 secret = data,
                 type = args.type,

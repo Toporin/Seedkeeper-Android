@@ -11,7 +11,7 @@ fun GetSpecificSecretInfoFields(
     type: String,
     secret: MutableState<GeneratePasswordData?>,
 ) {
-    if (type == SeedkeeperSecretType.BIP39_MNEMONIC.name) {
+    if (type == SeedkeeperSecretType.BIP39_MNEMONIC.name || type == SeedkeeperSecretType.MASTERSEED.name) {
         SecretInfoField(
             title = R.string.mnemonicSize,
             text = (secret.value?.size ?: "").toString()

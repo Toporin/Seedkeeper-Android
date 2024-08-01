@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -47,14 +46,19 @@ fun MySecretView(
     val mySecretStatus = remember {
         mutableStateOf(MySecretStatus.SEED)
     }
-    if (type == SeedkeeperSecretType.BIP39_MNEMONIC.name)
-        secret.value?.mnemonic?.let { mnemonic ->
-            secretText.value = mnemonic
+    when (SeedkeeperSecretType.valueOf(type)) {
+        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC -> {
+            secret.value?.mnemonic?.let { mnemonic ->
+                secretText.value = mnemonic
+            }
         }
-    else
-        secret.value?.password?.let { password ->
-            secretText.value = password
+        SeedkeeperSecretType.PASSWORD -> {
+            secret.value?.password?.let { password ->
+                secretText.value = password
+            }
         }
+        else -> {}
+    }
     BackHandler {
         onClick(MySecretItems.BACK)
     }
@@ -148,12 +152,12 @@ fun MySecretView(
                         )
                     }
                     MySecretStatus.X_PUB -> {
-                        SecretTextField(
-                            curValue = secretText,
-                            copyToClipboard = {
-                                copyToClipboard(secretText.value)
-                            }
-                        )
+//                        SecretTextField(
+//                            curValue = secretText,
+//                            copyToClipboard = {
+//                                copyToClipboard(secretText.value)
+//                            }
+//                        )
                     }
                 }
 
