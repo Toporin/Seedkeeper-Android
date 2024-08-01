@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
@@ -38,7 +39,7 @@ import org.satochip.seedkeeper.utils.satoClickEffect
 
 @Composable
 fun SecretTextField(
-    modifier: Modifier = Modifier.height(200.dp),
+    modifier: Modifier = Modifier.height(150.dp),
     isEditable: Boolean = false,
     curValue: MutableState<String>,
     containerColor: Color = SatoDividerPurple.copy(alpha = 0.2f),
@@ -115,6 +116,7 @@ fun SecretTextField(
                 fontSize = 18.sp,
                 lineHeight = 22.sp,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             ),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,

@@ -45,16 +45,7 @@ fun MenuView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
     ) {
-        Image(
-            painter = painterResource(R.drawable.seedkeeper_background),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.BottomCenter),
-            contentScale = ContentScale.FillBounds
-        )
         Column(
             modifier = Modifier
                 .fillMaxSize()

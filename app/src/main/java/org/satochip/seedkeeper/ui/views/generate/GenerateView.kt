@@ -1,9 +1,11 @@
 package org.satochip.seedkeeper.ui.views.generate
 
-import androidx.compose.foundation.Image
+import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,29 +19,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.GenerateViewItems
+import org.satochip.seedkeeper.data.PasswordOptions
+import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SelectFieldItem
 import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.PasswordLengthField
-import org.satochip.seedkeeper.ui.components.generate.PrimaryGenerateButton
-import org.satochip.seedkeeper.ui.components.generate.SecondaryGenerateButton
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.generate.SelectField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
+import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
+import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
+import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
+import org.satochip.seedkeeper.utils.isClickable
+import org.satochip.seedkeeper.utils.isEmailCorrect
 
 @Composable
 fun GenerateView(
-    onClick: (GenerateViewItems, String?) -> Unit
+    settings: SharedPreferences,
+    onClick: (GenerateViewItems, String?, PasswordOptions?) -> String
 ) {
     val stringResourceMap = mapOf(
         R.string.loginPassword to "loginPassword",
@@ -47,7 +54,6 @@ fun GenerateView(
         R.string.mnemonicPhrase to "mnemonicPhrase"
     )
     val scrollState = rememberScrollState()
-
 
     Box(
         modifier = Modifier
@@ -60,20 +66,69 @@ fun GenerateView(
         val typeOfSecret = remember {
             mutableStateOf(TypeOfSecret.TYPE_OF_SECRET)
         }
+        val secret = remember {
+            mutableStateOf("")
+        }
+        val curValueLabel = remember {
+            mutableStateOf("")
+        }
+        val curValuePassphrase = remember {
+            mutableStateOf("")
+        }
+        val curValueLogin = remember {
+            mutableStateOf("")
+        }
+        val curValueUrl = remember {
+            mutableStateOf("")
+        }
+        val passwordOptions = remember {
+            mutableStateOf(
+                PasswordOptions()
+            )
+        }
+        val isPopUpOpened = remember {
+            mutableStateOf(false)
+        }
+        val retrievedSet = remember {
+            mutableStateOf<Set<String>>(emptySet())
+        }
+        retrievedSet.value = settings.getStringSet(
+            SeedkeeperPreferences.USED_LOGINS.name,
+            emptySet()
+        ) ?: emptySet()
+
 
         if (showNfcDialog.value) {
             NfcDialog(
                 openDialogCustom = showNfcDialog,
             )
         }
-        Image(
-            painter = painterResource(R.drawable.seedkeeper_background),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxSize()
-                .align(Alignment.BottomCenter),
-            contentScale = ContentScale.FillBounds
-        )
+
+        if (isPopUpOpened.value) {
+            PopUpDialog(
+                isOpen = isPopUpOpened,
+                curValueLogin = curValueLogin,
+                title = R.string.emailListTitle,
+                list = retrievedSet.value.toList(),
+                onClick = { email ->
+                    val currentSet =
+                        settings.getStringSet(SeedkeeperPreferences.USED_LOGINS.name, emptySet())
+                            ?.toMutableSet() ?: mutableSetOf()
+                    if (currentSet.remove(email)) {
+                        settings.edit()
+                            .putStringSet(SeedkeeperPreferences.USED_LOGINS.name, currentSet)
+                            .apply()
+                    }
+                    retrievedSet.value = settings.getStringSet(
+                        SeedkeeperPreferences.USED_LOGINS.name,
+                        emptySet()
+                    ) ?: emptySet()
+                    if (retrievedSet.value.isEmpty()) {
+                        isPopUpOpened.value = false
+                    }
+                }
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -82,14 +137,15 @@ fun GenerateView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(GenerateViewItems.BACK, null)
+                    onClick(GenerateViewItems.BACK, null, null)
                 },
                 titleText = R.string.generate
             )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(32.dp)
+                    .padding(horizontal = 32.dp)
+                    .padding(bottom = 32.dp, top = 16.dp)
                     .verticalScroll(state = scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
@@ -113,14 +169,14 @@ fun GenerateView(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(28.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                     when (generateStatus.value) {
                         GenerateStatus.DEFAULT -> {
                             SelectField(
                                 selectList = listOf(
-                                    SelectFieldItem (prefix = null, text = R.string.typeOfSecret),
-                                    SelectFieldItem (prefix = null, text = R.string.mnemonicPhrase),
-                                    SelectFieldItem (prefix = null, text = R.string.loginPassword),
+                                    SelectFieldItem(prefix = null, text = R.string.typeOfSecret),
+                                    SelectFieldItem(prefix = null, text = R.string.mnemonicPhrase),
+                                    SelectFieldItem(prefix = null, text = R.string.loginPassword),
                                 ),
                                 onClick = { item ->
                                     stringResourceMap[item]?.let { resourceItem ->
@@ -130,14 +186,7 @@ fun GenerateView(
                             )
                         }
 
-                        GenerateStatus.MNEMONIC_PHRASE_FIRST_STEP,
-                        GenerateStatus.MNEMONIC_PHRASE_SECOND_STEP -> {
-                            val curValueLabel = remember {
-                                mutableStateOf("")
-                            }
-                            val curValuePassphrase = remember {
-                                mutableStateOf("")
-                            }
+                        GenerateStatus.MNEMONIC_PHRASE -> {
                             InputField(
                                 curValue = curValueLabel,
                                 placeHolder = R.string.label,
@@ -146,10 +195,10 @@ fun GenerateView(
                             Spacer(modifier = Modifier.height(20.dp))
                             SelectField(
                                 selectList = listOf(
-                                    SelectFieldItem (prefix = null, text = R.string.mnemonicSize),
-                                    SelectFieldItem (prefix = 12, text = R.string.mnemonicWords),
-                                    SelectFieldItem (prefix = 18, text = R.string.mnemonicWords),
-                                    SelectFieldItem (prefix = 24, text = R.string.mnemonicWords),
+                                    SelectFieldItem(prefix = null, text = R.string.mnemonicSize),
+                                    SelectFieldItem(prefix = 12, text = R.string.mnemonicWords),
+                                    SelectFieldItem(prefix = 18, text = R.string.mnemonicWords),
+                                    SelectFieldItem(prefix = 24, text = R.string.mnemonicWords),
                                 ),
                                 onClick = { }
                             )
@@ -161,46 +210,43 @@ fun GenerateView(
                             )
                         }
 
-                        GenerateStatus.LOGIN_PASSWORD_FIRST_STEP,
-                        GenerateStatus.LOGIN_PASSWORD_SECOND_STEP -> {
-                            val curValueLabel = remember {
-                                mutableStateOf("")
-                            }
-                            val curValueLogin = remember {
-                                mutableStateOf("")
-                            }
-                            val curValueUrl = remember {
-                                mutableStateOf("")
-                            }
+                        GenerateStatus.LOGIN_PASSWORD -> {
+
                             InputField(
                                 curValue = curValueLabel,
                                 placeHolder = R.string.label,
                                 containerColor = SatoPurple.copy(alpha = 0.5f)
                             )
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             InputField(
+                                isEditable = retrievedSet.value.isEmpty(),
                                 curValue = curValueLogin,
                                 placeHolder = R.string.loginOptional,
-                                containerColor = SatoPurple.copy(alpha = 0.5f)
+                                containerColor = SatoPurple.copy(alpha = 0.5f),
+                                isEmail = true,
+                                onClick = {
+                                    if (retrievedSet.value.isNotEmpty()) {
+                                        isPopUpOpened.value = !isPopUpOpened.value
+                                    }
+                                }
                             )
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
                             InputField(
                                 curValue = curValueUrl,
                                 placeHolder = R.string.urlOptional,
                                 containerColor = SatoPurple.copy(alpha = 0.5f)
                             )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            PasswordLengthField()
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = Modifier.height(12.dp))
+                            PasswordLengthField(
+                                passwordOptions = passwordOptions
+                            )
+                            Spacer(modifier = Modifier.height(12.dp))
                         }
 
                         GenerateStatus.HOME -> {
-                            val curValue = remember {
-                                mutableStateOf("Seedphrase - Satochip HW")  //placeholder
-                            }
                             InputField(
                                 isEditable = false,
-                                curValue = curValue,
+                                curValue = curValueLabel,
                                 containerColor = SatoPurple.copy(alpha = 0.5f)
                             )
                             Spacer(modifier = Modifier.height(20.dp))
@@ -222,78 +268,129 @@ fun GenerateView(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val secret = remember {
-                        mutableStateOf("")
-                    }
-
                     when (generateStatus.value) {
                         GenerateStatus.DEFAULT, GenerateStatus.HOME -> {}
-                        GenerateStatus.LOGIN_PASSWORD_FIRST_STEP, GenerateStatus.LOGIN_PASSWORD_SECOND_STEP -> {
-                            SecretTextField(
-                                modifier = Modifier.height(150.dp),
-                                curValue = secret,
-                                copyToClipboard = {
-                                    onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value)
-                                }
-                            )
-                        }
                         else -> {
                             SecretTextField(
                                 curValue = secret,
                                 copyToClipboard = {
-                                    onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value)
+                                    onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
                                 }
                             )
                         }
                     }
 
                     if (!(generateStatus.value == GenerateStatus.DEFAULT || generateStatus.value == GenerateStatus.HOME)) {
-                        SecondaryGenerateButton(generateStatus = generateStatus)
+                        //Back
+                        SatoButton(
+                            onClick = {
+                                secret.value = ""
+                                generateStatus.value = GenerateStatus.DEFAULT
+                                typeOfSecret.value = TypeOfSecret.TYPE_OF_SECRET
+                            },
+                            buttonColor = Color.Transparent,
+                            textColor = Color.Black,
+                            text = R.string.back
+                        )
                     }
-                    PrimaryGenerateButton(
-                        generateStatus = generateStatus,
-                        onClick = {
-                            when (generateStatus.value) {
-                                GenerateStatus.DEFAULT -> {
-                                    when (typeOfSecret.value) {
-                                        TypeOfSecret.MNEMONIC_PHRASE -> {
-                                            generateStatus.value =
-                                                GenerateStatus.MNEMONIC_PHRASE_FIRST_STEP
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        when (generateStatus.value) {
+                            GenerateStatus.DEFAULT -> {
+                                //Next
+                                SatoButton(
+                                    onClick = {
+                                        when (typeOfSecret.value) {
+                                            TypeOfSecret.MNEMONIC_PHRASE -> {
+                                                generateStatus.value =
+                                                    GenerateStatus.MNEMONIC_PHRASE
+                                            }
+
+                                            TypeOfSecret.LOGIN_PASSWORD -> {
+                                                generateStatus.value =
+                                                    GenerateStatus.LOGIN_PASSWORD
+                                            }
+
+                                            else -> {}
                                         }
+                                    },
+                                    text = R.string.next
+                                )
+                            }
 
-                                        TypeOfSecret.LOGIN_PASSWORD -> {
-                                            generateStatus.value =
-                                                GenerateStatus.LOGIN_PASSWORD_FIRST_STEP
+                            GenerateStatus.HOME -> {
+                                //Home
+                                SatoButton(
+                                    onClick = {
+                                        onClick(GenerateViewItems.BACK, null, null)
+                                    },
+                                    text = R.string.home
+                                )
+                            }
+
+                            else -> {
+                                //Generate
+                                SatoButton(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    onClick = {
+                                        //generate logic
+                                        when (generateStatus.value) {
+                                            GenerateStatus.MNEMONIC_PHRASE -> {
+                                                onClick(
+                                                    GenerateViewItems.GENERATE_MNEMONIC_PHRASE,
+                                                    null,
+                                                    null
+                                                )
+                                            }
+
+                                            GenerateStatus.LOGIN_PASSWORD -> {
+                                                secret.value = onClick(
+                                                    GenerateViewItems.GENERATE_A_PASSWORD,
+                                                    null,
+                                                    passwordOptions.value
+                                                )
+                                            }
+
+                                            else -> {}
                                         }
-
-                                        else -> {}
-                                    }
-                                }
-
-                                GenerateStatus.MNEMONIC_PHRASE_FIRST_STEP -> {
-                                    generateStatus.value =
-                                        GenerateStatus.MNEMONIC_PHRASE_SECOND_STEP
-                                }
-
-                                GenerateStatus.LOGIN_PASSWORD_FIRST_STEP -> {
-                                    generateStatus.value = GenerateStatus.LOGIN_PASSWORD_SECOND_STEP
-                                }
-
-                                GenerateStatus.MNEMONIC_PHRASE_SECOND_STEP,
-                                GenerateStatus.LOGIN_PASSWORD_SECOND_STEP -> {
-                                    generateStatus.value = GenerateStatus.HOME
-                                    showNfcDialog.value = !showNfcDialog.value
-                                }
-
-                                GenerateStatus.HOME -> {
-                                    onClick(GenerateViewItems.BACK, null)
-                                }
+                                    },
+                                    text = R.string.generate,
+                                )
+                                //Import
+                                SatoButton(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                    onClick = {
+                                        if (isClickable(secret, curValueLogin, curValueLabel)) {
+                                            generateStatus.value = GenerateStatus.HOME
+                                            showNfcDialog.value = !showNfcDialog.value
+                                        }
+                                        if (isEmailCorrect(curValueLogin)) {
+                                            val stringSet = listOf(curValueLogin.value).toSet()
+                                            retrievedSet.value += stringSet
+                                            settings.edit().putStringSet(
+                                                SeedkeeperPreferences.USED_LOGINS.name,
+                                                retrievedSet.value
+                                            ).apply()
+                                        }
+                                    },
+                                    text = R.string.importButton,
+                                    textColor = if (
+                                        isClickable(
+                                            secret,
+                                            curValueLogin,
+                                            curValueLabel
+                                        )
+                                    ) Color.White else SatoActiveTracer
+                                )
                             }
                         }
-                    )
+                    }
                 }
             }
-
         }
     }
 }
