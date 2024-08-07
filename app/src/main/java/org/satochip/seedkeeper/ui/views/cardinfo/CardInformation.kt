@@ -17,12 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.CardInformationItems
+import org.satochip.seedkeeper.ui.components.card.CardInformationField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.shared.EditableField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
+import org.satochip.seedkeeper.ui.components.shared.SatoButton
+import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.ui.theme.SatoGreen
 
@@ -31,6 +35,7 @@ fun CardInformation(
     authenticityStatus: AuthenticityStatus,
     cardLabel: String,
     cardAppletVersion: String,
+    cardStatus: SeedkeeperStatus? = null,
     onClick: (CardInformationItems, String?) -> Unit,
 ) {
     val logoColor = remember {
@@ -70,6 +75,11 @@ fun CardInformation(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
+                cardStatus?.let { status ->
+                    item {
+                        CardInformationField(status = status)
+                    }
+                }
                 item {
                     InfoField(
                         text = cardAppletVersion,
@@ -127,6 +137,26 @@ fun CardInformation(
                         containerColor = logoColor.value,
                         isClickable = true
                     )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(35.dp))
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        SatoButton(
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = 6.dp
+                                ),
+                            onClick = {
+                                onClick(CardInformationItems.SHOW_CARD_LOGS, null)
+                            },
+                            text = R.string.showLogs,
+                            buttonColor = SatoButtonBlue,
+                        )
+                    }
                 }
             }
         }

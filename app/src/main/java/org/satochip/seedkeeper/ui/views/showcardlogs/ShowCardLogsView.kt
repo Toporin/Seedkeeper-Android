@@ -1,4 +1,4 @@
-package org.satochip.seedkeeper.ui.views.showlogs
+package org.satochip.seedkeeper.ui.views.showcardlogs
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,17 +25,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
+import org.satochip.seedkeeper.utils.instructionsMap
 import org.satochip.seedkeeper.utils.satoClickEffect
 
-private const val TAG = "ShowLogsView"
-
+@OptIn(ExperimentalStdlibApi::class)
 @Composable
-fun ShowLogsView(
+fun ShowCardLogsView(
     onClick: () -> Unit,
+    cardLogs: List<SeedkeeperLog>,
     copyToClipboard: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -50,7 +52,7 @@ fun ShowLogsView(
             onClick = {
                 onClick()
             },
-            titleText = R.string.logs
+            titleText = R.string.cardLogs
         )
         Column(
             modifier = Modifier
@@ -73,7 +75,7 @@ fun ShowLogsView(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(id = R.string.logsEntriesnumber) + " ${SatoLog.logList.size} ",
+                    text = stringResource(id = R.string.logsEntriesnumber) + " ${cardLogs.size} ",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 16.sp,
@@ -88,13 +90,12 @@ fun ShowLogsView(
                         .satoClickEffect(
                             onClick = {
                                 var logsText = ""
-                                for (log in SatoLog.logList) {
+                                for (log in cardLogs) {
                                     val logString =
-                                        "${log.date}; ${log.level.name}; ${log.tag}; ${log.msg} \n"
-                                    logsText = logsText + logString
+                                        "${instructionsMap[log.ins]}; ${log.sw.toHexString()}; ${log.sid1}; ${log.sid2} \n"
+                                    logsText += logString
                                 }
                                 copyToClipboard(logsText)
-
                             }
                         ),
                     colorFilter = ColorFilter.tint(Color.Black),
@@ -102,7 +103,7 @@ fun ShowLogsView(
                 )
             }
             Spacer(modifier = Modifier.height(35.dp))
-            SatoLog.logList.forEach { log ->
+            cardLogs.forEach { log ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -114,21 +115,21 @@ fun ShowLogsView(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.W600,
                         color = Color.Black,
-                        text = "${log.date} - ${log.level}"
+                        text = "${instructionsMap[log.ins]}"
                     )
                     Text(
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
-                        text = log.tag
+                        text = "sw: ${log.sw.toHexString()}"
                     )
                     Text(
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
-                        text = log.msg
+                        text = "sid1: ${log.sid1} \n sid2: ${log.sid2}"
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
