@@ -13,10 +13,12 @@ import org.satochip.client.ApplicationStatus
 import org.satochip.client.SatochipCommandSet
 import org.satochip.client.SatochipParser
 import org.satochip.client.seedkeeper.SeedkeeperExportRights
+import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperSecretOrigin
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
+import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.io.APDUResponse
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.BackupStatus
@@ -45,6 +47,8 @@ object NFCCardService {
     var currentSecretId = MutableLiveData<Int?>()
     var pinString: String? = null
     var oldPinString: String? = null
+    var seedkeeperStatus: SeedkeeperStatus? = null
+    var cardLogs: MutableList<SeedkeeperLog> = mutableListOf()
 
     var authentikeyHex: String?  = null
 
@@ -60,7 +64,8 @@ object NFCCardService {
     var resultCodeLive = MutableLiveData(NfcResultCode.BUSY)
 
     var authenticityStatus = MutableLiveData(AuthenticityStatus.UNKNOWN)
-    var certificateList = MutableLiveData<MutableList<String>>()
+    var certificateList: MutableList<String> = mutableListOf()
+
     var cardAppletVersion: String = "undefined"
 
     private lateinit var cardStatus: ApplicationStatus
@@ -174,12 +179,11 @@ object NFCCardService {
             cardStatus = cmdSet.applicationStatus ?: return
             cardStatus = ApplicationStatus(rapduStatus)
             getCardVersionString(rapduStatus)
+            seedkeeperStatus = null
 //            cmdSet.cardGetAuthentikey()
 //            authentikeyHex = cmdSet.authentikeyHex
             SatoLog.d(TAG, "card status: $cardStatus")
             SatoLog.d(TAG, "is setup done: ${cardStatus.isSetupDone}")
-
-            getCardAuthenticty()
 
             if (!cardStatus.isSetupDone) {
                 SatoLog.d(TAG, "CardVersionInt: ${getCardVersionInt(cardStatus)}, setup not done")
@@ -200,7 +204,7 @@ object NFCCardService {
     fun getCardAuthenticty() {
         SatoLog.d(TAG, "getCardAuthenticty start")
         try {
-            var authResults = cmdSet.cardVerifyAuthenticity()
+            val authResults = cmdSet.cardVerifyAuthenticity()
             if (authResults != null) {
                 if (authResults[0].compareTo("OK") == 0) {
                     authenticityStatus.postValue(AuthenticityStatus.AUTHENTIC)
@@ -208,7 +212,8 @@ object NFCCardService {
                     authenticityStatus.postValue(AuthenticityStatus.NOT_AUTHENTIC)
                     SatoLog.e(TAG, "getCardAuthenticty failed to authenticate card!")
                 }
-                certificateList.postValue(authResults.toMutableList())
+                certificateList.clear()
+                certificateList.addAll(authResults)
             }
         } catch (e: Exception) {
             authenticityStatus.postValue(AuthenticityStatus.UNKNOWN)
@@ -263,6 +268,11 @@ object NFCCardService {
 
             runBlocking {
                 getSecretsList(shouldUpdateResultCodeLive)
+                getCardAuthenticty()
+                getCardLogs()
+                if (cardStatus.protocolVersion == 2) {
+                    seedkeeperStatus = cmdSet.seedkeeperGetStatus()
+                }
             }
             isReadyForPinCode.postValue(false)
             if (shouldUpdateDataState) {
@@ -276,6 +286,17 @@ object NFCCardService {
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
             SatoLog.e(TAG, "verifyPin exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+    }
+
+    fun getCardLogs() {
+        try {
+            SatoLog.d(TAG, "getCardLogs start")
+            cardLogs.clear()
+            cardLogs.addAll(cmdSet.seedkeeperPrintLogs(true))
+        } catch (e: Exception) {
+            SatoLog.e(TAG, "getCardLogs exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }

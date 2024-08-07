@@ -48,6 +48,7 @@ import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.mysecret.MySecretView
 import org.satochip.seedkeeper.ui.views.pincode.PinCodeView
 import org.satochip.seedkeeper.ui.views.settings.SettingsView
+import org.satochip.seedkeeper.ui.views.showcardlogs.ShowCardLogsView
 import org.satochip.seedkeeper.ui.views.showlogs.ShowLogsView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
@@ -325,6 +326,7 @@ fun Navigation(
                 authenticityStatus = viewModel.authenticityStatus,
                 cardLabel = viewModel.cardLabel,
                 cardAppletVersion = viewModel.getAppletVersion(),
+                cardStatus = viewModel.getSeedkeeperStatus(),
                 onClick = { item, cardLabel ->
                     when (item) {
                         CardInformationItems.BACK -> {
@@ -350,6 +352,9 @@ fun Navigation(
                                 )
                             }
                         }
+                        CardInformationItems.SHOW_CARD_LOGS -> {
+                            navController.navigate(ShowCardLogs)
+                        }
                         else -> {}
                     }
                 }
@@ -358,6 +363,7 @@ fun Navigation(
         composable<CardAuthenticity> {
             CardAuthenticity(
                 authenticityStatus = viewModel.authenticityStatus,
+                certificates = viewModel.getCertificates(),
                 onClick = { item ->
                     when (item) {
                         CardInformationItems.BACK -> {
@@ -365,6 +371,10 @@ fun Navigation(
                         }
                         else -> {}
                     }
+                },
+                copyToClipboard = { text ->
+                    clipboardManager.setText(AnnotatedString(text))
+                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -765,6 +775,18 @@ fun Navigation(
                 }
             )
         }
+        composable<ShowCardLogs> {
+            ShowCardLogsView(
+                onClick = {
+                    navController.navigateUp()
+                },
+                cardLogs = viewModel.getCardLogs(),
+                copyToClipboard = { logsText ->
+                    clipboardManager.setText(AnnotatedString(logsText))
+                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
         composable<ShowLogsView> {
             ShowLogsView(
                 onClick = {
@@ -807,6 +829,8 @@ object ImportSecretView
 object AddSecretView
 @Serializable
 object ShowLogsView
+@Serializable
+object ShowCardLogs
 
 @Serializable
 data class MySecretView (
