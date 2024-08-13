@@ -24,18 +24,24 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.MySecretStatus
+import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
+import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog
 import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
+import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
+import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 
 @Composable
 fun MySecretView(
     secret: MutableState<GeneratePasswordData?>,
     type: String,
+    isOldVersion: Boolean,
     onClick: (MySecretItems) -> Unit,
     copyToClipboard: (String) -> Unit,
 ) {
@@ -46,6 +52,19 @@ fun MySecretView(
     val mySecretStatus = remember {
         mutableStateOf(MySecretStatus.SEED)
     }
+    val isPopUpOpened = remember {
+        mutableStateOf(false)
+    }
+    if (isPopUpOpened.value) {
+        NewSeedkeeperPopUpDialog(
+            isOpen = isPopUpOpened,
+            title = R.string.buySeedkeeper,
+            onClick = {
+                onClick(MySecretItems.BUY_SEEDKEEPER)
+            }
+        )
+    }
+
     when (SeedkeeperSecretType.valueOf(type)) {
         SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC -> {
             secret.value?.mnemonic?.let { mnemonic ->
@@ -170,10 +189,15 @@ fun MySecretView(
                     SatoButton(
                         modifier = Modifier.weight(1f),
                         onClick = {
-                            onClick(MySecretItems.DELETE)
+                            if (isOldVersion) {
+                                isPopUpOpened.value = !isPopUpOpened.value
+                            } else {
+                                onClick(MySecretItems.DELETE)
+                            }
                         },
                         text = R.string.deleteSecret,
-                        image = R.drawable.delete_icon
+                        image = R.drawable.delete_icon,
+                        buttonColor = if (isOldVersion) SatoInactiveTracer else SatoButtonBlue
                     )
                     SatoButton(
                         modifier = Modifier.weight(1f),

@@ -255,7 +255,8 @@ object NFCCardService {
 
     fun verifyPin(
         shouldUpdateDataState: Boolean = true,
-        shouldUpdateResultCodeLive: Boolean = true
+        shouldUpdateResultCodeLive: Boolean = true,
+        shouldGetCardData: Boolean = true
     ) {
         SatoLog.d(TAG, "verifyPin start")
         try {
@@ -266,12 +267,14 @@ object NFCCardService {
             cmdSet.setPin0(pinBytes)
             cmdSet.cardVerifyPIN()
 
-            runBlocking {
-                getSecretsList(shouldUpdateResultCodeLive)
-                getCardAuthenticty()
-                getCardLogs()
-                if (cardStatus.protocolVersion == 2) {
-                    seedkeeperStatus = cmdSet.seedkeeperGetStatus()
+            if (shouldGetCardData) {
+                runBlocking {
+                    getSecretsList(shouldUpdateResultCodeLive)
+                    getCardAuthenticty()
+                    getCardLogs()
+                    if (cardStatus.protocolVersion == 2) {
+                        seedkeeperStatus = cmdSet.seedkeeperGetStatus()
+                    }
                 }
             }
             isReadyForPinCode.postValue(false)
@@ -450,7 +453,7 @@ object NFCCardService {
     fun getSecret() {
         SatoLog.d(TAG, "getSecret start")
         try {
-            verifyPin(false)
+            verifyPin(shouldUpdateDataState = false, shouldGetCardData = false)
             currentSecretId.value?.let { sid ->
                 val secretObject = cmdSet.seedkeeperExportSecret(sid, null)
                 currentSecretObject.postValue(secretObject)

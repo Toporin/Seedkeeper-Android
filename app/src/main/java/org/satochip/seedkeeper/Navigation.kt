@@ -627,6 +627,7 @@ fun Navigation(
             MySecretView(
                 secret = data,
                 type = args.type,
+                isOldVersion = viewModel.getSeedkeeperStatus() == null,
                 onClick = { item ->
                     when (item) {
                         MySecretItems.SHOW -> {
@@ -646,6 +647,12 @@ fun Navigation(
                         MySecretItems.BACK -> {
                             viewModel.resetCurrentSecretObject()
                             navController.popBackStack()
+                        }
+                        MySecretItems.BUY_SEEDKEEPER -> {
+                            webviewActivityIntent(
+                                url = "https://satochip.io/product/seedkeeper",
+                                context = context
+                            )
                         }
                     }
                 },
@@ -689,7 +696,12 @@ fun Navigation(
                         GenerateViewItems.GENERATE_MNEMONIC_PHRASE -> {
 
                             return@GenerateView passwordOptions?.let { options ->
-                                viewModel.generateMnemonic(passwordOptions.passwordLength)
+                                try {
+                                    viewModel.generateMnemonic(passwordOptions.passwordLength)
+                                } catch (e: IllegalArgumentException) {
+                                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                                    ""
+                                }
                             } ?: run {
                                 ""
                             }
