@@ -486,11 +486,6 @@ fun Navigation(
                                 )
                             }
                         }
-                        CardInformationItems.EDIT_CARD_LABEL -> {
-                            if (pinString == viewModel.getCurrentPinString()) {
-
-                            }
-                        }
                         else -> {}
                     }
                 }
@@ -725,9 +720,7 @@ fun Navigation(
                                     viewModel.generateMemorablePassword(options, context)
                                 } else {
                                     val password = viewModel.generatePassword(options)
-                                    password?.let {
-                                        it
-                                    } ?: run {
+                                    password ?: run {
                                         Toast.makeText(context, selectMoreSets, Toast.LENGTH_SHORT)
                                             .show()
                                         ""

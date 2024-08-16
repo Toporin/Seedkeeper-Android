@@ -33,6 +33,7 @@
     <string name="nfcSeedkeeperNeedsSetup">Your Seedkeeper needs to be setup!</string>
     <string name="nfcWrongPin">Wrong PIN, tries left: </string>
     <string name="nfcCardBlocked">Too many incorrect PIN attempts! Your card has been blocked.</string>
+    <string name="nfcSecretDeleted">Secret successfully deleted.</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>
