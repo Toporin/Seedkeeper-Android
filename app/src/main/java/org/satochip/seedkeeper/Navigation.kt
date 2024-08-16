@@ -612,7 +612,7 @@ fun Navigation(
                             SeedkeeperSecretType.MASTERSEED -> {
                                 data.value = parseMasterseedMnemonicCardData(secretObject.secretBytes)
                             }
-                            SeedkeeperSecretType.BIP39_MNEMONIC -> {
+                            SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
                                 data.value = parseMnemonicCardData(secretObject.secretBytes)
                             }
                             SeedkeeperSecretType.PASSWORD -> {
