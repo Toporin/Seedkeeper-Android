@@ -504,7 +504,7 @@ object NFCCardService {
                 currentSecretObject.postValue(null)
                 currentSecretId.postValue(null)
             }
-            resultCodeLive.postValue(NfcResultCode.OK)
+            resultCodeLive.postValue(NfcResultCode.SECRET_DELETED)
         } catch (e: Exception) {
             SatoLog.e(TAG, "deleteSecret exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
