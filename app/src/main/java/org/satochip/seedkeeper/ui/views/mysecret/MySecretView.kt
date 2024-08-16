@@ -77,7 +77,7 @@ fun MySecretView(
     }
 
     when (SeedkeeperSecretType.valueOf(type)) {
-        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC -> {
+        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
             secret.value?.mnemonic?.let { mnemonic ->
                 secretText.value = mnemonic
             }
