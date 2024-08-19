@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.utils.instructionsMap
@@ -41,6 +40,7 @@ fun ShowCardLogsView(
     copyToClipboard: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val filteredLogs = cardLogs.filter { log -> log.sw != 0 }
 
     Column(
         modifier = Modifier
@@ -75,7 +75,7 @@ fun ShowCardLogsView(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(id = R.string.logsEntriesnumber) + " ${cardLogs.size} ",
+                    text = stringResource(id = R.string.logsEntriesnumber) + " ${filteredLogs.size} ",
                     style = TextStyle(
                         color = Color.Black,
                         fontSize = 16.sp,
@@ -90,7 +90,7 @@ fun ShowCardLogsView(
                         .satoClickEffect(
                             onClick = {
                                 var logsText = ""
-                                for (log in cardLogs) {
+                                for (log in filteredLogs) {
                                     val logString =
                                         "${instructionsMap[log.ins]}; ${log.sw.toHexString()}; ${log.sid1}; ${log.sid2} \n"
                                     logsText += logString
@@ -103,7 +103,7 @@ fun ShowCardLogsView(
                 )
             }
             Spacer(modifier = Modifier.height(35.dp))
-            cardLogs.forEach { log ->
+            filteredLogs.forEach { log ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(),

@@ -1,7 +1,6 @@
 package org.satochip.seedkeeper.ui.views.cardinfo
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -69,60 +68,55 @@ fun CardAuthenticity(
         AuthenticityStatus.UNKNOWN -> {}
     }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        HeaderAlternateRow(
+            onClick = {
+                onClick(CardInformationItems.BACK)
+            }
+        )
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 50.dp)
+                .verticalScroll(state = scrollState)
+                .padding(horizontal = 16.dp)
         ) {
-            HeaderAlternateRow(
+            WelcomeViewTitle()
+            Image(
+                painter = painterResource(id = R.drawable.ic_sato_small),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .height(150.dp),
+                contentScale = ContentScale.FillHeight,
+                colorFilter = ColorFilter.tint(logoColor.value)
+            )
+            CardAuthenticityTextBox(
+                cardAuthTitle = stringResource(cardAuthTitle.value),
+                cardAuthText = stringResource(cardAuthText.value),
+                cardAuthUsage = stringResource(cardAuthUsage.value)
+            )
+            InfoField(
+                text = stringResource(id = if (isCardCertOpen.value) R.string.hideCardCertificate else R.string.showCardCertificate),
                 onClick = {
-                    onClick(CardInformationItems.BACK)
-                }
-            )
-        }
-    }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 50.dp)
-            .verticalScroll(state = scrollState)
-            .padding(horizontal = 16.dp)
-    ) {
-        WelcomeViewTitle()
-        Image(
-            painter = painterResource(id = R.drawable.ic_sato_small),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(10.dp)
-                .height(150.dp),
-            contentScale = ContentScale.FillHeight,
-            colorFilter = ColorFilter.tint(logoColor.value)
-        )
-        CardAuthenticityTextBox(
-            cardAuthTitle = stringResource(cardAuthTitle.value),
-            cardAuthText = stringResource(cardAuthText.value),
-            cardAuthUsage = stringResource(cardAuthUsage.value)
-        )
-        InfoField(
-            text = stringResource(id = if (isCardCertOpen.value) R.string.hideCardCertificate else R.string.showCardCertificate),
-            onClick = {
-                isCardCertOpen.value = !isCardCertOpen.value
-            },
-            containerColor = logoColor.value,
-            isClickable = true
-        )
-        if (isCardCertOpen.value) {
-            CardCertificateField(
-                certificates = certificates,
-                authenticityStatus = authenticityStatus,
-                copyToClipboard = { text ->
-                    copyToClipboard(text)
+                    isCardCertOpen.value = !isCardCertOpen.value
                 },
+                containerColor = logoColor.value,
+                isClickable = true
             )
+            if (isCardCertOpen.value) {
+                CardCertificateField(
+                    certificates = certificates,
+                    authenticityStatus = authenticityStatus,
+                    copyToClipboard = { text ->
+                        copyToClipboard(text)
+                    },
+                )
+            }
         }
     }
 }
