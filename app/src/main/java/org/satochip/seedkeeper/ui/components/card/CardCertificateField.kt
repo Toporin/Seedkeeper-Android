@@ -77,28 +77,6 @@ fun CardCertificateField(
             )
         }
         Spacer(modifier = Modifier.height(35.dp))
-        //CARD CERT
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.cardInfoCert),
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 16.sp,
-                lineHeight = 21.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        )
-        Text(
-            modifier = Modifier.padding(10.dp),
-            text = certificates[3] ?: "",
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 12.sp,
-                lineHeight = 21.sp,
-                fontWeight = FontWeight.Bold,
-            )
-        )
         // ROT CA CERT
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -114,6 +92,50 @@ fun CardCertificateField(
         Text(
             modifier = Modifier.padding(10.dp),
             text = certificates[1] ?: "",
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 12.sp,
+                lineHeight = 21.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        )
+        //CARD CERT
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.subcaInfo),
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 16.sp,
+                lineHeight = 21.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        )
+        Text(
+            modifier = Modifier.padding(10.dp),
+            text = certificates[2] ?: "",
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 12.sp,
+                lineHeight = 21.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        )
+        //CARD CERT
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.cardInfoCert),
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 16.sp,
+                lineHeight = 21.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        )
+        Text(
+            modifier = Modifier.padding(10.dp),
+            text = certificates[3] ?: "",
             style = TextStyle(
                 color = Color.Black,
                 fontSize = 12.sp,

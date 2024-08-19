@@ -24,7 +24,6 @@ import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.ui.components.card.CardAuthenticityTextBox
 import org.satochip.seedkeeper.ui.components.card.CardCertificateField
-import org.satochip.seedkeeper.ui.components.card.CardSubCaCertificateField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
@@ -51,9 +50,6 @@ fun CardAuthenticity(
         mutableStateOf(R.string.cardAuthSuccessfulUsage)
     }
     val isCardCertOpen = remember {
-        mutableStateOf(false)
-    }
-    val isCardSubCaCertOpen = remember {
         mutableStateOf(false)
     }
 
@@ -121,23 +117,6 @@ fun CardAuthenticity(
         )
         if (isCardCertOpen.value) {
             CardCertificateField(
-                certificates = certificates,
-                authenticityStatus = authenticityStatus,
-                copyToClipboard = { text ->
-                    copyToClipboard(text)
-                },
-            )
-        }
-        InfoField(
-            text = stringResource(id = if (isCardSubCaCertOpen.value) R.string.hideCaCardCertificate else R.string.showCaCardCertificate),
-            onClick = {
-                isCardSubCaCertOpen.value = !isCardSubCaCertOpen.value
-            },
-            containerColor = logoColor.value,
-            isClickable = true
-        )
-        if(isCardSubCaCertOpen.value) {
-            CardSubCaCertificateField(
                 certificates = certificates,
                 authenticityStatus = authenticityStatus,
                 copyToClipboard = { text ->

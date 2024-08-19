@@ -111,10 +111,8 @@
     <string name="cardAuthSuccessful">Carte authentifiée avec succès !</string>
     <string name="cardAuthSuccessfulText">Cette carte a été émise par Satochip S.R.L.</string>
     <string name="cardAuthSuccessfulUsage">Vous pouvez l\'utiliser en toute sécurité.</string>
-    <string name="showCardCertificate">Afficher le certificat de la carte</string>
-    <string name="showCaCardCertificate">Afficher le certificat de sub-CA</string>
-    <string name="hideCardCertificate">Masquer le certificat de carte</string>
-    <string name="hideCaCardCertificate">Masquer le certificat sub-CA</string>
+    <string name="showCardCertificate">Afficher les certificats de carte</string>
+    <string name="hideCardCertificate">Masquer les certificats de carte</string>
     <string name="cardInfoCert">Certificat de carte</string>
     <string name="subcaInfo">Certificat sub-CA</string>
     <string name="rootCaInfo">Certificat root CA</string>
