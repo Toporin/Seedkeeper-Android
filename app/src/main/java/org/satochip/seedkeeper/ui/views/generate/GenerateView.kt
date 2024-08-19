@@ -310,6 +310,7 @@ fun GenerateView(
                                             TypeOfSecret.MNEMONIC_PHRASE -> {
                                                 generateStatus.value =
                                                     GenerateStatus.MNEMONIC_PHRASE
+                                                passwordOptions.value.passwordLength = 12
                                             }
 
                                             TypeOfSecret.LOGIN_PASSWORD -> {

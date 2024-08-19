@@ -48,8 +48,6 @@ fun InputPinField(
     val passwordVisibility = remember {
         mutableStateOf(visualTransformation != PasswordVisualTransformation())
     }
-    val keyboardController = LocalSoftwareKeyboardController.current
-
 
     val trailingIcon: (@Composable () -> Unit)? = @Composable {
         Image(
@@ -84,9 +82,6 @@ fun InputPinField(
             onValueChange = {
                 curValue.value = it
             },
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 autoCorrect = false,
