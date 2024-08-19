@@ -31,6 +31,7 @@ fun DrawerScreen(
     message: Int? = null,
     image: Int? = null,
     colorFilter: ColorFilter? = null,
+    triesLeft: Int? = null
 ) {
     Column(
         modifier = Modifier
@@ -62,7 +63,7 @@ fun DrawerScreen(
 
         message?.let {
             Text(
-                text = stringResource(message),
+                text = stringResource(message) + if (triesLeft != null && triesLeft > 0) " $triesLeft" else "",
                 style = TextStyle(
                     color = Color.Black,
                     fontSize = 16.sp

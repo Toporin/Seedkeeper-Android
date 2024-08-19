@@ -266,29 +266,44 @@ object NFCCardService {
 
             cmdSet.cardSelect("seedkeeper").checkOK()
             cmdSet.setPin0(pinBytes)
-            cmdSet.cardVerifyPIN()
+            val rapdu = cmdSet.cardVerifyPIN()
 
-            if (shouldGetCardData) {
-                runBlocking {
-                    getSecretsList(shouldUpdateResultCodeLive)
-                    getCardAuthenticty()
-                    getCardLogs()
-                    if (cardStatus.protocolVersion == 2) {
-                        seedkeeperStatus = cmdSet.seedkeeperGetStatus()
+            when (rapdu.sw) {
+                in 0x63C0..0x63C4, 0x9C0C -> {
+                    val lastDigit = rapdu.sw and 0x000F
+                    if (rapdu.sw != 0x9C0C && lastDigit > 0 ) {
+                        val nfcCode = NfcResultCode.WRONG_PIN
+                        nfcCode.triesLeft = lastDigit
+                        resultCodeLive.postValue(nfcCode)
+                    } else {
+                        resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
                     }
+                    SatoLog.d(TAG, "verifyPin not successful")
+                }
+                else -> {
+                    if (shouldGetCardData) {
+                        runBlocking {
+                            getSecretsList(shouldUpdateResultCodeLive)
+                            getCardAuthenticty()
+                            getCardLogs()
+                            if (cardStatus.protocolVersion == 2) {
+                                seedkeeperStatus = cmdSet.seedkeeperGetStatus()
+                            }
+                        }
+                    }
+                    isReadyForPinCode.postValue(false)
+                    if (shouldUpdateDataState) {
+                        cardLabel.postValue(cmdSet.cardLabel)
+                        isCardDataAvailable.postValue(true)
+                    }
+                    if (shouldUpdateResultCodeLive) {
+                        resultCodeLive.postValue(NfcResultCode.OK)
+                    }
+                    SatoLog.d(TAG, "verifyPin successful")
                 }
             }
-            isReadyForPinCode.postValue(false)
-            if (shouldUpdateDataState) {
-                cardLabel.postValue(cmdSet.cardLabel)
-                isCardDataAvailable.postValue(true)
-            }
-            if (shouldUpdateResultCodeLive) {
-                resultCodeLive.postValue(NfcResultCode.OK)
-            }
-            SatoLog.d(TAG, "verifyPin successful")
         } catch (e: Exception) {
-            resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
+            resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "verifyPin exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
