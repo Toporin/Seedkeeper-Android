@@ -3,6 +3,7 @@ package org.satochip.seedkeeper.ui.components.generate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ui.components.shared.DataAsQrCode
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.utils.satoClickEffect
 
@@ -50,6 +52,9 @@ fun SecretTextField(
     val passwordVisibility = remember {
         mutableStateOf(visualTransformation != PasswordVisualTransformation())
     }
+    val isQRCodeSelected = remember {
+        mutableStateOf(false)
+    }
     Box(
         modifier = modifier
             .background(
@@ -57,15 +62,30 @@ fun SecretTextField(
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
-        Box(modifier = Modifier
+        Row(
+            modifier = Modifier
             .padding(8.dp)
-            .width(64.dp)
-            .align(Alignment.TopEnd)) {
+            .width(96.dp)
+            .align(Alignment.TopEnd)
+        ) {
             Image(
                 modifier = Modifier
                     .padding(8.dp)
                     .size(16.dp)
-                    .align(Alignment.TopStart)
+                    .satoClickEffect(
+                        onClick = {
+                            isQRCodeSelected.value = !isQRCodeSelected.value
+                        }
+                    ),
+                painter = painterResource(id = R.drawable.seedqr_icon),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+            Image(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(16.dp)
                     .satoClickEffect(
                         onClick = {
                             copyToClipboard()
@@ -80,7 +100,6 @@ fun SecretTextField(
                 modifier = Modifier
                     .padding(8.dp)
                     .size(16.dp)
-                    .align(Alignment.TopEnd)
                     .satoClickEffect(
                         onClick = {
                             passwordVisibility.value = !passwordVisibility.value
@@ -93,46 +112,52 @@ fun SecretTextField(
             )
         }
 
-        TextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
-            enabled = isEditable,
-            value = curValue.value,
-            onValueChange = {
-                curValue.value = it
-            },
-            keyboardActions = KeyboardActions(
-                onDone = { keyboardController?.hide() }
-            ),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done,
-                autoCorrect = false,
-                keyboardType = KeyboardType.Text
-            ),
-            visualTransformation = if (passwordVisibility.value) VisualTransformation.None else visualTransformation,
-            textStyle = TextStyle(
-                color = Color.White,
-                fontSize = 18.sp,
-                lineHeight = 22.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            ),
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.Black,
-                cursorColor = Color.Black,
-                focusedLabelColor = Color.Black,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                disabledTextColor = Color.Black,
-            ),
-            minLines = 1,
-            maxLines = 3,
-        )
+        if (isQRCodeSelected.value) {
+            DataAsQrCode(
+                data = curValue.value
+            )
+        } else {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
+                enabled = isEditable,
+                value = curValue.value,
+                onValueChange = {
+                    curValue.value = it
+                },
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                ),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Text
+                ),
+                visualTransformation = if (passwordVisibility.value) VisualTransformation.None else visualTransformation,
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    lineHeight = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                ),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color.Black,
+                    focusedLabelColor = Color.Black,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    disabledTextColor = Color.Black,
+                ),
+                minLines = 1,
+                maxLines = 3,
+            )
+        }
     }
 }

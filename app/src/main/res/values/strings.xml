@@ -100,6 +100,9 @@
     <string name="cardAuthenticity">Card authenticity</string>
     <string name="cardIsGenuine">this card is genuine</string>
     <string name="cardIsNotGenuine">this card is not genuine</string>
+    <string name="memoryAvailable">Memory available</string>
+    <string name="secretsStored">Secrets stored</string>
+    <string name="showCardLogs">Show card logs</string>
 
     <!--Card's Authenticity View-->
     <string name="cardAuthFailed">Card authentication failed!</string>
@@ -108,8 +111,12 @@
     <string name="cardAuthSuccessful">Card authentication successfully!</string>
     <string name="cardAuthSuccessfulText">This card was issued by Satochip S.R.L.</string>
     <string name="cardAuthSuccessfulUsage">You can safely use it.</string>
-    <string name="showCardCertificate">Show card certificate</string>
-    <string name="showCaCardCertificate">Show sub-CA certificate</string>
+    <string name="showCardCertificate">Show card certificates</string>
+    <string name="hideCardCertificate">Hide card certificates</string>
+    <string name="cardInfoCert">Card certificate</string>
+    <string name="subcaInfo">Sub-CA certificate</string>
+    <string name="rootCaInfo">Root CA certificate</string>
+    <string name="copyToClipboard">Copy to clipboard</string>
 
     <!--Pin Code View-->
     <string name="setup">Setup</string>
@@ -170,10 +177,14 @@
     <string name="xpub">Xpub</string>
     <string name="login">Login</string>
     <string name="url">URL</string>
+    <string name="oldSeedkeeper">This option is only available for the latest Seedkeeper card - buy yours at https://satochip.io/product/seedkeeper</string>
+    <string name="buySeedkeeper">Buy Seedkeeper</string>
 
     <!--Show Logs View-->
     <string name="logs">Logs</string>
     <string name="logsEntriesnumber">Number of entries:</string>
     <string name="logsDisabledText">Please enable debug mode</string>
 
+    <!--Show Card Logs View-->
+    <string name="cardLogs">Card logs</string>
 </resources>

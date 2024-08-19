@@ -12,8 +12,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.bitcoinj.crypto.MnemonicCode
+import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
+import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.GeneratePasswordData
@@ -97,6 +99,18 @@ class SharedViewModel : ViewModel() {
 
     fun getCurrentPinString(): String {
         return NFCCardService.pinString ?: ""
+    }
+
+    fun getSeedkeeperStatus(): SeedkeeperStatus? {
+        return NFCCardService.seedkeeperStatus
+    }
+
+    fun getCardLogs(): List<SeedkeeperLog> {
+        return NFCCardService.cardLogs
+    }
+
+    fun getCertificates(): List<String> {
+        return NFCCardService.certificateList
     }
 
     fun setupNewCardLabel(cardLabel: String) {

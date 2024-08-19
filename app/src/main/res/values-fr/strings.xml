@@ -100,6 +100,9 @@
     <string name="cardAuthenticity">Authenticité de la carte</string>
     <string name="cardIsGenuine">Cette carte est authentique</string>
     <string name="cardIsNotGenuine">Cette carte n\'est pas authentique</string>
+    <string name="memoryAvailable">Mémoire disponible</string>
+    <string name="secretsStored">Secrets stockés</string>
+    <string name="showCardLogs">Afficher les journaux de cartes</string>
 
     <!--Card's Authenticity View-->
     <string name="cardAuthFailed">Echec de l\'authentification de la carte !</string>
@@ -108,8 +111,12 @@
     <string name="cardAuthSuccessful">Carte authentifiée avec succès !</string>
     <string name="cardAuthSuccessfulText">Cette carte a été émise par Satochip S.R.L.</string>
     <string name="cardAuthSuccessfulUsage">Vous pouvez l\'utiliser en toute sécurité.</string>
-    <string name="showCardCertificate">Afficher le certificat de la carte</string>
-    <string name="showCaCardCertificate">Afficher le certificat de sub-CA</string>
+    <string name="showCardCertificate">Afficher les certificats de carte</string>
+    <string name="hideCardCertificate">Masquer les certificats de carte</string>
+    <string name="cardInfoCert">Certificat de carte</string>
+    <string name="subcaInfo">Certificat sub-CA</string>
+    <string name="rootCaInfo">Certificat root CA</string>
+    <string name="copyToClipboard">Copier</string>
 
     <!--Pin Code View-->
     <string name="setup">Configuration</string>
@@ -170,10 +177,14 @@
     <string name="xpub">Xpub</string>
     <string name="login">Login</string>
     <string name="url">URL</string>
+    <string name="oldSeedkeeper">Cette option n\'est disponible que pour la dernière carte Seedkeeper - achetez la vôtre sur https://satochip.io/product/seedkeeper</string>
+    <string name="buySeedkeeper">Acheter Seedkeeper</string>
 
     <!--Show Logs View-->
     <string name="logs">Journaux</string>
     <string name="logsEntriesnumber">Nombre d\'entrées:</string>
     <string name="logsDisabledText">Veuillez activer le mode débogage</string>
 
+    <!--Show Card Logs View-->
+    <string name="cardLogs">Journaux de cartes</string>
 </resources>

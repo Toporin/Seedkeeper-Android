@@ -23,6 +23,7 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.ui.components.card.CardAuthenticityTextBox
+import org.satochip.seedkeeper.ui.components.card.CardCertificateField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
@@ -31,7 +32,9 @@ import org.satochip.seedkeeper.ui.theme.SatoGreen
 @Composable
 fun CardAuthenticity(
     authenticityStatus: AuthenticityStatus,
+    certificates: List<String>,
     onClick: (CardInformationItems) -> Unit,
+    copyToClipboard: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val logoColor = remember {
@@ -45,6 +48,9 @@ fun CardAuthenticity(
     }
     val cardAuthUsage = remember {
         mutableStateOf(R.string.cardAuthSuccessfulUsage)
+    }
+    val isCardCertOpen = remember {
+        mutableStateOf(false)
     }
 
     when (authenticityStatus) {
@@ -102,20 +108,21 @@ fun CardAuthenticity(
             cardAuthUsage = stringResource(cardAuthUsage.value)
         )
         InfoField(
-            text = stringResource(id = R.string.showCardCertificate),
+            text = stringResource(id = if (isCardCertOpen.value) R.string.hideCardCertificate else R.string.showCardCertificate),
             onClick = {
-                onClick(CardInformationItems.SHOW_CARD_CERTIFICATE)
+                isCardCertOpen.value = !isCardCertOpen.value
             },
             containerColor = logoColor.value,
             isClickable = true
         )
-        InfoField(
-            text = stringResource(id = R.string.showCaCardCertificate),
-            onClick = {
-                onClick(CardInformationItems.SHOW_CA_CERTIFICATE)
-            },
-            containerColor = logoColor.value,
-            isClickable = true
-        )
+        if (isCardCertOpen.value) {
+            CardCertificateField(
+                certificates = certificates,
+                authenticityStatus = authenticityStatus,
+                copyToClipboard = { text ->
+                    copyToClipboard(text)
+                },
+            )
+        }
     }
 }
