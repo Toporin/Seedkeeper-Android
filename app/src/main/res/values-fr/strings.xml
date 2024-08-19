@@ -30,7 +30,7 @@
     <string name="nfcResultCodeBusy">Occupé</string>
     <string name="nfcResultCodeNfcError">Erreur lors de la lecture de la carte</string>
     <string name="nfcSeedkeeperNeedsSetup">Votre Seedkeeper doit être configurée !</string>
-    <string name="nfcWrongPin">Mauvais PIN</string>
+    <string name="nfcWrongPin">Mauvais PIN, tentatives à gauche:</string>
     <string name="nfcCardBlocked">Trop de tentatives incorrectes de saisie du code PIN ! Votre carte a été bloquée.</string>
 
     <!--Generate View-->
