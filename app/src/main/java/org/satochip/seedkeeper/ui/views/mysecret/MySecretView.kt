@@ -76,6 +76,11 @@ fun MySecretView(
                 secretText.value = password
             }
         }
+        SeedkeeperSecretType.DATA -> {
+            secret.value?.descriptor?.let { descriptor ->
+                secretText.value = descriptor
+            }
+        }
         else -> {}
     }
     BackHandler {

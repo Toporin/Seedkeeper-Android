@@ -164,6 +164,12 @@ fun SecretsList(
                                     it?.type == filter
                                 }
                             }
+                            SeedkeeperSecretType.DATA -> {
+                                filteredList = secretHeaders.toList()
+                                filteredList = secretHeaders.toList().filter {
+                                    it?.type == filter
+                                }
+                            }
 
                             else -> {}
                         }

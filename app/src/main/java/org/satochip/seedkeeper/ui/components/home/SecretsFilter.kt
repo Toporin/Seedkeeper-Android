@@ -42,7 +42,8 @@ fun SecretsFilter(
     val seedkeeperSecretTypeMap = hashMapOf(
         SeedkeeperSecretType.DEFAULT_TYPE to "All",
         SeedkeeperSecretType.BIP39_MNEMONIC to "Mnemonic",
-        SeedkeeperSecretType.PASSWORD to "Password"
+        SeedkeeperSecretType.PASSWORD to "Password",
+        SeedkeeperSecretType.DATA to "Bitcoin"
     )
 
     Column {
@@ -145,6 +146,28 @@ fun SecretsFilter(
                         fontWeight = FontWeight.Medium,
                         color = Color.Black,
                         text = seedkeeperSecretTypeMap.getValue(SeedkeeperSecretType.PASSWORD)
+                    )
+                }
+            )
+            DropdownMenuItem(
+                modifier = Modifier
+                    .background(
+                        color = if (selectedLogType == SeedkeeperSecretType.DATA) Color.Gray.copy(
+                            alpha = 0.2f
+                        ) else Color.White,
+                    ),
+                onClick = {
+                    selectedLogType = SeedkeeperSecretType.DATA
+                    isExpanded = false
+                    onClick(selectedLogType)
+                },
+                text = {
+                    Text(
+                        textAlign = TextAlign.Start,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black,
+                        text = seedkeeperSecretTypeMap.getValue(SeedkeeperSecretType.DATA)
                     )
                 }
             )

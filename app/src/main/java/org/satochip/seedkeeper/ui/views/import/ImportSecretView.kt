@@ -1,6 +1,7 @@
 package org.satochip.seedkeeper.ui.views.import
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -54,10 +55,12 @@ fun ImportSecretView(
     val stringResourceMap = mapOf(
         R.string.loginPassword to "loginPassword",
         R.string.typeOfSecret to "typeOfSecret",
-        R.string.mnemonicPhrase to "mnemonicPhrase"
+        R.string.mnemonicPhrase to "mnemonicPhrase",
+        R.string.bitcoinDescriptor to "bitcoinDescriptor"
     )
     val scrollState = rememberScrollState()
 
+    Log.d("lista", "hello my friend")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -149,228 +152,81 @@ fun ImportSecretView(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    when (generateStatus.value) {
-                        GenerateStatus.HOME -> {
-                            TitleTextField(
-                                title = R.string.congratulations,
-                                text = R.string.generateSuccessful
-                            )
-                        }
-                        GenerateStatus.LOGIN_PASSWORD -> {
-                            TitleTextField(
-                                title = R.string.importAPassword,
-                                text = R.string.importAPasswordMessage
-                            )
-                        }
-                        GenerateStatus.MNEMONIC_PHRASE -> {
-                            TitleTextField(
-                                title = R.string.importAMnemonicPhrase,
-                                text = R.string.importAMnemonicPhraseMessage
-                            )
-                        }
-                        GenerateStatus.DEFAULT -> {
-                            TitleTextField(
-                                title = R.string.importASecret,
-                                text = R.string.importASecretMessage
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    when (generateStatus.value) {
-                        GenerateStatus.DEFAULT -> {
-                            SelectField(
-                                selectList = listOf(
-                                    SelectFieldItem(prefix = null, text = R.string.typeOfSecret),
-                                    SelectFieldItem(prefix = null, text = R.string.mnemonicPhrase),
-                                    SelectFieldItem(prefix = null, text = R.string.loginPassword),
-                                ),
-                                onClick = { item ->
-                                    stringResourceMap[item]?.let { resourceItem ->
-                                        typeOfSecret.value = TypeOfSecret.valueOfKey(resourceItem)
-                                    }
-                                }
-                            )
-                        }
-                        GenerateStatus.MNEMONIC_PHRASE -> {
-                            InputField(
-                                curValue = curValueLabel,
-                                placeHolder = R.string.label,
-                                containerColor = SatoPurple.copy(alpha = 0.5f)
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            MnemonicImportField(
-                                text = R.string.mnemonicType,
-                                type = R.string.bip,
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            InputField(
-                                curValue = curValuePassphrase,
-                                placeHolder = R.string.passphrase,
-                                containerColor = SatoPurple.copy(alpha = 0.5f)
-                            )
-                        }
-                        GenerateStatus.LOGIN_PASSWORD -> {
-                            InputField(
-                                curValue = curValueLabel,
-                                placeHolder = R.string.label,
-                                containerColor = SatoPurple.copy(alpha = 0.5f)
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            InputField(
-                                isEditable = retrievedSet.value.isEmpty(),
-                                curValue = curValueLogin,
-                                placeHolder = R.string.loginOptional,
-                                containerColor = SatoPurple.copy(alpha = 0.5f),
-                                isEmail = true,
-                                onClick = {
-                                    if (retrievedSet.value.isNotEmpty()) {
-                                        isPopUpOpened.value = !isPopUpOpened.value
-                                    }
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            InputField(
-                                curValue = curValueUrl,
-                                placeHolder = R.string.urlOptional,
-                                containerColor = SatoPurple.copy(alpha = 0.5f)
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                        }
-                        GenerateStatus.HOME -> {
-                            InputField(
-                                isEditable = false,
-                                curValue = curValueLabel,
-                                containerColor = SatoPurple.copy(alpha = 0.5f)
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            Box(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                GifImage(
-                                    modifier = Modifier
-                                        .size(300.dp)
-                                        .align(Alignment.Center),
-                                    image = R.drawable.vault
-                                )
-                            }
-                        }
-                    }
-                }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    when (generateStatus.value) {
-                        GenerateStatus.DEFAULT, GenerateStatus.HOME -> {}
-                        else -> {
-                            SecretTextField(
-                                modifier = Modifier.height(200.dp),
-                                curValue = secret,
-                                isEditable = true,
-                                copyToClipboard = {
-                                    onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
-                                }
-                            )
-                        }
-                    }
-
-                    if (!(generateStatus.value == GenerateStatus.DEFAULT || generateStatus.value == GenerateStatus.HOME)) {
-                        //Back
-                        SatoButton(
-                            onClick = {
-                                secret.value = ""
-                                generateStatus.value = GenerateStatus.DEFAULT
-                                typeOfSecret.value = TypeOfSecret.TYPE_OF_SECRET
-                                passwordOptions.value.passwordLength = 4
-
-                            },
-                            buttonColor = Color.Transparent,
-                            textColor = Color.Black,
-                            text = R.string.back
+                when (generateStatus.value) {
+                    GenerateStatus.DEFAULT -> {
+                        ImportDefault(
+                            stringResourceMap = stringResourceMap,
+                            typeOfSecret = typeOfSecret,
+                            generateStatus = generateStatus
                         )
                     }
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        when (generateStatus.value) {
-                            GenerateStatus.DEFAULT -> {
-                                //Next
-                                SatoButton(
-                                    onClick = {
-                                        when (typeOfSecret.value) {
-                                            TypeOfSecret.MNEMONIC_PHRASE -> {
-                                                generateStatus.value =
-                                                    GenerateStatus.MNEMONIC_PHRASE
-                                            }
-                                            TypeOfSecret.LOGIN_PASSWORD -> {
-                                                generateStatus.value =
-                                                    GenerateStatus.LOGIN_PASSWORD
-                                            }
-                                            else -> {}
-                                        }
-                                    },
-                                    text = R.string.next
-                                )
+                    GenerateStatus.MNEMONIC_PHRASE -> {
+                        ImportMnemonic(
+                            settings = settings,
+                            curValueLabel = curValueLabel,
+                            curValuePassphrase = curValuePassphrase,
+                            secret = secret,
+                            passwordOptions = passwordOptions,
+                            generateStatus = generateStatus,
+                            typeOfSecret = typeOfSecret,
+                            curValueLogin = curValueLogin,
+                            curValueUrl = curValueUrl,
+                            retrievedSet = retrievedSet,
+                            onClick = { importItems, text ->
+                                onClick(importItems,text)
+                            },
+                            onImportSecret = { passwordData ->
+                                onImportSecret(passwordData)
                             }
-                            GenerateStatus.HOME -> {
-                                //Home
-                                SatoButton(
-                                    onClick = {
-                                        onClick(ImportViewItems.HOME, null)
-                                    },
-                                    text = R.string.home
-                                )
+                        )
+                    }
+                    GenerateStatus.LOGIN_PASSWORD -> {
+                        ImportPassword(
+                            settings = settings,
+                            curValueLabel = curValueLabel,
+                            curValuePassphrase = curValuePassphrase,
+                            secret = secret,
+                            passwordOptions = passwordOptions,
+                            generateStatus = generateStatus,
+                            typeOfSecret = typeOfSecret,
+                            curValueLogin = curValueLogin,
+                            curValueUrl = curValueUrl,
+                            isPopUpOpened = isPopUpOpened,
+                            retrievedSet = retrievedSet,
+                            onClick = { importItems, text ->
+                                onClick(importItems,text)
+                            },
+                            onImportSecret = { passwordData ->
+                                onImportSecret(passwordData)
                             }
-                            else -> {
-                                //Import
-                                SatoButton(
-                                    modifier = Modifier,
-                                    onClick = {
-                                        if (isClickable(secret, curValueLabel)) {
-                                            val type = getType(generateStatus.value)
-                                            var password: String = ""
-                                            var mnemonic: String? = null
-                                            if (type == SeedkeeperSecretType.BIP39_MNEMONIC) {
-                                                mnemonic = secret.value
-                                                password = curValuePassphrase.value
-                                            } else {
-                                                password = secret.value
-                                            }
-                                            onImportSecret(
-                                                GeneratePasswordData(
-                                                    size = passwordOptions.value.passwordLength,
-                                                    type = getType(generateStatus.value),
-                                                    password = password,
-                                                    label = curValueLabel.value,
-                                                    login = curValueLogin.value,
-                                                    url = curValueUrl.value,
-                                                    mnemonic = mnemonic
-                                                )
-                                            )
-                                        }
-                                        if (curValueLogin.value.isNotEmpty()) {
-                                            val stringSet = listOf(curValueLogin.value).toSet()
-                                            retrievedSet.value += stringSet
-                                            settings.edit().putStringSet(
-                                                SeedkeeperPreferences.USED_LOGINS.name,
-                                                retrievedSet.value
-                                            ).apply()
-                                        }
-                                    },
-                                    text = R.string.importButton,
-                                    textColor = if (
-                                        isClickable(
-                                            secret,
-                                            curValueLabel
-                                        )
-                                    ) Color.White else SatoActiveTracer
-                                )
+                        )
+                    }
+                    GenerateStatus.BITCOIN_DESCRIPTOR -> {
+                        ImportBitcoinDescriptor(
+                            curValueLabel = curValueLabel,
+                            settings = settings,
+                            secret = secret,
+                            passwordOptions = passwordOptions,
+                            generateStatus = generateStatus,
+                            typeOfSecret = typeOfSecret,
+                            curValueLogin = curValueLogin,
+                            curValueUrl = curValueUrl,
+                            retrievedSet = retrievedSet,
+                            onClick = { importItems, text ->
+                                onClick(importItems,text)
+                            },
+                            onImportSecret = { passwordData ->
+                                onImportSecret(passwordData)
                             }
-                        }
+                        )
+                    }
+                    GenerateStatus.HOME -> {
+                        ImportHome(
+                            curValueLabel = curValueLabel,
+                            onClick = { importItems, text ->
+                                onClick(importItems,text)
+                            },
+                        )
                     }
                 }
             }

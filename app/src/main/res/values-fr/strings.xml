@@ -39,6 +39,7 @@
     <string name="generateASecret">Générer un secret</string>
     <string name="generateAMnemonicPhrase">Générer une seedphrase</string>
     <string name="generateAPassword">Générer un mot de passe</string>
+    <string name="generateABitcoinDescriptor">Générer un bitcoin descriptor</string>
     <string name="generateExplanation">Permet de générer et d\'importer rapidement un nouveau mot de passe.</string>
     <string name="generateSuccessful">Le secret suivant a été importé avec succès dans votre Seedkeeper</string>
     <string name="importButton">Importer</string>
@@ -63,15 +64,20 @@
         <string name="emailListNewEmail">Insérer un nouveau login</string>
         <string name="emailListUseExisting">Utiliser un existant :</string>
         <string name="emailListWriteNewOne">Rédiger un nouveau :</string>
+        <!--Bitcoin descriptor-->
+        <string name="bitcoinDescriptor">Bitcoin descriptor</string>
 
     <!--Import View-->
     <string name="importHeader">Importer</string>
     <string name="importAMnemonicPhrase">Importer une seedphrase</string>
-    <string name="importAMnemonicPhraseMessage">Importer une seedphrase</string>
-    <string name="importAPassword">Importer une seedphrase</string>
-    <string name="importAPasswordMessage">Importer une seedphrase</string>
-    <string name="enterYourMnemonic">Entrer votre seedphrase :</string>
-    <string name="enterYourPassword">Entrer votre mot de passe :</string>
+    <string name="importAMnemonicPhraseMessage">Vous permet d\'importer une phrase mnémotechnique existante dans votre Seedkeeper.</string>
+    <string name="importAPassword">Importer un mot de passe</string>
+    <string name="importAPasswordMessage">Vous permet d\'importer un mot de passe existant dans votre Seedkeeper.</string>
+    <string name="importABitcoinDescriptor">Importer un descripteur Bitcoin</string>
+    <string name="importABitcoinDescriptorMessage">Vous permet d\'importer un descripteur Bitcoin existant dans votre Seedkeeper.</string>
+    <string name="enterYourMnemonic">Entrer votre seedphrase:</string>
+    <string name="enterYourPassword">Entrer votre mot de passe:</string>
+    <string name="enterYourBitcoinDescriptor">Entrer votre descripteur Bitcoin:</string>
     <string name="mnemonicType">Type de seedphrase</string>
     <string name="bip">BIP39</string>
 

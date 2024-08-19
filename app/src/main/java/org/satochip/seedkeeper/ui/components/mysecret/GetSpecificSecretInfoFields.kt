@@ -21,15 +21,15 @@ fun GetSpecificSecretInfoFields(
             title = R.string.passphrase,
             text = secret.value?.password ?: ""
         )
-    } else {
-        SecretInfoField(
-            title = R.string.login,
-            text = secret.value?.login ?: ""
-        )
+    } else if (type == SeedkeeperSecretType.PASSWORD.name) {
+            SecretInfoField(
+                title = R.string.login,
+                text = secret.value?.login ?: ""
+            )
 
-        SecretInfoField(
-            title = R.string.url,
-            text = secret.value?.url ?: ""
-        )
+            SecretInfoField(
+                title = R.string.url,
+                text = secret.value?.url ?: ""
+            )
     }
 }
