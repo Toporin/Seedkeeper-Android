@@ -51,7 +51,7 @@ object NFCCardService {
     var seedkeeperStatus: SeedkeeperStatus? = null
     var cardLogs: MutableList<SeedkeeperLog> = mutableListOf()
 
-    var authentikeyHex: String?  = null
+    var authentikey: ByteArray?  = null
 
     //BACKUP
     var secretsList: MutableList<SeedkeeperSecretHeader> = mutableListOf()
@@ -299,6 +299,7 @@ object NFCCardService {
                     if (shouldUpdateResultCodeLive) {
                         resultCodeLive.postValue(NfcResultCode.OK)
                     }
+                    authentikey = cmdSet.cardGetAuthentikey()
                     SatoLog.d(TAG, "verifyPin successful")
                 }
             }
@@ -545,6 +546,7 @@ object NFCCardService {
             val backupPin = pinString
             pinString = oldPinString
             oldPinString = backupPin
+            val masterAuthentikey = authentikey
             verifyPin(
                 shouldUpdateResultCodeLive = false
             )
@@ -554,13 +556,19 @@ object NFCCardService {
                     it.fingerprintFromSecret.contentEquals(newSecret.fingerprintFromSecret)
                 }
             }
+            val masterAuthentikeySecret = masterAuthentikey?.let {
+                importAuthentikey(it)
+            }
 
             secretHeaders.postValue(masterCardObjects.map { it.secretHeader })
-
-            for (item in uniqueNewSecrets) {
-                cmdSet.seedkeeperImportSecret(item)
+            masterAuthentikeySecret?.sid?.let { masterSid ->
+                for (item in uniqueNewSecrets) {
+                    item.isEncrypted = true
+                    item.secretEncryptedParams.sidPubkey = masterSid
+                    cmdSet.seedkeeperImportSecret(item)
+                }
+                backupSecretObjects.clear()
             }
-            backupSecretObjects.clear()
 
             resultCodeLive.postValue(NfcResultCode.OK)
             backupStatus.postValue(BackupStatus.FIFTH_STEP)
@@ -586,12 +594,17 @@ object NFCCardService {
                 val backupPin = pinString
                 pinString = oldPinString
                 oldPinString = backupPin
+                val backupAuthentikey = authentikey
 
                 verifyPin(
                     shouldUpdateDataState = false,
                     shouldUpdateResultCodeLive = false
                 )
-                backupCardGetSecrets()
+                val backupAuthentikeySecret = backupAuthentikey?.let {
+                    importAuthentikey(it)
+                }
+
+                backupCardGetSecrets(backupAuthentikeySecret?.sid)
             }
 
             resultCodeLive.postValue(NfcResultCode.OK)
@@ -600,6 +613,49 @@ object NFCCardService {
             SatoLog.e(TAG, "scanBackupCard exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
+    }
+
+    fun importAuthentikey(authentikeyBytes: ByteArray): SeedkeeperSecretHeader? {
+        SatoLog.d(TAG, "Start importAuthentikey")
+        try {
+            val authentikeySecretBytes = ByteArray(authentikeyBytes.size + 1)
+            authentikeySecretBytes[0] = authentikeyBytes.size.toByte()
+            System.arraycopy(
+                authentikeyBytes,
+                0,
+                authentikeySecretBytes,
+                1,
+                authentikeyBytes.size
+            )
+            val authentikeyFingerprintBytes =
+                SeedkeeperSecretHeader.getFingerprintBytes(authentikeySecretBytes)
+            val authentikeyLabel = "Backup Seedkeeper authentikey"
+            val authentikeySecretHeader = SeedkeeperSecretHeader(
+                0,
+                SeedkeeperSecretType.PUBKEY,
+                0x00.toByte(),
+                SeedkeeperSecretOrigin.PLAIN_IMPORT,
+                SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED,
+                0x00.toByte(),
+                0x00.toByte(),
+                0x00.toByte(),
+                authentikeyFingerprintBytes,
+                authentikeyLabel
+            )
+            val authentikeySecretObject = SeedkeeperSecretObject(
+                authentikeySecretBytes,
+                authentikeySecretHeader,
+                false,
+                null
+            )
+            // Import secret
+            val seedkeeperSecretHeader = cmdSet.seedkeeperImportSecret(authentikeySecretObject)
+            return seedkeeperSecretHeader
+        }catch (e: Exception) {
+            SatoLog.e(TAG, "importAuthentikey exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+        return null
     }
 
     fun backupCardScan() {
@@ -658,12 +714,12 @@ object NFCCardService {
         SatoLog.d(TAG, "backupCardSetup successful")
     }
 
-    fun backupCardGetSecrets() {
+    fun backupCardGetSecrets(pubSid: Int? = null) {
         try {
             backupSecretObjects.clear()
             if (secretsList.isNotEmpty()) {
                 for (item in secretsList) {
-                    val secretObject = cmdSet.seedkeeperExportSecret(item.sid, null)
+                    val secretObject = cmdSet.seedkeeperExportSecret(item.sid, pubSid)
                     backupSecretObjects.add(secretObject)
                 }
             }
