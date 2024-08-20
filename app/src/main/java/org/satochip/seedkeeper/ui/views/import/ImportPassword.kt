@@ -40,7 +40,7 @@ import org.satochip.seedkeeper.utils.isClickable
 fun ImportPassword(
     settings: SharedPreferences,
     curValueLabel: MutableState<String>,
-    curValuePassphrase: MutableState<String>,
+//    curValuePassphrase: MutableState<String>,
     secret: MutableState<String>,
     passwordOptions: MutableState<PasswordOptions>,
     generateStatus: MutableState<GenerateStatus>,
@@ -102,10 +102,12 @@ fun ImportPassword(
                     fontWeight = FontWeight.Bold
                 )
             )
+            Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
                 modifier = Modifier.height(200.dp),
                 curValue = secret,
                 isEditable = true,
+                isQRCodeEnabled = false,
                 copyToClipboard = {
                     onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
                 }
@@ -133,24 +135,14 @@ fun ImportPassword(
                 modifier = Modifier,
                 onClick = {
                     if (isClickable(secret, curValueLabel)) {
-                        val type = getType(generateStatus.value)
-                        var password: String = ""
-                        var mnemonic: String? = null
-                        if (type == SeedkeeperSecretType.BIP39_MNEMONIC) {
-                            mnemonic = secret.value
-                            password = curValuePassphrase.value
-                        } else {
-                            password = secret.value
-                        }
                         onImportSecret(
                             GeneratePasswordData(
                                 size = passwordOptions.value.passwordLength,
                                 type = getType(generateStatus.value),
-                                password = password,
+                                password = secret.value,
                                 label = curValueLabel.value,
                                 login = curValueLogin.value,
                                 url = curValueUrl.value,
-                                mnemonic = mnemonic
                             )
                         )
                     }

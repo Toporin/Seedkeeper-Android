@@ -1,17 +1,11 @@
 package org.satochip.seedkeeper.ui.views.import
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -20,30 +14,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
-import org.satochip.seedkeeper.data.SelectFieldItem
 import org.satochip.seedkeeper.data.TypeOfSecret
-import org.satochip.seedkeeper.ui.components.generate.InputField
-import org.satochip.seedkeeper.ui.components.generate.SecretTextField
-import org.satochip.seedkeeper.ui.components.generate.SelectField
-import org.satochip.seedkeeper.ui.components.import.MnemonicImportField
-import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
-import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.components.shared.TitleTextField
-import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
-import org.satochip.seedkeeper.ui.theme.SatoPurple
-import org.satochip.seedkeeper.utils.getType
-import org.satochip.seedkeeper.utils.isClickable
 
 @Composable
 fun ImportSecretView(
@@ -60,7 +40,6 @@ fun ImportSecretView(
     )
     val scrollState = rememberScrollState()
 
-    Log.d("lista", "hello my friend")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -162,16 +141,12 @@ fun ImportSecretView(
                     }
                     GenerateStatus.MNEMONIC_PHRASE -> {
                         ImportMnemonic(
-                            settings = settings,
                             curValueLabel = curValueLabel,
                             curValuePassphrase = curValuePassphrase,
                             secret = secret,
                             passwordOptions = passwordOptions,
                             generateStatus = generateStatus,
                             typeOfSecret = typeOfSecret,
-                            curValueLogin = curValueLogin,
-                            curValueUrl = curValueUrl,
-                            retrievedSet = retrievedSet,
                             onClick = { importItems, text ->
                                 onClick(importItems,text)
                             },
@@ -184,7 +159,6 @@ fun ImportSecretView(
                         ImportPassword(
                             settings = settings,
                             curValueLabel = curValueLabel,
-                            curValuePassphrase = curValuePassphrase,
                             secret = secret,
                             passwordOptions = passwordOptions,
                             generateStatus = generateStatus,
@@ -202,16 +176,12 @@ fun ImportSecretView(
                         )
                     }
                     GenerateStatus.BITCOIN_DESCRIPTOR -> {
-                        ImportBitcoinDescriptor(
+                        ImportWalletDescriptor(
                             curValueLabel = curValueLabel,
-                            settings = settings,
                             secret = secret,
                             passwordOptions = passwordOptions,
                             generateStatus = generateStatus,
                             typeOfSecret = typeOfSecret,
-                            curValueLogin = curValueLogin,
-                            curValueUrl = curValueUrl,
-                            retrievedSet = retrievedSet,
                             onClick = { importItems, text ->
                                 onClick(importItems,text)
                             },

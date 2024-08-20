@@ -140,16 +140,12 @@ fun GenerateView(
                     }
                     GenerateStatus.MNEMONIC_PHRASE -> {
                         GenerateMnemonic(
-                            settings = settings,
                             curValueLabel = curValueLabel,
                             passwordOptions = passwordOptions,
                             curValuePassphrase = curValuePassphrase,
                             secret = secret,
                             generateStatus = generateStatus,
                             typeOfSecret = typeOfSecret,
-                            curValueLogin = curValueLogin,
-                            curValueUrl = curValueUrl,
-                            retrievedSet = retrievedSet,
                             onClick = { generateViewItems, secretValue, passOptions ->
                                 onClick(generateViewItems,secretValue,passOptions)
                             },
@@ -163,7 +159,6 @@ fun GenerateView(
                             settings = settings,
                             curValueLabel = curValueLabel,
                             passwordOptions = passwordOptions,
-                            curValuePassphrase = curValuePassphrase,
                             secret = secret,
                             generateStatus = generateStatus,
                             typeOfSecret = typeOfSecret,

@@ -24,14 +24,13 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.MySecretStatus
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog
+import org.satochip.seedkeeper.ui.components.mysecret.SecretButtonsField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
-import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
@@ -125,41 +124,10 @@ fun MySecretView(
                         secret = secret
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        SatoButton(
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                mySecretStatus.value = MySecretStatus.SEED
-                            },
-                            text = R.string.seed,
-                            image = R.drawable.seed_icon,
-                            horizontalPadding = 2.dp
-                        )
-                        SatoButton(
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                mySecretStatus.value = MySecretStatus.SEED_QR
-                            },
-                            text = R.string.seedQR,
-                            image = R.drawable.seedqr_icon,
-                            horizontalPadding = 2.dp
-                        )
-                        // todo: logic should be changed
-//                        SatoButton(
-//                            modifier = Modifier,
-//                            onClick = {
-//                                mySecretStatus.value = MySecretStatus.X_PUB
-//                            },
-//                            text = R.string.xpub,
-//                            image = R.drawable.xpub_icon,
-//                            horizontalPadding = 2.dp
-//                        )
-                    }
+                    SecretButtonsField(
+                        mySecretStatus = mySecretStatus,
+                        type = type
+                    )
                 }
                 when (mySecretStatus.value) {
                     MySecretStatus.SEED -> {
