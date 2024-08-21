@@ -54,6 +54,7 @@ object NFCCardService {
     var authentikey: ByteArray?  = null
 
     //BACKUP
+    // todo: shouldn't we use a backupPinString to store backup card pin?
     var secretsList: MutableList<SeedkeeperSecretHeader> = mutableListOf()
     var backupSecretObjects: MutableList<SeedkeeperSecretObject> = mutableListOf()
     var backupStatus = MutableLiveData(BackupStatus.DEFAULT)
@@ -232,7 +233,7 @@ object NFCCardService {
             cardStatus = ApplicationStatus(rapduStatus)
 
             val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
-            var respApdu = APDUResponse(ByteArray(0), 0x00, 0x00)
+            var respApdu = APDUResponse(ByteArray(0), 0x00, 0x00) //todo what's the purpose of this?
 
             try {
                 cmdSet.cardSetup(5, pinBytes) ?: respApdu
@@ -241,11 +242,11 @@ object NFCCardService {
             }
             // verify PIN
             cmdSet.setPin0(pinBytes)
-            cmdSet.cardVerifyPIN()
+            cmdSet.cardVerifyPIN() // todo: remove since duplicate with verifyPin()?
 
             verifyPin()
             isSetupNeeded.postValue(false)
-            resultCodeLive.postValue(NfcResultCode.OK)
+            resultCodeLive.postValue(NfcResultCode.OK) // more explicit message?
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
             SatoLog.e(TAG, "verifyPin exception: $e")
@@ -261,7 +262,7 @@ object NFCCardService {
     ) {
         SatoLog.d(TAG, "verifyPin start")
         try {
-            APDUResponse(ByteArray(0), 0x00, 0x00)
+            //APDUResponse(ByteArray(0), 0x00, 0x00) // todo remove
             val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
 
             cmdSet.cardSelect("seedkeeper").checkOK()
@@ -269,16 +270,17 @@ object NFCCardService {
             val rapdu = cmdSet.cardVerifyPIN()
 
             when (rapdu.sw) {
-                in 0x63C0..0x63C4, 0x9C0C -> {
+                // todo distinguish card blocked from wrong pin
+                in 0x63C0..0x63CF -> {
                     val lastDigit = rapdu.sw and 0x000F
-                    if (rapdu.sw != 0x9C0C && lastDigit > 0 ) {
-                        val nfcCode = NfcResultCode.WRONG_PIN
-                        nfcCode.triesLeft = lastDigit
-                        resultCodeLive.postValue(nfcCode)
-                    } else {
-                        resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
-                    }
-                    SatoLog.d(TAG, "verifyPin not successful")
+                    val nfcCode = NfcResultCode.WRONG_PIN
+                    nfcCode.triesLeft = lastDigit
+                    resultCodeLive.postValue(nfcCode)
+                    SatoLog.d(TAG, "verifyPin failed")
+                }
+                0x9C0C -> {
+                    resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
+                    SatoLog.d(TAG, "verifyPin failed, card blocked!")
                 }
                 else -> {
                     if (shouldGetCardData) {
@@ -297,7 +299,7 @@ object NFCCardService {
                         isCardDataAvailable.postValue(true)
                     }
                     if (shouldUpdateResultCodeLive) {
-                        resultCodeLive.postValue(NfcResultCode.OK)
+                        resultCodeLive.postValue(NfcResultCode.OK) // more explicit msg?
                     }
                     authentikey = cmdSet.cardGetAuthentikey()
                     SatoLog.d(TAG, "verifyPin successful")
@@ -310,6 +312,7 @@ object NFCCardService {
         }
     }
 
+    // todo: get* method should return object explicitly instead of changing state?
     fun getCardLogs() {
         try {
             SatoLog.d(TAG, "getCardLogs start")
@@ -339,6 +342,8 @@ object NFCCardService {
         }
     }
 
+    // todo: get* method should return object explicitly instead of changing state
+    // todo: rename function to getSecretHeaderList since only headers are exported!
     fun getSecretsList(
         shouldUpdateResultCodeLive: Boolean = true
     ) {
@@ -348,7 +353,7 @@ object NFCCardService {
             secretsList.addAll(cmdSet.seedkeeperListSecretHeaders())
             secretHeaders.postValue(secretsList)
             if (shouldUpdateResultCodeLive) {
-                resultCodeLive.postValue(NfcResultCode.OK)
+                resultCodeLive.postValue(NfcResultCode.OK) // todo return more explicit msg
             }
             SatoLog.d(TAG, "getSecretsList successful")
         } catch (e: Exception) {
@@ -358,6 +363,7 @@ object NFCCardService {
         }
     }
 
+    // todo move as function in GeneratePasswordData?
     fun getSecretBytes(): ByteArray {
         val secretBytes = mutableListOf<Byte>()
 
@@ -422,7 +428,9 @@ object NFCCardService {
                         secretBytes.addAll(descriptorBytes.toList())
                     }
                 }
-                else -> {}
+                else -> {
+                    // todo log something
+                }
             }
         }
 
@@ -457,6 +465,8 @@ object NFCCardService {
         )
     }
 
+    // todo rename method to ImportSecret()
+    // todo explicitly use passwordData as parameter?
     fun generateASecret() {
         SatoLog.d(TAG, "generateASecret start")
         try {
@@ -467,9 +477,9 @@ object NFCCardService {
                 val secretObject = createSecretObject(secretBytes, secretFingerprintBytes, data)
                 cmdSet.seedkeeperImportSecret(secretObject)
                 SatoLog.d(TAG, "import secret success")
-                getSecretsList()
+                getSecretsList() // todo: add new secretHeader to existing list instead?
                 SatoLog.d(TAG, "new secret list")
-                resultCodeLive.postValue(NfcResultCode.OK)
+                resultCodeLive.postValue(NfcResultCode.OK) // todo more explicit msg
             }
         } catch (e: Exception) {
             SatoLog.e(TAG, "generateASecret exception: $e")
@@ -477,6 +487,8 @@ object NFCCardService {
         }
     }
 
+    // todo: get* method should return object explicitly instead of changing state?
+    // todo: use function parameter instead of implicitly using state variable like currentSecretId, pin
     fun getSecret() {
         SatoLog.d(TAG, "getSecret start")
         try {
@@ -487,20 +499,21 @@ object NFCCardService {
                 // todo: logic should be changed
 //                getXpub()
             }
-            resultCodeLive.postValue(NfcResultCode.OK)
+            resultCodeLive.postValue(NfcResultCode.OK)// todo add more explicit msg
         } catch (e: Exception) {
             SatoLog.e(TAG, "getSecret exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }
 
+    // todo: use function parameter instead of implicitly using state variable like currentSecretId, pin
     fun deleteSecret() {
         SatoLog.d(TAG, "deleteSecret start")
         try {
             verifyPin(shouldUpdateDataState = false, shouldUpdateResultCodeLive = false)
             currentSecretId.value?.let { sid ->
                 cmdSet.seedkeeperResetSecret(sid)
-                getSecretsList()
+                getSecretsList() // todo: remove deleted secret from existing list instead?
                 SatoLog.d(TAG, "new secret list")
                 currentSecretObject.postValue(null)
                 currentSecretId.postValue(null)
@@ -512,25 +525,26 @@ object NFCCardService {
         }
     }
 
+    // todo: use function parameter instead of implicitly using state variable like cardLabel
     fun editCardLabel() {
         SatoLog.d(TAG, "editCardLabel start")
         try {
             verifyPin(false)
             cmdSet.setCardLabel(cardLabel.value)
-            resultCodeLive.postValue(NfcResultCode.OK)
+            resultCodeLive.postValue(NfcResultCode.OK) // todo add more explicit msg
         } catch (e: Exception) {
             SatoLog.e(TAG, "editCardLabel exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }
 
-    fun getXpub() {
+    fun getXpub(path: String, xtype: Long = 0x0488b21e) {
+        // default xtype used: standard
         SatoLog.d(TAG, "getXpub start")
         try {
-            val path = "m/0/0/0"
+            //val path = "m/0/0/0"
             currentSecretId.value?.let { sid ->
-                // Using path as set in iOS app, xtype used: standard
-                val xpubString = cmdSet.cardBip32GetXpub(path, 0x0488b21e, sid)
+                val xpubString = cmdSet.cardBip32GetXpub(path, xtype, sid)
             }
             resultCodeLive.postValue(NfcResultCode.OK)
         } catch (e: Exception) {
@@ -543,14 +557,17 @@ object NFCCardService {
         SatoLog.d(TAG, "backupCardImportNewSecrets start")
         try {
             val masterCardObjects: List<SeedkeeperSecretObject> = backupSecretObjects.toList()
+
+            // todo: improve this code?
             val backupPin = pinString
             pinString = oldPinString
             oldPinString = backupPin
+
             val masterAuthentikey = authentikey
             verifyPin(
                 shouldUpdateResultCodeLive = false
             )
-            backupCardGetSecrets()
+            backupCardGetSecrets() // todo: de we really need to export the whole secret? headers should be sufficient to check fingerprint
             val uniqueNewSecrets = masterCardObjects.filterNot { newSecret ->
                 backupSecretObjects.any {
                     it.fingerprintFromSecret.contentEquals(newSecret.fingerprintFromSecret)
@@ -570,7 +587,7 @@ object NFCCardService {
                 backupSecretObjects.clear()
             }
 
-            resultCodeLive.postValue(NfcResultCode.OK)
+            resultCodeLive.postValue(NfcResultCode.OK) // todo: more explicit msg
             backupStatus.postValue(BackupStatus.FIFTH_STEP)
         } catch (e: Exception) {
             SatoLog.e(TAG, "backupCardImportNewSecrets exception: $e")
@@ -658,6 +675,7 @@ object NFCCardService {
         return null
     }
 
+    // todo backupCardScan and masterCardScan are very similar, could we merge them?
     fun backupCardScan() {
         SatoLog.d(TAG, "scanBackupCard start")
         try {
@@ -678,7 +696,7 @@ object NFCCardService {
                 isReadyForPinCode.postValue(true)
             }
 
-            resultCodeLive.postValue(NfcResultCode.OK)
+            resultCodeLive.postValue(NfcResultCode.OK) // use more explicit result?
             backupStatus.postValue(BackupStatus.SECOND_STEP)
         } catch (e: Exception) {
             SatoLog.e(TAG, "scanBackupCard exception: $e")
@@ -696,7 +714,7 @@ object NFCCardService {
             cardStatus = ApplicationStatus(rapduStatus)
 
             val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
-            var respApdu = APDUResponse(ByteArray(0), 0x00, 0x00)
+            var respApdu = APDUResponse(ByteArray(0), 0x00, 0x00) //todo what's the purpose of this?
 
             try {
                 cmdSet.cardSetup(5, pinBytes) ?: respApdu
@@ -714,6 +732,7 @@ object NFCCardService {
         SatoLog.d(TAG, "backupCardSetup successful")
     }
 
+    // todo: get* methods should return object explicitly instead of modifying object inside function?
     fun backupCardGetSecrets(pubSid: Int? = null) {
         try {
             backupSecretObjects.clear()
