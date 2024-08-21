@@ -201,6 +201,19 @@ class SharedViewModel : ViewModel() {
         return password.toString()
     }
 
+    fun getCompactSeedQr(mnemonic: String, context: Context): String {
+        val indices = mnemonic.split(" ").map { word ->
+            getWordList(context).indexOf(word).also {
+                if (it == -1) throw IllegalArgumentException("Word not found in BIP-39 wordlist: $word")
+            }
+        }
+        val mnemonicBinaryString = indices.joinToString(separator = "") { index ->
+            index.toString(2).padStart(11, '0')
+        }
+
+        return mnemonicBinaryString
+    }
+
     fun generateMnemonic(mnemonicSize: Int): String {
         val entropyBits = when (mnemonicSize) {
             12 -> 128

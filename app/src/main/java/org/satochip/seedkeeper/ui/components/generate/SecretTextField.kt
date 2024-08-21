@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.g0dkar.qrcode.QRCode
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ui.components.shared.DataAsQrCode
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
@@ -113,8 +114,9 @@ fun SecretTextField(
         }
 
         if (isQRCodeSelected.value) {
+            val qrCodeBytes = QRCode(curValue.value).render().getBytes()
             DataAsQrCode(
-                data = curValue.value
+                qrCodeBytes = qrCodeBytes
             )
         } else {
             TextField(

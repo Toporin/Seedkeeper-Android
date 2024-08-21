@@ -588,6 +588,7 @@ fun Navigation(
             val data = remember {
                 mutableStateOf<GeneratePasswordData?>(null)
             }
+            val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
             LaunchedEffect(viewModel.currentSecretId) {
                 if (viewModel.currentSecretId == null) {
                     navController.navigate(HomeView) {
@@ -659,6 +660,14 @@ fun Navigation(
                 copyToClipboard = { secret ->
                     clipboardManager.setText(AnnotatedString(secret))
                     Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
+                },
+                getCompactSeedQR = { mnemonic ->
+                    try {
+                        return@MySecretView viewModel.getCompactSeedQr(mnemonic, context)
+                    } catch (e: Exception) {
+                        Toast.makeText(context, retrieveTheSecretFirstText, Toast.LENGTH_SHORT).show()
+                        return@MySecretView ""
+                    }
                 }
             )
         }
