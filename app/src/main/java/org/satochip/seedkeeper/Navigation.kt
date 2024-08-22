@@ -670,7 +670,7 @@ fun Navigation(
                 mutableStateOf(false)
             }
             LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.OK && isImportInitiated.value) {
+                if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
                     isImportDone.value = true
                 } else {
                     isImportDone.value = false
@@ -747,7 +747,7 @@ fun Navigation(
                 mutableStateOf(false)
             }
             LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.OK && isImportInitiated.value) {
+                if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
                     isImportDone.value = true
                 } else {
                     isImportDone.value = false

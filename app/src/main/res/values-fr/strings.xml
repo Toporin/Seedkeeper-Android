@@ -25,6 +25,14 @@
     <string name="nfcOk">Opération réussie !</string>
     <string name="nfcTitleWarning">Attention</string>
     <string name="nfcErrorOccured">Une erreur s\'est produite, veuillez réessayer</string>
+    <string name="pinVerified">Code PIN vérifié!</string>
+    <string name="secretHeaderListSet">Secrets récupérés!</string>
+    <string name="secretImportedSuccessfully">Secret importé avec succès!</string>
+    <string name="secretFetchedSuccessfully">Secret récupéré avec succès!</string>
+    <string name="cardLabelChangedSuccessfully">L\'étiquette de la carte a été modifiée avec succès!</string>
+    <string name="cardSuccessfullyScanned">Carte numérisée avec succès!</string>
+    <string name="cardSuccessfullyBackedUp">Carte sauvegardée avec succès!</string>
+    <string name="cardSetupSuccessful">Configuration de la carte réussie!</string>
     <string name="scanning">Scanning</string>
     <string name="nfcResultCodeNone">Aucun</string>
     <string name="nfcResultCodeBusy">Occupé</string>
