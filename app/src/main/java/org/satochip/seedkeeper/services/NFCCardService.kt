@@ -99,7 +99,7 @@ object NFCCardService {
                 changePin()
             }
             NfcActionType.GET_SECRETS_LIST -> {
-                setSecretsHeaderList()
+                getSecretHeaderList()
             }
             NfcActionType.GENERATE_A_SECRET -> {
                 passwordData?.let { data ->
@@ -295,7 +295,7 @@ object NFCCardService {
      *
      * If any step fails, an error is logged and authenticityStatus is updated to AuthenticityStatus.UNKNOWN.
      */
-    private fun setCardAuthenticty() {
+    private fun getCardAuthenticty() {
         try {
             SatoLog.d(TAG, "getCardAuthenticty start")
             val authResults = cmdSet.cardVerifyAuthenticity()
@@ -401,11 +401,12 @@ object NFCCardService {
                     SatoLog.d(TAG, "verifyPin failed, card blocked!")
                 }
                 else -> {
+                    // TODO: we should perform these operations outside of verifyPIN()!!
                     if (shouldGetCardData) {
                         runBlocking {
-                            setSecretsHeaderList(shouldUpdateResultCodeLive)
-                            setCardAuthenticty()
-                            setCardLogs()
+                            getSecretHeaderList(shouldUpdateResultCodeLive)
+                            getCardAuthenticty()
+                            getCardLogs()
                             if (cardStatus.protocolVersion == 2) {
                                 seedkeeperStatus = cmdSet.seedkeeperGetStatus()
                             }
@@ -440,14 +441,14 @@ object NFCCardService {
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
      */
-    private fun setCardLogs() {
+    private fun getCardLogs() {
         try {
-            SatoLog.d(TAG, "setCardLogs start")
+            SatoLog.d(TAG, "getCardLogs start")
             cardLogs.clear()
             cardLogs.addAll(cmdSet.seedkeeperPrintLogs(true))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "setCardLogs exception: $e")
+            SatoLog.e(TAG, "getCardLogs exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }
@@ -498,22 +499,22 @@ object NFCCardService {
      *
      * If any step fails, an empty list is posted to `secretHeaders`, an error is logged, and the appropriate result code is posted.
      */
-    private fun setSecretsHeaderList(
+    private fun getSecretHeaderList(
         shouldUpdateResultCodeLive: Boolean = true
     ) {
         try {
-            SatoLog.d(TAG, "setSecretsHeaderList start")
+            SatoLog.d(TAG, "getSecretHeaderList start")
             secretsList.clear()
             secretsList.addAll(cmdSet.seedkeeperListSecretHeaders())
             secretHeaders.postValue(secretsList)
             if (shouldUpdateResultCodeLive) {
                 resultCodeLive.postValue(NfcResultCode.SECRET_HEADER_LIST_SET)
             }
-            SatoLog.d(TAG, "setSecretsHeaderList successful")
+            SatoLog.d(TAG, "getSecretHeaderList successful")
         } catch (e: Exception) {
             secretHeaders.postValue(emptyList())
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "setSecretsHeaderList exception: $e")
+            SatoLog.e(TAG, "getSecretHeaderList exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }
@@ -537,9 +538,9 @@ object NFCCardService {
      */
     private fun createSecretObject(
         secretBytes: ByteArray,
-        secretFingerprintBytes: ByteArray,
         data: GeneratePasswordData
     ): SeedkeeperSecretObject {
+        val secretFingerprintBytes = SeedkeeperSecretHeader.getFingerprintBytes(secretBytes)
         val subType =
             if (data.type == SeedkeeperSecretType.BIP39_MNEMONIC) 0x00.toByte() else 0x01.toByte()
         val secretHeader = SeedkeeperSecretHeader(
@@ -584,12 +585,12 @@ object NFCCardService {
         try {
             SatoLog.d(TAG, "importSecret start")
             verifyPin(
+                shouldGetCardData = false,
                 shouldUpdateDataState = false,
                 shouldUpdateResultCodeLive = false,
             )
             val secretBytes = data.getSecretBytes()
-            val secretFingerprintBytes = SeedkeeperSecretHeader.getFingerprintBytes(secretBytes)
-            val secretObject = createSecretObject(secretBytes, secretFingerprintBytes, data)
+            val secretObject = createSecretObject(secretBytes, data)
             val newSecretHeader = cmdSet.seedkeeperImportSecret(secretObject)
             secretsList.add(0, newSecretHeader)
             secretHeaders.postValue(secretsList)
@@ -901,7 +902,7 @@ object NFCCardService {
                     val backupAuthentikeySecret = backupAuthentikey?.let {
                         importAuthentikey(it)
                     }
-                    setMasterCardSecrets(backupAuthentikeySecret?.sid)
+                    getMasterCardSecrets(backupAuthentikeySecret?.sid)
                 }
             }
             resultCodeLive.postValue(NfcResultCode.CARD_SUCCESSFULLY_SCANNED)
@@ -971,7 +972,7 @@ object NFCCardService {
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
      */
-    private fun setMasterCardSecrets(pubSid: Int? = null) {
+    private fun getMasterCardSecrets(pubSid: Int? = null) {
         try {
             masterSecretObjects.clear()
             if (secretsList.isNotEmpty()) {
@@ -982,7 +983,7 @@ object NFCCardService {
             }
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "setMasterCardSecrets exception: $e")
+            SatoLog.e(TAG, "getMasterCardSecrets exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }
