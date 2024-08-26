@@ -39,7 +39,8 @@ fun ImportDefault(
                 SelectFieldItem(prefix = null, text = R.string.typeOfSecret),
                 SelectFieldItem(prefix = null, text = R.string.mnemonicPhrase),
                 SelectFieldItem(prefix = null, text = R.string.loginPassword),
-                SelectFieldItem(prefix = null, text = R.string.bitcoinDescriptor),
+                SelectFieldItem(prefix = null, text = R.string.walletDescriptor),
+                SelectFieldItem(prefix = null, text = R.string.freeField),
             ),
             onClick = { item ->
                 stringResourceMap[item]?.let { resourceItem ->
@@ -68,9 +69,13 @@ fun ImportDefault(
                             generateStatus.value =
                                 GenerateStatus.LOGIN_PASSWORD
                         }
-                        TypeOfSecret.BITCOIN_DESCRIPTOR -> {
+                        TypeOfSecret.WALLET_DESCRIPTOR -> {
                             generateStatus.value =
-                                GenerateStatus.BITCOIN_DESCRIPTOR
+                                GenerateStatus.WALLET_DESCRIPTOR
+                        }
+                        TypeOfSecret.FREE_FIELD -> {
+                            generateStatus.value =
+                                GenerateStatus.FREE_FIELD
                         }
                         else -> {}
                     }

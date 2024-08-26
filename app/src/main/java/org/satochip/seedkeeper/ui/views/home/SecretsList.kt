@@ -150,27 +150,18 @@ fun SecretsList(
                             SeedkeeperSecretType.DEFAULT_TYPE -> {
                                 filteredList = secretHeaders.toList()
                             }
-
-                            SeedkeeperSecretType.PASSWORD -> {
-                                filteredList = secretHeaders.toList()
-                                filteredList = secretHeaders.toList().filter {
-                                    it?.type == filter
-                                }
-                            }
-
                             SeedkeeperSecretType.BIP39_MNEMONIC -> {
                                 filteredList = secretHeaders.toList()
                                 filteredList = secretHeaders.toList().filter {
                                     it?.type == filter || it?.type == SeedkeeperSecretType.MASTERSEED || it?.type == SeedkeeperSecretType.ELECTRUM_MNEMONIC
                                 }
                             }
-                            SeedkeeperSecretType.DATA -> {
+                            SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR, SeedkeeperSecretType.PASSWORD -> {
                                 filteredList = secretHeaders.toList()
                                 filteredList = secretHeaders.toList().filter {
                                     it?.type == filter
                                 }
                             }
-
                             else -> {}
                         }
                     }

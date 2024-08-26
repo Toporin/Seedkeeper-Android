@@ -4,7 +4,8 @@ enum class TypeOfSecret(val value: String) {
     TYPE_OF_SECRET("typeOfSecret"),
     MNEMONIC_PHRASE("mnemonicPhrase"),
     LOGIN_PASSWORD("loginPassword"),
-    BITCOIN_DESCRIPTOR("bitcoinDescriptor");
+    WALLET_DESCRIPTOR("walletDescriptor"),
+    FREE_FIELD("freeField");
 
     companion object {
         fun valueOfKey(value: String) = TypeOfSecret.values().first { it.value == value }

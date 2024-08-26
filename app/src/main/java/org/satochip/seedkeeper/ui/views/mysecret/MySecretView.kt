@@ -85,7 +85,7 @@ fun MySecretView(
                 secretText.value = password
             }
         }
-        SeedkeeperSecretType.DATA -> {
+        SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
             secret.value?.descriptor?.let { descriptor ->
                 secretText.value = descriptor
             }

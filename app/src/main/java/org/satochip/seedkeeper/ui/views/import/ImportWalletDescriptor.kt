@@ -21,10 +21,7 @@ import androidx.compose.ui.unit.sp
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
-import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
-import org.satochip.seedkeeper.data.PasswordOptions
-import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
@@ -37,9 +34,6 @@ import org.satochip.seedkeeper.utils.isClickable
 fun ImportWalletDescriptor(
     curValueLabel: MutableState<String>,
     secret: MutableState<String>,
-    passwordOptions: MutableState<PasswordOptions>,
-    generateStatus: MutableState<GenerateStatus>,
-    typeOfSecret: MutableState<TypeOfSecret>,
     onClick: (ImportViewItems, String?) -> Unit,
     onImportSecret: (GeneratePasswordData) -> Unit,
 ) {
@@ -47,8 +41,8 @@ fun ImportWalletDescriptor(
         modifier = Modifier.fillMaxWidth()
     ) {
         TitleTextField(
-            title = R.string.importABitcoinDescriptor,
-            text = R.string.importABitcoinDescriptorMessage
+            title = R.string.importAWalletDescriptor,
+            text = R.string.importAWalletDescriptorMessage
         )
         Spacer(modifier = Modifier.height(8.dp))
         InputField(
@@ -66,7 +60,7 @@ fun ImportWalletDescriptor(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(
-                text = stringResource(R.string.enterYourBitcoinDescriptor),
+                text = stringResource(R.string.enterYourWalletDescriptor),
                 style = TextStyle(
                     color = Color.Black,
                     fontSize = 18.sp,
@@ -95,7 +89,7 @@ fun ImportWalletDescriptor(
                     if (isClickable(secret, curValueLabel)) {
                         onImportSecret(
                             GeneratePasswordData(
-                                type = SeedkeeperSecretType.DATA,
+                                type = SeedkeeperSecretType.WALLET_DESCRIPTOR,
                                 password = "",
                                 label = curValueLabel.value,
                                 login = "",

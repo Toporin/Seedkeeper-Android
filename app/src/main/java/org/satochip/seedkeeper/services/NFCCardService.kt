@@ -542,7 +542,7 @@ object NFCCardService {
     ): SeedkeeperSecretObject {
         val secretFingerprintBytes = SeedkeeperSecretHeader.getFingerprintBytes(secretBytes)
         val subType =
-            if (data.type == SeedkeeperSecretType.BIP39_MNEMONIC) 0x00.toByte() else 0x01.toByte()
+            if (data.type == SeedkeeperSecretType.MASTERSEED) 0x01.toByte() else 0x00.toByte()
         val secretHeader = SeedkeeperSecretHeader(
             0,
             data.type,

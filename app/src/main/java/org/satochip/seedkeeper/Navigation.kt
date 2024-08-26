@@ -52,10 +52,10 @@ import org.satochip.seedkeeper.ui.views.showcardlogs.ShowCardLogsView
 import org.satochip.seedkeeper.ui.views.showlogs.ShowLogsView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
-import org.satochip.seedkeeper.utils.parseBitcoinDescriptorData
 import org.satochip.seedkeeper.utils.parseMasterseedMnemonicCardData
 import org.satochip.seedkeeper.utils.parseMnemonicCardData
 import org.satochip.seedkeeper.utils.parsePasswordCardData
+import org.satochip.seedkeeper.utils.parseWalletDescriptorData
 import org.satochip.seedkeeper.utils.webviewActivityIntent
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
@@ -614,8 +614,8 @@ fun Navigation(
                             SeedkeeperSecretType.PASSWORD -> {
                                 data.value = parsePasswordCardData(secretObject.secretBytes)
                             }
-                            SeedkeeperSecretType.DATA -> {
-                                data.value = parseBitcoinDescriptorData(secretObject.secretBytes)
+                            SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
+                                data.value = parseWalletDescriptorData(secretObject.secretBytes)
                             }
                             else -> {}
                         }

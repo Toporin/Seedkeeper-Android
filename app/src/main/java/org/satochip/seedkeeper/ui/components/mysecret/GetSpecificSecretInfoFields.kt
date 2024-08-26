@@ -16,10 +16,13 @@ fun GetSpecificSecretInfoFields(
             title = R.string.mnemonicSize,
             text = (secret.value?.size ?: "").toString()
         )
-
         SecretInfoField(
             title = R.string.passphrase,
             text = secret.value?.password ?: ""
+        )
+        SecretInfoField(
+            title = R.string.walletDescriptorOptional,
+            text = secret.value?.descriptor ?: ""
         )
     } else if (type == SeedkeeperSecretType.PASSWORD.name) {
             SecretInfoField(

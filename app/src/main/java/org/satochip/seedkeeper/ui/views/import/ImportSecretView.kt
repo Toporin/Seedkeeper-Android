@@ -36,7 +36,8 @@ fun ImportSecretView(
         R.string.loginPassword to "loginPassword",
         R.string.typeOfSecret to "typeOfSecret",
         R.string.mnemonicPhrase to "mnemonicPhrase",
-        R.string.bitcoinDescriptor to "bitcoinDescriptor"
+        R.string.walletDescriptor to "walletDescriptor",
+        R.string.freeField to "freeField"
     )
     val scrollState = rememberScrollState()
 
@@ -57,6 +58,9 @@ fun ImportSecretView(
             mutableStateOf("")
         }
         val curValuePassphrase = remember {
+            mutableStateOf("")
+        }
+        val curValueWalletDescriptor = remember {
             mutableStateOf("")
         }
         val curValueLogin = remember {
@@ -143,10 +147,10 @@ fun ImportSecretView(
                         ImportMnemonic(
                             curValueLabel = curValueLabel,
                             curValuePassphrase = curValuePassphrase,
+                            curValueWalletDescriptor = curValueWalletDescriptor,
                             secret = secret,
                             passwordOptions = passwordOptions,
                             generateStatus = generateStatus,
-                            typeOfSecret = typeOfSecret,
                             onClick = { importItems, text ->
                                 onClick(importItems,text)
                             },
@@ -175,13 +179,22 @@ fun ImportSecretView(
                             }
                         )
                     }
-                    GenerateStatus.BITCOIN_DESCRIPTOR -> {
+                    GenerateStatus.WALLET_DESCRIPTOR -> {
                         ImportWalletDescriptor(
                             curValueLabel = curValueLabel,
                             secret = secret,
-                            passwordOptions = passwordOptions,
-                            generateStatus = generateStatus,
-                            typeOfSecret = typeOfSecret,
+                            onClick = { importItems, text ->
+                                onClick(importItems,text)
+                            },
+                            onImportSecret = { passwordData ->
+                                onImportSecret(passwordData)
+                            }
+                        )
+                    }
+                    GenerateStatus.FREE_FIELD -> {
+                        ImportFreeField(
+                            curValueLabel = curValueLabel,
+                            secret = secret,
                             onClick = { importItems, text ->
                                 onClick(importItems,text)
                             },

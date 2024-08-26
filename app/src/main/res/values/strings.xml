@@ -64,6 +64,7 @@
         <string name="mnemonicSize">Mnemonic size</string>
         <string name="mnemonicWords">%d words</string>
         <string name="passphrase"> Passphrase (optional)</string>
+        <string name="walletDescriptorOptional"> Wallet descriptor (optional)</string>
         <!--Login/Password-->
         <string name="loginOptional">Login (optional)</string>
         <string name="urlOptional">URL (optional)</string>
@@ -75,8 +76,6 @@
         <string name="emailListNewEmail">Write new email</string>
         <string name="emailListUseExisting">Or use existing:</string>
         <string name="emailListWriteNewOne">Write a new one:</string>
-        <!--Bitcoin descriptor-->
-        <string name="bitcoinDescriptor">Wallet descriptor</string>
 
     <!--Import View-->
     <string name="importHeader">Import</string>
@@ -84,13 +83,18 @@
     <string name="importAMnemonicPhraseMessage">Allows you to import an existing mnemonic phrase into your Seedkeeper.</string>
     <string name="importAPassword">Import a password</string>
     <string name="importAPasswordMessage">Allows you to import an existing password into your Seedkeeper.</string>
-    <string name="importABitcoinDescriptor">Import a wallet descriptor</string>
-    <string name="importABitcoinDescriptorMessage">Allows you to import an existing wallet descriptor into your Seedkeeper.</string>
+    <string name="importAWalletDescriptor">Import a wallet descriptor</string>
+    <string name="importAWalletDescriptorMessage">Allows you to import an existing wallet descriptor into your Seedkeeper.</string>
+    <string name="importFreeField">Import what you want</string>
+    <string name="importFreeFieldMessage">Allows you to import any data into your Seedkeeper</string>
     <string name="enterYourMnemonic">Enter your mnemonic:</string>
     <string name="enterYourPassword">Enter your password:</string>
-    <string name="enterYourBitcoinDescriptor">Enter your wallet descriptor:</string>
+    <string name="enterYourWalletDescriptor">Enter your wallet descriptor:</string>
+    <string name="enterYourData">Enter your data:</string>
     <string name="mnemonicType">Mnemonic type</string>
     <string name="bip">BIP39</string>
+    <string name="walletDescriptor">Wallet descriptor</string>
+    <string name="freeField">Free field</string>
 
     <!--Menu View-->
     <string name="cardInfo">Card\'s Information</string>

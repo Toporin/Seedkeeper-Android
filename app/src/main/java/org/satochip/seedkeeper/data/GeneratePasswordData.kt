@@ -39,6 +39,13 @@ data class GeneratePasswordData(
                     secretBytes.addAll(entropyBytes.toList())
                     secretBytes.add(passphraseSize)
                     secretBytes.addAll(passphraseBytes.toList())
+                    this.descriptor?.let { descriptor ->
+                        val descriptorBytes = descriptor.toByteArray(Charsets.UTF_8)
+                        val descriptorSize = descriptorBytes.size.toShort()
+                        val descriptorSizeArray = ByteBuffer.allocate(2).putShort(descriptorSize).array()
+                        secretBytes.addAll(descriptorSizeArray.toList())
+                        secretBytes.addAll(descriptorBytes.toList())
+                    }
                 }
             }
             SeedkeeperSecretType.BIP39_MNEMONIC -> {
@@ -73,7 +80,7 @@ data class GeneratePasswordData(
                     secretBytes.addAll(urlBytes.toList())
                 }
             }
-            SeedkeeperSecretType.DATA -> {
+            SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
                 this.descriptor?.let { descriptor ->
                     val descriptorBytes = descriptor.toByteArray(Charsets.UTF_8)
                     val descriptorSize = descriptorBytes.size.toShort()

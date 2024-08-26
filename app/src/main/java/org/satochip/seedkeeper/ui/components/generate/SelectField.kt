@@ -99,7 +99,7 @@ fun SelectField(
             onDismissRequest = {
                 isExpended = false
             },
-            shape = RoundedCornerShape(25)
+            shape = RoundedCornerShape(24.dp)
         ) {
             selectList.forEachIndexed { index, item ->
                 if (index == 0) return@forEachIndexed

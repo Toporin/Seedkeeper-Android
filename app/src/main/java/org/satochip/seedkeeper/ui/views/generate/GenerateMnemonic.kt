@@ -35,9 +35,9 @@ fun GenerateMnemonic(
     curValueLabel: MutableState<String>,
     passwordOptions: MutableState<PasswordOptions>,
     curValuePassphrase: MutableState<String>,
+    curValueWalletDescriptor: MutableState<String>,
     secret: MutableState<String>,
     generateStatus: MutableState<GenerateStatus>,
-    typeOfSecret: MutableState<TypeOfSecret>,
     onClick: (GenerateViewItems, String?, PasswordOptions?) -> String,
     onImportSecret: (GeneratePasswordData) -> Unit
 ) {
@@ -72,7 +72,12 @@ fun GenerateMnemonic(
             placeHolder = R.string.passphrase,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
-
+        Spacer(modifier = Modifier.height(20.dp))
+        InputField(
+            curValue = curValueWalletDescriptor,
+            placeHolder = R.string.walletDescriptorOptional,
+            containerColor = SatoPurple.copy(alpha = 0.5f)
+        )
     }
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -116,7 +121,8 @@ fun GenerateMnemonic(
                                 label = curValueLabel.value,
                                 login = "",
                                 url = "",
-                                mnemonic = secret.value
+                                mnemonic = secret.value,
+                                descriptor = curValueWalletDescriptor.value
                             )
                         )
                     }

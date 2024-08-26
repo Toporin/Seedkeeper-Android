@@ -51,13 +51,21 @@ fun SecretButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         secretHeader?.let {
-            val imageId: Int =
-                if (secretHeader.type == SeedkeeperSecretType.BIP39_MNEMONIC || secretHeader.type == SeedkeeperSecretType.MASTERSEED)
-                    R.drawable.mnemonic
-                else if (secretHeader.type == SeedkeeperSecretType.DATA)
-                    R.drawable.wallet
-                else
-                    R.drawable.password_icon
+            val imageId: Int =  when (secretHeader.type) {
+                    SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
+                        R.drawable.mnemonic
+                    }
+                    SeedkeeperSecretType.DATA -> {
+                        R.drawable.free_data
+                    }
+                    SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
+                        R.drawable.wallet
+                    }
+                    else -> {
+                        R.drawable.password_icon
+                    }
+                }
+
             Row {
                 GifImage(
                     modifier = Modifier

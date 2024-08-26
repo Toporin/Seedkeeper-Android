@@ -65,6 +65,9 @@ fun GenerateView(
         val curValueUrl = remember {
             mutableStateOf("")
         }
+        val curValueWalletDescriptor = remember {
+            mutableStateOf("")
+        }
         val passwordOptions = remember {
             mutableStateOf(
                 PasswordOptions()
@@ -144,9 +147,9 @@ fun GenerateView(
                             curValueLabel = curValueLabel,
                             passwordOptions = passwordOptions,
                             curValuePassphrase = curValuePassphrase,
+                            curValueWalletDescriptor = curValueWalletDescriptor,
                             secret = secret,
                             generateStatus = generateStatus,
-                            typeOfSecret = typeOfSecret,
                             onClick = { generateViewItems, secretValue, passOptions ->
                                 onClick(generateViewItems,secretValue,passOptions)
                             },
@@ -183,7 +186,7 @@ fun GenerateView(
                             },
                         )
                     }
-                    GenerateStatus.BITCOIN_DESCRIPTOR -> {}
+                    GenerateStatus.WALLET_DESCRIPTOR, GenerateStatus.FREE_FIELD -> {}
                 }
             }
         }

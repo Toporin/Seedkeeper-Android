@@ -64,9 +64,10 @@
         <string name="mnemonicSize">Sélectionnez la taille</string>
         <string name="mnemonicWords">%d mots</string>
         <string name="passphrase"> Passphrase (optionel)</string>
+        <string name="walletDescriptorOptional"> Descripteur de portefeuille (optionel)</string>
         <!--Login/Password-->
         <string name="loginOptional">Login (optionel)</string>
-        <string name="urlOptional">URL (optional)</string>
+        <string name="urlOptional">URL (optionel)</string>
         <string name="passwordLength">Longueur</string>
         <string name="passwordImport">Importer</string>
         <string name="copiedToClipboard">Copié</string>
@@ -75,8 +76,6 @@
         <string name="emailListNewEmail">Insérer un nouveau login</string>
         <string name="emailListUseExisting">Utiliser un existant :</string>
         <string name="emailListWriteNewOne">Rédiger un nouveau :</string>
-        <!--Bitcoin descriptor-->
-        <string name="bitcoinDescriptor">Portefeuille descripteur</string>
 
     <!--Import View-->
     <string name="importHeader">Importer</string>
@@ -84,13 +83,18 @@
     <string name="importAMnemonicPhraseMessage">Vous permet d\'importer une phrase mnémotechnique existante dans votre Seedkeeper.</string>
     <string name="importAPassword">Importer un mot de passe</string>
     <string name="importAPasswordMessage">Vous permet d\'importer un mot de passe existant dans votre Seedkeeper.</string>
-    <string name="importABitcoinDescriptor">Importer un descripteur portefeuille</string>
-    <string name="importABitcoinDescriptorMessage">Vous permet d\'importer un descripteur de portefeuille existant dans votre Seedkeeper.</string>
+    <string name="importAWalletDescriptor">Importer un descripteur portefeuille</string>
+    <string name="importAWalletDescriptorMessage">Vous permet d\'importer un descripteur de portefeuille existant dans votre Seedkeeper.</string>
+    <string name="importFreeField">Importez ce que vous voulez</string>
+    <string name="importFreeFieldMessage">Vous permet d\'importer n\'importe quelle donnée dans votre Seedkeeper</string>
     <string name="enterYourMnemonic">Entrer votre seedphrase:</string>
     <string name="enterYourPassword">Entrer votre mot de passe:</string>
-    <string name="enterYourBitcoinDescriptor">Entrez le descripteur de votre portefeuille:</string>
+    <string name="enterYourWalletDescriptor">Entrez le descripteur de votre portefeuille:</string>
+    <string name="enterYourData">Entrez vos données:</string>
     <string name="mnemonicType">Type de seedphrase</string>
     <string name="bip">BIP39</string>
+    <string name="walletDescriptor">Portefeuille descripteur</string>
+    <string name="freeField">Champ libre</string>
 
     <!--Menu View-->
     <string name="cardInfo">Informations de la carte</string>

@@ -32,6 +32,7 @@ fun stringToList(inputString: String?): List<String?>? {
 
 fun parseMasterseedMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
     var index = 0
+    var descriptor = ""
 
     if (bytes.isEmpty()) {
         SatoLog.e(TAG, "Byte array is empty")
@@ -70,13 +71,26 @@ fun parseMasterseedMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
             passphrase = String(passphraseBytes, Charsets.UTF_8)
         }
     }
+    if (index < bytes.size) {
+        val descriptorSizeArray = bytes.sliceArray(index..index + 1)
+        val descriptorSize = ByteBuffer.wrap(descriptorSizeArray).short
+        index += 2
+        if (index + descriptorSize > bytes.size) {
+            SatoLog.e(TAG, "Invalid descriptor size")
+            return null
+        }
+        val descriptorBytes = bytes.copyOfRange(index, index + descriptorSize)
+        descriptor = String(descriptorBytes, Charsets.UTF_8)
+    }
+
 
     return GeneratePasswordData(
         password = passphrase ?: "",
         mnemonic = mnemonic,
         size = countWords(mnemonic),
         label = "",
-        type = SeedkeeperSecretType.MASTERSEED
+        type = SeedkeeperSecretType.MASTERSEED,
+        descriptor = descriptor
     )
 }
 
@@ -121,14 +135,14 @@ fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
     )
 }
 
-fun parseBitcoinDescriptorData(bytes: ByteArray): GeneratePasswordData? {
+fun parseWalletDescriptorData(bytes: ByteArray): GeneratePasswordData? {
     var index = 0
 
     val descriptorSizeArray = bytes.sliceArray(0..1)
     val descriptorSize = ByteBuffer.wrap(descriptorSizeArray).short
     index += 2
     if (index + descriptorSize > bytes.size) {
-        SatoLog.e(TAG, "Invalid bitcoin descriptor size")
+        SatoLog.e(TAG, "Invalid descriptor size")
         return null
     }
     val descriptorBytes = bytes.copyOfRange(index, index + descriptorSize)
@@ -146,7 +160,6 @@ fun parseBitcoinDescriptorData(bytes: ByteArray): GeneratePasswordData? {
         size = 0,
         descriptor = descriptor
     )
-
 }
 
 fun parsePasswordCardData(bytes: ByteArray): GeneratePasswordData? {
