@@ -43,7 +43,7 @@ fun SecretsFilter(
         SeedkeeperSecretType.DEFAULT_TYPE to "All",
         SeedkeeperSecretType.BIP39_MNEMONIC to "Mnemonic",
         SeedkeeperSecretType.PASSWORD to "Password",
-        SeedkeeperSecretType.DATA to "Bitcoin"
+        SeedkeeperSecretType.DATA to "Descriptors"
     )
 
     Column {

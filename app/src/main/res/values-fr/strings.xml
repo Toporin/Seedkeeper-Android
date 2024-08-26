@@ -68,7 +68,7 @@
         <string name="emailListUseExisting">Utiliser un existant :</string>
         <string name="emailListWriteNewOne">Rédiger un nouveau :</string>
         <!--Bitcoin descriptor-->
-        <string name="bitcoinDescriptor">Bitcoin descriptor</string>
+        <string name="bitcoinDescriptor">Portefeuille descripteur</string>
 
     <!--Import View-->
     <string name="importHeader">Importer</string>
@@ -76,11 +76,11 @@
     <string name="importAMnemonicPhraseMessage">Vous permet d\'importer une phrase mnémotechnique existante dans votre Seedkeeper.</string>
     <string name="importAPassword">Importer un mot de passe</string>
     <string name="importAPasswordMessage">Vous permet d\'importer un mot de passe existant dans votre Seedkeeper.</string>
-    <string name="importABitcoinDescriptor">Importer un descripteur Bitcoin</string>
-    <string name="importABitcoinDescriptorMessage">Vous permet d\'importer un descripteur Bitcoin existant dans votre Seedkeeper.</string>
+    <string name="importABitcoinDescriptor">Importer un descripteur portefeuille</string>
+    <string name="importABitcoinDescriptorMessage">Vous permet d\'importer un descripteur de portefeuille existant dans votre Seedkeeper.</string>
     <string name="enterYourMnemonic">Entrer votre seedphrase:</string>
     <string name="enterYourPassword">Entrer votre mot de passe:</string>
-    <string name="enterYourBitcoinDescriptor">Entrer votre descripteur Bitcoin:</string>
+    <string name="enterYourBitcoinDescriptor">Entrez le descripteur de votre portefeuille:</string>
     <string name="mnemonicType">Type de seedphrase</string>
     <string name="bip">BIP39</string>
 

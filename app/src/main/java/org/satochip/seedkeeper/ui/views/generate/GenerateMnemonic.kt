@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.ui.views.generate
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,13 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SelectFieldItem
 import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.generate.InputField
@@ -35,16 +32,12 @@ import org.satochip.seedkeeper.utils.isClickable
 
 @Composable
 fun GenerateMnemonic(
-    settings: SharedPreferences,
     curValueLabel: MutableState<String>,
     passwordOptions: MutableState<PasswordOptions>,
     curValuePassphrase: MutableState<String>,
     secret: MutableState<String>,
     generateStatus: MutableState<GenerateStatus>,
     typeOfSecret: MutableState<TypeOfSecret>,
-    curValueLogin: MutableState<String>,
-    curValueUrl: MutableState<String>,
-    retrievedSet: MutableState<Set<String>>,
     onClick: (GenerateViewItems, String?, PasswordOptions?) -> String,
     onImportSecret: (GeneratePasswordData) -> Unit
 ) {
@@ -87,6 +80,7 @@ fun GenerateMnemonic(
     ) {
         SecretTextField(
             curValue = secret,
+            isQRCodeEnabled = false,
             copyToClipboard = {
                 onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
             }
@@ -127,34 +121,17 @@ fun GenerateMnemonic(
                     .weight(1f),
                 onClick = {
                     if (isClickable(secret, curValueLabel)) {
-                        val type = getType(generateStatus.value)
-                        var password: String = ""
-                        var mnemonic: String? = null
-                        if (type == SeedkeeperSecretType.BIP39_MNEMONIC || type == SeedkeeperSecretType.MASTERSEED) {
-                            mnemonic = secret.value
-                            password = curValuePassphrase.value
-                        } else {
-                            password = secret.value
-                        }
                         onImportSecret(
                             GeneratePasswordData(
                                 size = passwordOptions.value.passwordLength,
                                 type = getType(generateStatus.value),
-                                password = password,
+                                password = curValuePassphrase.value,
                                 label = curValueLabel.value,
-                                login = curValueLogin.value,
-                                url = curValueUrl.value,
-                                mnemonic = mnemonic
+                                login = "",
+                                url = "",
+                                mnemonic = secret.value
                             )
                         )
-                    }
-                    if (curValueLogin.value.isNotEmpty()) {
-                        val stringSet = listOf(curValueLogin.value).toSet()
-                        retrievedSet.value += stringSet
-                        settings.edit().putStringSet(
-                            SeedkeeperPreferences.USED_LOGINS.name,
-                            retrievedSet.value
-                        ).apply()
                     }
                 },
                 text = R.string.importButton,

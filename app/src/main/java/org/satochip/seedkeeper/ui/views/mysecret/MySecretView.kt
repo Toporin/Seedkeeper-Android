@@ -24,7 +24,6 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.MySecretStatus
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog
@@ -32,7 +31,6 @@ import org.satochip.seedkeeper.ui.components.mysecret.SecretButtonsField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
-import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoButtonBlue

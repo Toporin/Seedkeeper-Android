@@ -161,7 +161,7 @@ fun SecretsList(
                             SeedkeeperSecretType.BIP39_MNEMONIC -> {
                                 filteredList = secretHeaders.toList()
                                 filteredList = secretHeaders.toList().filter {
-                                    it?.type == filter
+                                    it?.type == filter || it?.type == SeedkeeperSecretType.MASTERSEED || it?.type == SeedkeeperSecretType.ELECTRUM_MNEMONIC
                                 }
                             }
                             SeedkeeperSecretType.DATA -> {

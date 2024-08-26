@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
@@ -37,7 +36,6 @@ fun GeneratePassword(
     settings: SharedPreferences,
     curValueLabel: MutableState<String>,
     passwordOptions: MutableState<PasswordOptions>,
-    curValuePassphrase: MutableState<String>,
     secret: MutableState<String>,
     generateStatus: MutableState<GenerateStatus>,
     typeOfSecret: MutableState<TypeOfSecret>,
@@ -92,6 +90,7 @@ fun GeneratePassword(
     ) {
         SecretTextField(
             curValue = secret,
+            isQRCodeEnabled = false,
             copyToClipboard = {
                 onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
             }
@@ -132,24 +131,14 @@ fun GeneratePassword(
                     .weight(1f),
                 onClick = {
                     if (isClickable(secret, curValueLabel)) {
-                        val type = getType(generateStatus.value)
-                        var password: String = ""
-                        var mnemonic: String? = null
-                        if (type == SeedkeeperSecretType.BIP39_MNEMONIC || type == SeedkeeperSecretType.MASTERSEED) {
-                            mnemonic = secret.value
-                            password = curValuePassphrase.value
-                        } else {
-                            password = secret.value
-                        }
                         onImportSecret(
                             GeneratePasswordData(
                                 size = passwordOptions.value.passwordLength,
                                 type = getType(generateStatus.value),
-                                password = password,
+                                password = secret.value,
                                 label = curValueLabel.value,
                                 login = curValueLogin.value,
                                 url = curValueUrl.value,
-                                mnemonic = mnemonic
                             )
                         )
                     }

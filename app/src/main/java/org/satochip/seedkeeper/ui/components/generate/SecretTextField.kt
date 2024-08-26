@@ -45,6 +45,7 @@ fun SecretTextField(
     isEditable: Boolean = false,
     curValue: MutableState<String>,
     containerColor: Color = SatoDividerPurple.copy(alpha = 0.2f),
+    isQRCodeEnabled: Boolean = true,
     visualTransformation: VisualTransformation = PasswordVisualTransformation(),
     copyToClipboard: () -> Unit
 ) {
@@ -71,20 +72,22 @@ fun SecretTextField(
             .width(96.dp)
             .align(Alignment.TopEnd)
         ) {
-            Image(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(16.dp)
-                    .satoClickEffect(
-                        onClick = {
-                            isQRCodeSelected.value = !isQRCodeSelected.value
-                        }
-                    ),
-                painter = painterResource(id = R.drawable.seedqr_icon),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(Color.White)
-            )
+            if (isQRCodeEnabled) {
+                Image(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(16.dp)
+                        .satoClickEffect(
+                            onClick = {
+                                isQRCodeSelected.value = !isQRCodeSelected.value
+                            }
+                        ),
+                    painter = painterResource(id = R.drawable.seedqr_icon),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+            }
             Image(
                 modifier = Modifier
                     .padding(8.dp)
@@ -161,7 +164,6 @@ fun SecretTextField(
                     disabledTextColor = Color.Black,
                 ),
                 minLines = 1,
-//                maxLines = 3,
             )
         }
     }

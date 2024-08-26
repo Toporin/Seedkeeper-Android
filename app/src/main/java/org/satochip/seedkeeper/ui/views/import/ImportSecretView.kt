@@ -141,16 +141,12 @@ fun ImportSecretView(
                     }
                     GenerateStatus.MNEMONIC_PHRASE -> {
                         ImportMnemonic(
-                            settings = settings,
                             curValueLabel = curValueLabel,
                             curValuePassphrase = curValuePassphrase,
                             secret = secret,
                             passwordOptions = passwordOptions,
                             generateStatus = generateStatus,
                             typeOfSecret = typeOfSecret,
-                            curValueLogin = curValueLogin,
-                            curValueUrl = curValueUrl,
-                            retrievedSet = retrievedSet,
                             onClick = { importItems, text ->
                                 onClick(importItems,text)
                             },
@@ -163,7 +159,6 @@ fun ImportSecretView(
                         ImportPassword(
                             settings = settings,
                             curValueLabel = curValueLabel,
-                            curValuePassphrase = curValuePassphrase,
                             secret = secret,
                             passwordOptions = passwordOptions,
                             generateStatus = generateStatus,
@@ -181,16 +176,12 @@ fun ImportSecretView(
                         )
                     }
                     GenerateStatus.BITCOIN_DESCRIPTOR -> {
-                        ImportBitcoinDescriptor(
+                        ImportWalletDescriptor(
                             curValueLabel = curValueLabel,
-                            settings = settings,
                             secret = secret,
                             passwordOptions = passwordOptions,
                             generateStatus = generateStatus,
                             typeOfSecret = typeOfSecret,
-                            curValueLogin = curValueLogin,
-                            curValueUrl = curValueUrl,
-                            retrievedSet = retrievedSet,
                             onClick = { importItems, text ->
                                 onClick(importItems,text)
                             },

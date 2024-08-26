@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.ui.views.import
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
@@ -36,16 +34,12 @@ import org.satochip.seedkeeper.ui.theme.SatoPurple
 import org.satochip.seedkeeper.utils.isClickable
 
 @Composable
-fun ImportBitcoinDescriptor(
+fun ImportWalletDescriptor(
     curValueLabel: MutableState<String>,
-    settings: SharedPreferences,
     secret: MutableState<String>,
     passwordOptions: MutableState<PasswordOptions>,
     generateStatus: MutableState<GenerateStatus>,
     typeOfSecret: MutableState<TypeOfSecret>,
-    curValueLogin: MutableState<String>,
-    curValueUrl: MutableState<String>,
-    retrievedSet: MutableState<Set<String>>,
     onClick: (ImportViewItems, String?) -> Unit,
     onImportSecret: (GeneratePasswordData) -> Unit,
 ) {
@@ -80,10 +74,12 @@ fun ImportBitcoinDescriptor(
                     fontWeight = FontWeight.Bold
                 )
             )
+            Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
-                modifier = Modifier.height(200.dp),
+                modifier = Modifier.height(500.dp),
                 curValue = secret,
                 isEditable = true,
+                isQRCodeEnabled = false,
                 copyToClipboard = {
                     onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
                 }
@@ -113,24 +109,14 @@ fun ImportBitcoinDescriptor(
                     if (isClickable(secret, curValueLabel)) {
                         onImportSecret(
                             GeneratePasswordData(
-                                size = null,
                                 type = SeedkeeperSecretType.DATA,
                                 password = "",
                                 label = curValueLabel.value,
-                                login = curValueLogin.value,
-                                url = curValueUrl.value,
-                                mnemonic = null,
+                                login = "",
+                                url = "",
                                 descriptor = secret.value
                             )
                         )
-                    }
-                    if (curValueLogin.value.isNotEmpty()) {
-                        val stringSet = listOf(curValueLogin.value).toSet()
-                        retrievedSet.value += stringSet
-                        settings.edit().putStringSet(
-                            SeedkeeperPreferences.USED_LOGINS.name,
-                            retrievedSet.value
-                        ).apply()
                     }
                 },
                 text = R.string.importButton,
