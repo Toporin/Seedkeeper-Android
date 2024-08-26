@@ -22,7 +22,7 @@ fun DataAsQrCode(qrCodeBytes: ByteArray) {
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp)
-            .padding(10.dp)
+            .padding(vertical = 34.dp, horizontal = 16.dp)
     ) {
         val bitmapQrCode = BitmapFactory.decodeByteArray(qrCodeBytes, 0, qrCodeBytes.size)
         Image(

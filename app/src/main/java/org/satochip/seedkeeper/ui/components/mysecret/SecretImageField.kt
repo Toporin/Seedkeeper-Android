@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -17,7 +18,10 @@ import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 
 @Composable
 fun SecretImageField(
-    modifier: Modifier = Modifier.height(150.dp).fillMaxWidth(),
+    modifier: Modifier = Modifier
+        .heightIn(
+            min = 150.dp
+        ).fillMaxWidth(),
     qrCodeString: MutableState<String>,
     containerColor: Color = SatoDividerPurple.copy(alpha = 0.2f),
 ) {

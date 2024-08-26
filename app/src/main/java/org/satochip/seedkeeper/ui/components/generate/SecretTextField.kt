@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,7 +42,6 @@ import org.satochip.seedkeeper.utils.satoClickEffect
 
 @Composable
 fun SecretTextField(
-    modifier: Modifier = Modifier.height(150.dp),
     isEditable: Boolean = false,
     curValue: MutableState<String>,
     containerColor: Color = SatoDividerPurple.copy(alpha = 0.2f),
@@ -57,7 +56,10 @@ fun SecretTextField(
         mutableStateOf(false)
     }
     Box(
-        modifier = modifier
+        modifier = Modifier
+            .heightIn(
+                min = 150.dp
+            )
             .background(
                 color = containerColor,
                 shape = RoundedCornerShape(16.dp)
@@ -122,7 +124,8 @@ fun SecretTextField(
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align(Alignment.Center),
+                    .align(Alignment.Center)
+                    .padding(vertical = 24.dp, horizontal = 16.dp),
                 enabled = isEditable,
                 value = curValue.value,
                 onValueChange = {
@@ -158,7 +161,7 @@ fun SecretTextField(
                     disabledTextColor = Color.Black,
                 ),
                 minLines = 1,
-                maxLines = 3,
+//                maxLines = 3,
             )
         }
     }
