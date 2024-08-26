@@ -660,7 +660,7 @@ fun Navigation(
                     clipboardManager.setText(AnnotatedString(secret))
                     Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                 },
-                getCompactSeedQR = { mnemonic ->
+                getSeedQR = { mnemonic ->
                     try {
                         return@MySecretView viewModel.getSeedQr(mnemonic, context)
                     } catch (e: Exception) {

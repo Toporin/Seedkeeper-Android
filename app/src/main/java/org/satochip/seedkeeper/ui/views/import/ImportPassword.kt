@@ -104,7 +104,6 @@ fun ImportPassword(
             )
             Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
-                modifier = Modifier.height(200.dp),
                 curValue = secret,
                 isEditable = true,
                 isQRCodeEnabled = false,

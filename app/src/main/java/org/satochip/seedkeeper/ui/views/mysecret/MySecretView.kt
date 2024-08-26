@@ -42,14 +42,14 @@ fun MySecretView(
     type: String,
     isOldVersion: Boolean,
     onClick: (MySecretItems) -> Unit,
-    getCompactSeedQR: (String) -> String,
+    getSeedQR: (String) -> String,
     copyToClipboard: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
         mutableStateOf("")
     }
-    val compactSeedQR = remember {
+    val seedQR = remember {
         mutableStateOf("")
     }
     val isSecretShown = remember {
@@ -139,8 +139,8 @@ fun MySecretView(
                         type = type,
                         isSecretShown = isSecretShown,
                         onClick = {
-                            if (isSecretShown.value && compactSeedQR.value.isEmpty()) {
-                                compactSeedQR.value = getCompactSeedQR(secretText.value)
+                            if (isSecretShown.value && seedQR.value.isEmpty()) {
+                                seedQR.value = getSeedQR(secretText.value)
                             }
                         }
                     )
@@ -156,7 +156,7 @@ fun MySecretView(
                     }
                     MySecretStatus.SEED_QR -> {
                         SecretImageField(
-                            qrCodeString = compactSeedQR
+                            qrCodeString = seedQR
                         )
                     }
                     MySecretStatus.X_PUB -> {
