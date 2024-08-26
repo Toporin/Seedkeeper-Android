@@ -12,4 +12,5 @@ data class GeneratePasswordData(
     var url: String? = null,
     var mnemonic: String? = null,
     var exportRights: SeedkeeperExportRights = SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED,
+    val descriptor: String? = null
 )

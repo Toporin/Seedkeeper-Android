@@ -54,6 +54,8 @@ fun SecretButton(
             val imageId: Int =
                 if (secretHeader.type == SeedkeeperSecretType.BIP39_MNEMONIC || secretHeader.type == SeedkeeperSecretType.MASTERSEED)
                     R.drawable.mnemonic
+                else if (secretHeader.type == SeedkeeperSecretType.DATA)
+                    R.drawable.bitcoin
                 else
                     R.drawable.password_icon
             Row {

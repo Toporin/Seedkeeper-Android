@@ -26,6 +26,7 @@ import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.utils.stringToList
+import java.nio.ByteBuffer
 
 private const val TAG = "NFCCardService"
 
@@ -395,6 +396,16 @@ object NFCCardService {
                         secretBytes.addAll(urlBytes.toList())
                     }
                 }
+                SeedkeeperSecretType.DATA -> {
+                    data.descriptor?.let { descriptor ->
+                        val descriptorBytes = descriptor.toByteArray(Charsets.UTF_8)
+                        val descriptorSize = descriptorBytes.size.toShort()
+                        val descriptorSizeArray = ByteBuffer.allocate(2).putShort(descriptorSize).array()
+
+                        secretBytes.addAll(descriptorSizeArray.toList())
+                        secretBytes.addAll(descriptorBytes.toList())
+                    }
+                }
                 else -> {}
             }
         }
@@ -433,7 +444,7 @@ object NFCCardService {
     fun generateASecret() {
         SatoLog.d(TAG, "generateASecret start")
         try {
-            verifyPin(false)
+            verifyPin(shouldUpdateDataState = false, shouldUpdateResultCodeLive = false)
             val secretBytes = getSecretBytes()
             val secretFingerprintBytes = SeedkeeperSecretHeader.getFingerprintBytes(secretBytes)
             passwordData?.let { data ->
@@ -470,7 +481,7 @@ object NFCCardService {
     fun deleteSecret() {
         SatoLog.d(TAG, "deleteSecret start")
         try {
-            verifyPin(false)
+            verifyPin(shouldUpdateDataState = false, shouldUpdateResultCodeLive = false)
             currentSecretId.value?.let { sid ->
                 cmdSet.seedkeeperResetSecret(sid)
                 getSecretsList()

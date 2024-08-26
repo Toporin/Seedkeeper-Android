@@ -7,6 +7,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.services.SatoLog
+import java.nio.ByteBuffer
 
 const val TAG = "Utlis"
 
@@ -118,6 +119,34 @@ fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
         label = "",
         type = SeedkeeperSecretType.BIP39_MNEMONIC
     )
+}
+
+fun parseBitcoinDescriptorData(bytes: ByteArray): GeneratePasswordData? {
+    var index = 0
+
+    val descriptorSizeArray = bytes.sliceArray(0..1)
+    val descriptorSize = ByteBuffer.wrap(descriptorSizeArray).short
+    index += 2
+    if (index + descriptorSize > bytes.size) {
+        SatoLog.e(TAG, "Invalid bitcoin descriptor size")
+        return null
+    }
+    val descriptorBytes = bytes.copyOfRange(index, index + descriptorSize)
+    val descriptor = String(descriptorBytes, Charsets.UTF_8)
+    if (descriptor.isEmpty()) {
+        SatoLog.e(TAG, "Descriptor bytes conversion to string failed")
+        return null
+    }
+    return GeneratePasswordData(
+        password = "",
+        login = "",
+        url = "",
+        label = "",
+        type = SeedkeeperSecretType.DATA,
+        size = 0,
+        descriptor = descriptor
+    )
+
 }
 
 fun parsePasswordCardData(bytes: ByteArray): GeneratePasswordData? {

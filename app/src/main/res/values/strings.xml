@@ -40,6 +40,7 @@
     <string name="generateASecret">Generate a secret</string>
     <string name="generateAMnemonicPhrase">Generate a mnemonic phrase</string>
     <string name="generateAPassword">Generate a password</string>
+    <string name="generateABitcoinDescriptor">Generate a bitcoin descriptor</string>
     <string name="generateExplanation">Allows you to quickly generate and import a new secret.</string>
     <string name="generateSuccessful">The following secret has been successfully imported into your Seedkeeper</string>
     <string name="importButton">Import</string>
@@ -64,15 +65,20 @@
         <string name="emailListNewEmail">Write new email</string>
         <string name="emailListUseExisting">Or use existing:</string>
         <string name="emailListWriteNewOne">Write a new one:</string>
+        <!--Bitcoin descriptor-->
+        <string name="bitcoinDescriptor">Bitcoin descriptor</string>
 
     <!--Import View-->
     <string name="importHeader">Import</string>
     <string name="importAMnemonicPhrase">Import a mnemonic phrase</string>
-    <string name="importAMnemonicPhraseMessage">Import a mnemonic phrase</string>
-    <string name="importAPassword">Import a mnemonic phrase</string>
-    <string name="importAPasswordMessage">Import a mnemonic phrase</string>
+    <string name="importAMnemonicPhraseMessage">Allows you to import an existing mnemonic phrase into your Seedkeeper.</string>
+    <string name="importAPassword">Import a password</string>
+    <string name="importAPasswordMessage">Allows you to import an existing password into your Seedkeeper.</string>
+    <string name="importABitcoinDescriptor">Import a bitcoin descriptor</string>
+    <string name="importABitcoinDescriptorMessage">Allows you to import an existing bitcoin descriptor into your Seedkeeper.</string>
     <string name="enterYourMnemonic">Enter your mnemonic:</string>
     <string name="enterYourPassword">Enter your password:</string>
+    <string name="enterYourBitcoinDescriptor">Enter your bitcoin descriptor:</string>
     <string name="mnemonicType">Mnemonic type</string>
     <string name="bip">BIP39</string>
 
