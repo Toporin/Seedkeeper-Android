@@ -201,6 +201,22 @@ class SharedViewModel : ViewModel() {
         return password.toString()
     }
 
+    fun getSeedQr(mnemonic: String, context: Context): String {
+        // todo add support for other wordlist languages
+        // based on https://github.com/SeedSigner/seedsigner/blob/dev/docs/seed_qr/README.md#standard-seedqr-specification
+        val indices = mnemonic.split(" ").map { word ->
+            MnemonicCode.INSTANCE.wordList.indexOf(word).also {
+                if (it == -1){
+                    throw IllegalArgumentException("Word not found in BIP-39 wordlist: $word")
+                }
+            }
+        }
+        val mnemonicDecimalString = indices.joinToString(separator = "") { index ->
+            index.toString(10).padStart(4, '0')
+        }
+        return mnemonicDecimalString
+    }
+
     fun generateMnemonic(mnemonicSize: Int): String {
         val entropyBits = when (mnemonicSize) {
             12 -> 128

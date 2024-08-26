@@ -28,6 +28,7 @@ import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog
+import org.satochip.seedkeeper.ui.components.mysecret.SecretButtonsField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
@@ -43,11 +44,18 @@ fun MySecretView(
     type: String,
     isOldVersion: Boolean,
     onClick: (MySecretItems) -> Unit,
+    getCompactSeedQR: (String) -> String,
     copyToClipboard: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
         mutableStateOf("")
+    }
+    val compactSeedQR = remember {
+        mutableStateOf("")
+    }
+    val isSecretShown = remember {
+        mutableStateOf(false)
     }
     val mySecretStatus = remember {
         mutableStateOf(MySecretStatus.SEED)
@@ -63,6 +71,9 @@ fun MySecretView(
                 onClick(MySecretItems.BUY_SEEDKEEPER)
             }
         )
+    }
+    if (secretText.value.isNotEmpty()) {
+        isSecretShown.value = true
     }
 
     when (SeedkeeperSecretType.valueOf(type)) {
@@ -120,41 +131,16 @@ fun MySecretView(
                         secret = secret
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        SatoButton(
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                mySecretStatus.value = MySecretStatus.SEED
-                            },
-                            text = R.string.seed,
-                            image = R.drawable.seed_icon,
-                            horizontalPadding = 2.dp
-                        )
-                        SatoButton(
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                mySecretStatus.value = MySecretStatus.SEED_QR
-                            },
-                            text = R.string.seedQR,
-                            image = R.drawable.seedqr_icon,
-                            horizontalPadding = 2.dp
-                        )
-                        // todo: logic should be changed
-//                        SatoButton(
-//                            modifier = Modifier,
-//                            onClick = {
-//                                mySecretStatus.value = MySecretStatus.X_PUB
-//                            },
-//                            text = R.string.xpub,
-//                            image = R.drawable.xpub_icon,
-//                            horizontalPadding = 2.dp
-//                        )
-                    }
+                    SecretButtonsField(
+                        mySecretStatus = mySecretStatus,
+                        type = type,
+                        isSecretShown = isSecretShown,
+                        onClick = {
+                            if (isSecretShown.value && compactSeedQR.value.isEmpty()) {
+                                compactSeedQR.value = getCompactSeedQR(secretText.value)
+                            }
+                        }
+                    )
                 }
                 when (mySecretStatus.value) {
                     MySecretStatus.SEED -> {
@@ -167,7 +153,7 @@ fun MySecretView(
                     }
                     MySecretStatus.SEED_QR -> {
                         SecretImageField(
-                            curValue = secretText
+                            qrCodeString = compactSeedQR
                         )
                     }
                     MySecretStatus.X_PUB -> {

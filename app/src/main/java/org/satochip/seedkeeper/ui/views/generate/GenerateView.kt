@@ -1,6 +1,7 @@
 package org.satochip.seedkeeper.ui.views.generate
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

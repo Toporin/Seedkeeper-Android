@@ -26,7 +26,6 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
-import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SelectFieldItem
 import org.satochip.seedkeeper.data.TypeOfSecret
@@ -82,11 +81,6 @@ fun ImportSecretView(
         }
         val curValueUrl = remember {
             mutableStateOf("")
-        }
-        val passwordOptions = remember {
-            mutableStateOf(
-                PasswordOptions()
-            )
         }
         val isPopUpOpened = remember {
             mutableStateOf(false)
@@ -267,7 +261,6 @@ fun ImportSecretView(
                         GenerateStatus.DEFAULT, GenerateStatus.HOME -> {}
                         else -> {
                             SecretTextField(
-                                modifier = Modifier.height(200.dp),
                                 curValue = secret,
                                 isEditable = true,
                                 copyToClipboard = {
@@ -284,8 +277,6 @@ fun ImportSecretView(
                                 secret.value = ""
                                 generateStatus.value = GenerateStatus.DEFAULT
                                 typeOfSecret.value = TypeOfSecret.TYPE_OF_SECRET
-                                passwordOptions.value.passwordLength = 4
-
                             },
                             buttonColor = Color.Transparent,
                             textColor = Color.Black,
@@ -334,7 +325,7 @@ fun ImportSecretView(
                                             val type = getType(generateStatus.value)
                                             var password: String = ""
                                             var mnemonic: String? = null
-                                            if (type == SeedkeeperSecretType.BIP39_MNEMONIC) {
+                                            if (type == SeedkeeperSecretType.BIP39_MNEMONIC || type == SeedkeeperSecretType.MASTERSEED) {
                                                 mnemonic = secret.value
                                                 password = curValuePassphrase.value
                                             } else {
@@ -342,7 +333,7 @@ fun ImportSecretView(
                                             }
                                             onImportSecret(
                                                 GeneratePasswordData(
-                                                    size = passwordOptions.value.passwordLength,
+                                                    size = password.split(" ").size,
                                                     type = getType(generateStatus.value),
                                                     password = password,
                                                     label = curValueLabel.value,

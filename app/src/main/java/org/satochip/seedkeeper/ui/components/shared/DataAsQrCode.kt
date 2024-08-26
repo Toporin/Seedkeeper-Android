@@ -16,16 +16,15 @@ import androidx.compose.ui.unit.dp
 import io.github.g0dkar.qrcode.QRCode
 
 @Composable
-fun DataAsQrCode(data: String) {
+fun DataAsQrCode(qrCodeBytes: ByteArray) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp)
-            .padding(10.dp)
+            .padding(vertical = 34.dp, horizontal = 16.dp)
     ) {
-        val qrCode = QRCode(data).render().getBytes()
-        val bitmapQrCode = BitmapFactory.decodeByteArray(qrCode, 0, qrCode.size)
+        val bitmapQrCode = BitmapFactory.decodeByteArray(qrCodeBytes, 0, qrCodeBytes.size)
         Image(
             modifier = Modifier
                 .background(Color.White)
