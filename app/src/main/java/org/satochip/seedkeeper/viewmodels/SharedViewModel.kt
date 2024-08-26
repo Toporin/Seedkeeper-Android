@@ -3,6 +3,7 @@ package org.satochip.seedkeeper.viewmodels
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -203,8 +204,10 @@ class SharedViewModel : ViewModel() {
 
     fun getCompactSeedQr(mnemonic: String, context: Context): String {
         val indices = mnemonic.split(" ").map { word ->
-            getWordList(context).indexOf(word).also {
-                if (it == -1) throw IllegalArgumentException("Word not found in BIP-39 wordlist: $word")
+            MnemonicCode.INSTANCE.wordList.indexOf(word).also {
+                if (it == -1){
+                    throw IllegalArgumentException("Word not found in BIP-39 wordlist: $word")
+                }
             }
         }
         val mnemonicBinaryString = indices.joinToString(separator = "") { index ->
