@@ -663,7 +663,7 @@ fun Navigation(
                 },
                 getCompactSeedQR = { mnemonic ->
                     try {
-                        return@MySecretView viewModel.getCompactSeedQr(mnemonic, context)
+                        return@MySecretView viewModel.getSeedQr(mnemonic, context)
                     } catch (e: Exception) {
                         Toast.makeText(context, retrieveTheSecretFirstText, Toast.LENGTH_SHORT).show()
                         return@MySecretView ""

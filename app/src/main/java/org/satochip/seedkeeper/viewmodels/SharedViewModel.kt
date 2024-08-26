@@ -3,7 +3,6 @@ package org.satochip.seedkeeper.viewmodels
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -202,7 +201,9 @@ class SharedViewModel : ViewModel() {
         return password.toString()
     }
 
-    fun getCompactSeedQr(mnemonic: String, context: Context): String {
+    fun getSeedQr(mnemonic: String, context: Context): String {
+        // todo add support for other wordlist languages
+        // based on https://github.com/SeedSigner/seedsigner/blob/dev/docs/seed_qr/README.md#standard-seedqr-specification
         val indices = mnemonic.split(" ").map { word ->
             MnemonicCode.INSTANCE.wordList.indexOf(word).also {
                 if (it == -1){
@@ -210,11 +211,10 @@ class SharedViewModel : ViewModel() {
                 }
             }
         }
-        val mnemonicBinaryString = indices.joinToString(separator = "") { index ->
-            index.toString(2).padStart(11, '0')
+        val mnemonicDecimalString = indices.joinToString(separator = "") { index ->
+            index.toString(10).padStart(4, '0')
         }
-
-        return mnemonicBinaryString
+        return mnemonicDecimalString
     }
 
     fun generateMnemonic(mnemonicSize: Int): String {
