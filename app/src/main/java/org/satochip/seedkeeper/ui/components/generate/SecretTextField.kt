@@ -46,7 +46,6 @@ fun SecretTextField(
     curValue: MutableState<String>,
     containerColor: Color = SatoDividerPurple.copy(alpha = 0.2f),
     isQRCodeEnabled: Boolean = true,
-    maxLines: Int = 3,
     visualTransformation: VisualTransformation = PasswordVisualTransformation(),
     copyToClipboard: () -> Unit
 ) {
@@ -165,7 +164,6 @@ fun SecretTextField(
                     disabledTextColor = Color.Black,
                 ),
                 minLines = 1,
-                maxLines = maxLines
             )
         }
     }

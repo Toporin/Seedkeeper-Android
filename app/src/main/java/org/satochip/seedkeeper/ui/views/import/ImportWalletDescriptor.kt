@@ -84,19 +84,6 @@ fun ImportWalletDescriptor(
                 }
             )
         }
-        //Back
-        SatoButton(
-            onClick = {
-                secret.value = ""
-                generateStatus.value = GenerateStatus.DEFAULT
-                typeOfSecret.value = TypeOfSecret.TYPE_OF_SECRET
-                passwordOptions.value.passwordLength = 4
-
-            },
-            buttonColor = Color.Transparent,
-            textColor = Color.Black,
-            text = R.string.back
-        )
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center

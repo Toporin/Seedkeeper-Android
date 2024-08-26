@@ -201,6 +201,26 @@ class SharedViewModel : ViewModel() {
         return password.toString()
     }
 
+    fun isMnemonicValid(mnemonic: String): Boolean {
+        val mnemonicList = mnemonic.split(" ")
+
+        if (mnemonicList.size !in listOf(12, 18, 24)) {
+            return false
+        }
+
+        if (mnemonicList.any { word ->
+                MnemonicCode.INSTANCE.wordList.indexOf(word) == -1
+            }) {
+            return false
+        }
+        return try {
+            MnemonicCode.INSTANCE.check(mnemonicList)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     fun getSeedQr(mnemonic: String, context: Context): String {
         // todo add support for other wordlist languages
         // based on https://github.com/SeedSigner/seedsigner/blob/dev/docs/seed_qr/README.md#standard-seedqr-specification

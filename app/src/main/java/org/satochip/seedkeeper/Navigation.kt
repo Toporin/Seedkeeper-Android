@@ -755,6 +755,7 @@ fun Navigation(
             val isImportInitiated = remember {
                 mutableStateOf(false)
             }
+            val mnemonicValidText = stringResource(id = R.string.mnemonicValidText)
             LaunchedEffect(viewModel.resultCodeLive) {
                 if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
                     isImportDone.value = true
@@ -785,11 +786,26 @@ fun Navigation(
                 onImportSecret = { passwordData ->
                     isImportInitiated.value = true
                     viewModel.setPasswordData(passwordData)
-                    showNfcDialog.value = true // NfcDialog
-                    viewModel.scanCardForAction(
-                        activity = context as Activity,
-                        nfcActionType = NfcActionType.GENERATE_A_SECRET
-                    )
+                    val isMasterSeed = passwordData.type == SeedkeeperSecretType.MASTERSEED
+                    val mnemonic = passwordData.mnemonic
+
+                    if (isMasterSeed && mnemonic != null) {
+                        if (viewModel.isMnemonicValid(mnemonic)) {
+                            showNfcDialog.value = true
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.GENERATE_A_SECRET
+                            )
+                        } else {
+                            Toast.makeText(context, mnemonicValidText, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        showNfcDialog.value = true
+                        viewModel.scanCardForAction(
+                            activity = context as Activity,
+                            nfcActionType = NfcActionType.GENERATE_A_SECRET
+                        )
+                    }
                 }
             )
         }

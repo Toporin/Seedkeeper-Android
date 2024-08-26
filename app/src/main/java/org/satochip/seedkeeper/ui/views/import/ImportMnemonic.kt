@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.ui.views.import
 
-import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,13 +18,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
@@ -99,18 +96,6 @@ fun ImportMnemonic(
                 }
             )
         }
-        SatoButton(
-            onClick = {
-                secret.value = ""
-                generateStatus.value = GenerateStatus.DEFAULT
-                typeOfSecret.value = TypeOfSecret.TYPE_OF_SECRET
-                passwordOptions.value.passwordLength = 4
-
-            },
-            buttonColor = Color.Transparent,
-            textColor = Color.Black,
-            text = R.string.back
-        )
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center

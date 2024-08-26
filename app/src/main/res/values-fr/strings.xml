@@ -20,7 +20,7 @@
     <string name="cardNeedToBeScannedMessage">Vous devez scanner une carte pour afficher ses informations.</string>
     <string name="close">Fermer</string>
     <string name="retrieveTheSecretFirst">Veuillez d\'abord récupérer le secret</string>
-
+    <string name="mnemonicValidText">Le mnémonique n\'est pas valide!</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess"></string>
