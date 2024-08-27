@@ -54,6 +54,9 @@ object NFCCardService {
     private lateinit var cardStatus: ApplicationStatus
     private var authentikey: ByteArray?  = null
 
+    //V1 SEEDKEEPER
+    var authentikeyList: MutableList<ByteArray> = mutableListOf()
+
     //BACKUP
     private var backupPinString: String? = null
     private var secretsList: MutableList<SeedkeeperSecretHeader> = mutableListOf()
@@ -273,6 +276,9 @@ object NFCCardService {
             } else {
                 if (cardStatus.protocolVersion == 2) {
                     authentikey = cmdSet.cardGetAuthentikey()
+                } else {
+                    authentikeyList.clear()
+                    authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
                 }
                 isReadyForPinCode.postValue(true)
             }
@@ -350,6 +356,9 @@ object NFCCardService {
             }
             if (cardStatus.protocolVersion == 2) {
                 authentikey = cmdSet.cardGetAuthentikey()
+            } else {
+                authentikeyList.clear()
+                authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
             }
             checkAuthentikey()
             verifyPin()
@@ -440,12 +449,20 @@ object NFCCardService {
         }
     }
 
-    fun checkAuthentikey() {
+    private fun checkAuthentikey() {
         cmdSet.cardSelect("seedkeeper").checkOK()
         cmdSet.cardGetStatus()
-        if (cardStatus.protocolVersion == 2 && !authentikey.contentEquals(cmdSet.cardGetAuthentikey())) {
-            SatoLog.d(TAG, "verifyPin card mismatch")
-            throw CardMismatchException("authentikey doesnt match")
+        if (cardStatus.protocolVersion == 2) {
+            if (!authentikey.contentEquals(cmdSet.cardGetAuthentikey())) {
+                SatoLog.d(TAG, "verifyPin card mismatch")
+                throw CardMismatchException("authentikey doesnt match")
+            }
+        } else {
+            val newAuthentikeyList = cmdSet.cardInitiateSecureChannel()
+            val isAuthentikeyValid = authentikeyList.any { authentikey -> newAuthentikeyList.any { it.contentEquals(authentikey) } }
+            if (!isAuthentikeyValid) {
+                throw CardMismatchException("authentikey doesnt match")
+            }
         }
     }
 
@@ -796,6 +813,9 @@ object NFCCardService {
             val masterAuthentikey = authentikey
             if (cardStatus.protocolVersion == 2) {
                 authentikey = cmdSet.cardGetAuthentikey()
+            } else {
+                authentikeyList.clear()
+                authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
             }
             checkAuthentikey()
             verifyPin(
@@ -966,6 +986,9 @@ object NFCCardService {
                     oldPinString = pinString
                     if (cardStatus.protocolVersion == 2) {
                         authentikey = cmdSet.cardGetAuthentikey()
+                    } else {
+                        authentikeyList.clear()
+                        authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
                     }
                     isReadyForPinCode.postValue(true)
                 } else {
@@ -975,6 +998,9 @@ object NFCCardService {
                     val backupAuthentikey = authentikey
                     if (cardStatus.protocolVersion == 2) {
                         authentikey = cmdSet.cardGetAuthentikey()
+                    } else {
+                        authentikeyList.clear()
+                        authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
                     }
                     checkAuthentikey()
                     verifyPin(
@@ -1036,6 +1062,9 @@ object NFCCardService {
             }
             if (cardStatus.protocolVersion == 2) {
                 authentikey = cmdSet.cardGetAuthentikey()
+            } else {
+                authentikeyList.clear()
+                authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
             }
             checkAuthentikey()
             verifyPin(
