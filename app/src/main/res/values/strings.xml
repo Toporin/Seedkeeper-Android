@@ -43,6 +43,7 @@
     <string name="nfcWrongPin">Wrong PIN, tries left: </string>
     <string name="nfcCardBlocked">Too many incorrect PIN attempts! Your card has been blocked.</string>
     <string name="nfcSecretDeleted">Secret successfully deleted.</string>
+    <string name="cardMismatch">Different card detected, please use right card!</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>

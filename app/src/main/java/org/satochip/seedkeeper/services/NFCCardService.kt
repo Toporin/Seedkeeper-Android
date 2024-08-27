@@ -6,7 +6,6 @@ import android.content.Context
 import android.nfc.NfcAdapter
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.satochip.android.NFCCardManager
 import org.satochip.client.ApplicationStatus
@@ -25,6 +24,7 @@ import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.GeneratePasswordData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.utils.CardMismatchException
 
 private const val TAG = "NFCCardService"
 
@@ -271,6 +271,9 @@ object NFCCardService {
                 resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
                 return
             } else {
+                if (cardStatus.protocolVersion == 2) {
+                    authentikey = cmdSet.cardGetAuthentikey()
+                }
                 isReadyForPinCode.postValue(true)
             }
             resultCodeLive.postValue(NfcResultCode.OK)
@@ -345,9 +348,17 @@ object NFCCardService {
             } catch (error: Exception) {
                 SatoLog.e(TAG, "cardSetup: Error: $error")
             }
+            if (cardStatus.protocolVersion == 2) {
+                authentikey = cmdSet.cardGetAuthentikey()
+            }
+            checkAuthentikey()
             verifyPin()
             isSetupNeeded.postValue(false)
             resultCodeLive.postValue(NfcResultCode.CARD_SETUP_SUCCESSFUL)
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
             SatoLog.e(TAG, "verifyPin exception: $e")
@@ -387,7 +398,6 @@ object NFCCardService {
             cmdSet.cardSelect("seedkeeper").checkOK()
             cmdSet.setPin0(pinBytes)
             val rapdu = cmdSet.cardVerifyPIN()
-
             when (rapdu.sw) {
                 in 0x63C1..0x63CF -> {
                     val lastDigit = rapdu.sw and 0x000F
@@ -404,7 +414,7 @@ object NFCCardService {
                     // TODO: we should perform these operations outside of verifyPIN()!!
                     if (shouldGetCardData) {
                         runBlocking {
-                            getSecretHeaderList(shouldUpdateResultCodeLive)
+                            getSecretHeaderList(false)
                             getCardAuthenticty()
                             getCardLogs()
                             if (cardStatus.protocolVersion == 2) {
@@ -420,7 +430,6 @@ object NFCCardService {
                     if (shouldUpdateResultCodeLive) {
                         resultCodeLive.postValue(NfcResultCode.PIN_VERIFIED)
                     }
-                    authentikey = cmdSet.cardGetAuthentikey()
                     SatoLog.d(TAG, "verifyPin successful")
                 }
             }
@@ -428,6 +437,15 @@ object NFCCardService {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "verifyPin exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+    }
+
+    fun checkAuthentikey() {
+        cmdSet.cardSelect("seedkeeper").checkOK()
+        cmdSet.cardGetStatus()
+        if (cardStatus.protocolVersion == 2 && !authentikey.contentEquals(cmdSet.cardGetAuthentikey())) {
+            SatoLog.d(TAG, "verifyPin card mismatch")
+            throw CardMismatchException("authentikey doesnt match")
         }
     }
 
@@ -476,9 +494,14 @@ object NFCCardService {
             cardStatus = cmdSet.applicationStatus ?: return
             cardStatus = ApplicationStatus(rapduStatus)
             cmdSet.changeCardPin(oldPinBytes, pinBytes)
+            checkAuthentikey()
             verifyPin(shouldUpdateResultCodeLive = false)
             resultCodeLive.postValue(NfcResultCode.PIN_CHANGED)
             SatoLog.d(TAG, "changePin successful")
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "changePin exception: $e")
@@ -584,6 +607,7 @@ object NFCCardService {
     ) {
         try {
             SatoLog.d(TAG, "importSecret start")
+            checkAuthentikey()
             verifyPin(
                 shouldGetCardData = false,
                 shouldUpdateDataState = false,
@@ -595,7 +619,11 @@ object NFCCardService {
             secretsList.add(0, newSecretHeader)
             secretHeaders.postValue(secretsList)
             resultCodeLive.postValue(NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY)
-        } catch (e: Exception) {
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "importSecret exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
@@ -621,6 +649,7 @@ object NFCCardService {
     ): SeedkeeperSecretObject? {
         try {
             SatoLog.d(TAG, "getSecret start")
+            checkAuthentikey()
             verifyPin(
                 shouldUpdateDataState = false,
                 shouldUpdateResultCodeLive = false,
@@ -629,6 +658,10 @@ object NFCCardService {
             val exportedSecret = cmdSet.seedkeeperExportSecret(sid, null)
             resultCodeLive.postValue(NfcResultCode.SECRET_FETCHED_SUCCESSFULLY)
             return exportedSecret
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "getSecret exception: $e")
@@ -657,6 +690,7 @@ object NFCCardService {
     ) {
         try {
             SatoLog.d(TAG, "deleteSecret start")
+            checkAuthentikey()
             verifyPin(
                 shouldUpdateDataState = false,
                 shouldUpdateResultCodeLive = false,
@@ -668,6 +702,10 @@ object NFCCardService {
             currentSecretObject.postValue(null)
             currentSecretId.postValue(null)
             resultCodeLive.postValue(NfcResultCode.SECRET_DELETED)
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "deleteSecret exception: $e")
@@ -692,6 +730,7 @@ object NFCCardService {
     ) {
         try {
             SatoLog.d(TAG, "editCardLabel start")
+            checkAuthentikey()
             verifyPin(
                 shouldUpdateDataState = false,
                 shouldUpdateResultCodeLive = false,
@@ -699,6 +738,10 @@ object NFCCardService {
             )
             cmdSet.setCardLabel(cardLabel)
             resultCodeLive.postValue(NfcResultCode.CARD_LABEL_CHANGED_SUCCESSFULLY)
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "editCardLabel exception: $e")
@@ -747,7 +790,14 @@ object NFCCardService {
             pinString = oldPinString
             oldPinString = backupPinString
 
+            cmdSet.cardSelect("seedkeeper").checkOK()
+            cmdSet.cardGetStatus()
+
             val masterAuthentikey = authentikey
+            if (cardStatus.protocolVersion == 2) {
+                authentikey = cmdSet.cardGetAuthentikey()
+            }
+            checkAuthentikey()
             verifyPin(
                 shouldUpdateResultCodeLive = false,
                 shouldUpdateDataState = false
@@ -757,8 +807,11 @@ object NFCCardService {
                     it.fingerprintBytes.contentEquals(newSecret.fingerprintFromSecret)
                 }
             }
+
             val masterAuthentikeySecret = masterAuthentikey?.let {
-                importAuthentikey(it)
+                getImportedAuthentikey(masterAuthentikey) ?: run {
+                    importAuthentikey(it)
+                }
             }
             secretHeaders.postValue(masterSecretObjects.toList().map { it.secretHeader })
             masterAuthentikeySecret?.sid?.let { masterSid ->
@@ -771,10 +824,32 @@ object NFCCardService {
             }
             resultCodeLive.postValue(NfcResultCode.CARD_SUCCESSFULLY_BACKED_UP)
             backupStatus.postValue(BackupStatus.FIFTH_STEP)
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "backupCardImportNewSecrets exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+    }
+
+    fun getImportedAuthentikey(authentikeyBytes: ByteArray): SeedkeeperSecretHeader? {
+        authentikeyBytes.let {
+            SatoLog.d(TAG, "isAuthentikeyImported Start")
+            val authentikeySecretBytes = ByteArray(authentikeyBytes.size + 1)
+            authentikeySecretBytes[0] = authentikeyBytes.size.toByte()
+            System.arraycopy(
+                authentikeyBytes,
+                0,
+                authentikeySecretBytes,
+                1,
+                authentikeyBytes.size
+            )
+            val authentikeyFingerprintBytes =
+                SeedkeeperSecretHeader.getFingerprintBytes(authentikeySecretBytes)
+            return secretsList.find { it.fingerprintBytes.contentEquals(authentikeyFingerprintBytes) }
         }
     }
 
@@ -889,18 +964,27 @@ object NFCCardService {
             } else {
                 if (isBackupCard) {
                     oldPinString = pinString
+                    if (cardStatus.protocolVersion == 2) {
+                        authentikey = cmdSet.cardGetAuthentikey()
+                    }
                     isReadyForPinCode.postValue(true)
                 } else {
                     val backupPin = pinString
                     pinString = oldPinString
                     oldPinString = backupPin
                     val backupAuthentikey = authentikey
+                    if (cardStatus.protocolVersion == 2) {
+                        authentikey = cmdSet.cardGetAuthentikey()
+                    }
+                    checkAuthentikey()
                     verifyPin(
                         shouldUpdateDataState = false,
                         shouldUpdateResultCodeLive = false
                     )
                     val backupAuthentikeySecret = backupAuthentikey?.let {
-                        importAuthentikey(it)
+                        getImportedAuthentikey(backupAuthentikey) ?: run {
+                            importAuthentikey(it)
+                        }
                     }
                     getMasterCardSecrets(backupAuthentikeySecret?.sid)
                 }
@@ -912,6 +996,10 @@ object NFCCardService {
             } else {
                 backupStatus.postValue(BackupStatus.THIRD_STEP)
             }
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "backupProcessCardScan exception: $e")
@@ -946,10 +1034,18 @@ object NFCCardService {
             } catch (error: Exception) {
                 SatoLog.e(TAG, "backupCardSetup: Error: $error")
             }
+            if (cardStatus.protocolVersion == 2) {
+                authentikey = cmdSet.cardGetAuthentikey()
+            }
+            checkAuthentikey()
             verifyPin(
                 shouldUpdateResultCodeLive = false
             )
             SatoLog.d(TAG, "backupCardSetup successful")
+        } catch (e: CardMismatchException) {
+            resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
+            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
             SatoLog.e(TAG, "backupCardSetup exception: $e")
