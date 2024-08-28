@@ -90,6 +90,11 @@ fun MySecretView(
                 secretText.value = descriptor
             }
         }
+        SeedkeeperSecretType.PUBKEY -> {
+            secret.value?.password?.let { password ->
+                secretText.value = password
+            }
+        }
         else -> {}
     }
     BackHandler {

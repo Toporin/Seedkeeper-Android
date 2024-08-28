@@ -135,6 +135,25 @@ fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
     )
 }
 
+fun parsePubkeyData(bytes: ByteArray): GeneratePasswordData? {
+    val pubkeySize = bytes[0].toInt()
+    if (1 + pubkeySize > bytes.size) {
+        SatoLog.e(TAG, "Invalid pubkey size")
+        return null
+    }
+    val pubkeyBytes = bytes.copyOfRange(1, 1 + pubkeySize)
+    val hexString = pubkeyBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+    return GeneratePasswordData(
+        password = hexString,
+        login = "",
+        url = "",
+        label = "",
+        type = SeedkeeperSecretType.PUBKEY,
+        size = 0,
+    )
+}
+
 fun parseWalletDescriptorData(bytes: ByteArray): GeneratePasswordData? {
     var index = 0
 
