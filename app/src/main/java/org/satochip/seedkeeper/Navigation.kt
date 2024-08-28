@@ -133,7 +133,7 @@ fun Navigation(
                 title = R.string.welcome,
                 text = R.string.welcomeInfo,
                 colors = listOf(Color.White, SatoGray, SatoGray),
-                backgroundImage = R.drawable.seedkeeper_background_welcome_first_screen,
+                backgroundImage = R.drawable.first_welcome_card,
                 onNext = {
                     navController.navigate(SecondWelcomeView) {
                         popUpTo(0)
@@ -147,7 +147,7 @@ fun Navigation(
                 title = R.string.seedphraseManager,
                 text = R.string.seedphraseManagerInfo,
                 colors = listOf(SatoGray, Color.White, SatoGray),
-                backgroundImage = R.drawable.seedkeeper_background_welcome_second_screen,
+                backgroundImage = R.drawable.second_welcome_card,
                 onNext = {
                     navController.navigate(ThirdWelcomeView) {
                         popUpTo(0)
@@ -164,7 +164,8 @@ fun Navigation(
             WelcomeView(
                 title = R.string.usingNfc,
                 text = R.string.usingNfcInfo,
-                backgroundImage = R.drawable.seedkeeper_background_welcome_third_screen,
+                backgroundImage = R.drawable.third_welcome_screen,
+                isFullWidth = true,
                 onNext = {
                     navController.navigate(HomeView) {
                         popUpTo(0)

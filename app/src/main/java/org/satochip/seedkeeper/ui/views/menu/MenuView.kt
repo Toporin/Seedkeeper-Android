@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -103,8 +104,8 @@ fun MenuView(
             // MAKE A BACKUP
             MenuCard(
                 modifier = Modifier
-                    .width(220.dp)
-                    .height(110.dp),
+                    .weight(2f)
+                    .heightIn(min = 110.dp),
                 text = stringResource(R.string.makeBackup),
                 textAlign = Alignment.TopStart,
                 color = SatoLightPurple,
@@ -113,11 +114,12 @@ fun MenuView(
                     onClick(MenuItems.MAKE_A_BACKUP)
                 }
             )
+            Spacer(modifier = Modifier.width(8.dp))
             // SETTINGS
             MenuCard(
                 modifier = Modifier
-                    .width(150.dp)
-                    .height(110.dp),
+                    .weight(1f)
+                    .heightIn(min = 110.dp),
                 text = stringResource(R.string.settings),
                 textAlign = Alignment.TopStart,
                 color = SatoDarkPurple,
@@ -142,7 +144,7 @@ fun MenuView(
             MenuCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
+                    .heightIn(min = 60.dp),
                 text = stringResource(R.string.useSeedkeeper),
                 textAlign = Alignment.TopStart,
                 color = SatoLightPurple,
@@ -165,19 +167,20 @@ fun MenuView(
             // TERMS OF SERVICE
             MenuCard(
                 modifier = Modifier
-                    .width(180.dp)
-                    .height(60.dp),
+                    .weight(1f)
+                    .heightIn(min = 60.dp),
                 text = stringResource(R.string.tos),
                 textAlign = Alignment.Center,
                 color = SatoDarkPurple,
             ) {
                 webViewAction("https://satochip.io/terms-of-service/")
             }
+            Spacer(modifier = Modifier.width(8.dp))
             // PRIVACY POLICY
             MenuCard(
                 modifier = Modifier
-                    .width(180.dp)
-                    .height(60.dp),
+                    .weight(1f)
+                    .heightIn(min = 60.dp),
                 text = stringResource(R.string.privacyPolicy),
                 textAlign = Alignment.Center,
                 color = SatoDarkPurple,
