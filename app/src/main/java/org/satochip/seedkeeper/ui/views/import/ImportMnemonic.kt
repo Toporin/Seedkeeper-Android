@@ -18,12 +18,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.GeneratePasswordData
-import org.satochip.seedkeeper.data.GenerateStatus
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
-import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.import.MnemonicImportField
@@ -31,7 +30,6 @@ import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
-import org.satochip.seedkeeper.utils.getType
 import org.satochip.seedkeeper.utils.isClickable
 
 @Composable
@@ -41,9 +39,8 @@ fun ImportMnemonic(
     curValueWalletDescriptor: MutableState<String>,
     secret: MutableState<String>,
     passwordOptions: MutableState<PasswordOptions>,
-    generateStatus: MutableState<GenerateStatus>,
     onClick: (ImportViewItems, String?) -> Unit,
-    onImportSecret: (GeneratePasswordData) -> Unit,
+    onImportSecret: (SecretData) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -112,9 +109,9 @@ fun ImportMnemonic(
                 onClick = {
                     if (isClickable(secret, curValueLabel)) {
                         onImportSecret(
-                            GeneratePasswordData(
+                            SecretData(
                                 size = passwordOptions.value.passwordLength,
-                                type = getType(generateStatus.value),
+                                type = SeedkeeperSecretType.MASTERSEED,
                                 password = curValuePassphrase.value,
                                 label = curValueLabel.value,
                                 login = "",

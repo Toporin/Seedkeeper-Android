@@ -62,7 +62,7 @@
         <string name="mnemonicPhrase">Phrase mnémotechnique</string>
         <string name="loginPassword">Mot de passe</string>
         <string name="label">Label</string>
-        <string name="mnemonicSize">Sélectionnez la taille</string>
+        <string name="mnemonicSize">taille mnémonique</string>
         <string name="mnemonicWords">%d mots</string>
         <string name="passphrase"> Passphrase (optionel)</string>
         <string name="walletDescriptorOptional"> Descripteur de portefeuille (optionel)</string>

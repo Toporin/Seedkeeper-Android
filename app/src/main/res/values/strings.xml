@@ -130,7 +130,7 @@
     <string name="cardAuthFailed">Card authentication failed!</string>
     <string name="cardAuthFailedText">Impossible to authenticate the issuer of this card. It was not issued by Satochip S.R.L.</string>
     <string name="cardAuthFailedUsage">If you didn\'t load the card yourself, be extremely careful!</string>
-    <string name="cardAuthSuccessful">Card authentication successfully!</string>
+    <string name="cardAuthSuccessful">Card authenticated successfully!</string>
     <string name="cardAuthSuccessfulText">This card was issued by Satochip S.R.L.</string>
     <string name="cardAuthSuccessfulUsage">You can safely use it.</string>
     <string name="showCardCertificate">Show card certificates</string>

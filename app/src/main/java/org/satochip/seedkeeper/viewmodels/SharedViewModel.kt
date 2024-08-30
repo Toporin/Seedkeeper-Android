@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.viewmodels
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.getValue
@@ -18,7 +17,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.BackupStatus
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -31,9 +30,6 @@ import java.io.InputStreamReader
 private const val TAG = "SharedViewModel"
 
 class SharedViewModel : ViewModel() {
-    @SuppressLint("StaticFieldLeak")
-    private lateinit var context: Context
-
     var isSetupNeeded by mutableStateOf(false)
     var isReadyForPinCode by mutableStateOf(false)
     var secretHeaders = mutableStateListOf<SeedkeeperSecretHeader?>()
@@ -87,11 +83,6 @@ class SharedViewModel : ViewModel() {
         }
     }
 
-    fun setContext(context: Context) {
-        this.context = context
-        NFCCardService.context = context
-    }
-
     fun setNewPinString(pinString: String) {
         NFCCardService.oldPinString = NFCCardService.pinString
         NFCCardService.pinString = pinString
@@ -117,7 +108,7 @@ class SharedViewModel : ViewModel() {
         NFCCardService.cardLabel.postValue(cardLabel)
     }
 
-    fun setPasswordData(passwordData: GeneratePasswordData) {
+    fun setPasswordData(passwordData: SecretData) {
         NFCCardService.passwordData = passwordData
     }
 
@@ -221,7 +212,7 @@ class SharedViewModel : ViewModel() {
         }
     }
 
-    fun getSeedQr(mnemonic: String, context: Context): String {
+    fun getSeedQr(mnemonic: String): String {
         // todo add support for other wordlist languages
         // based on https://github.com/SeedSigner/seedsigner/blob/dev/docs/seed_qr/README.md#standard-seedqr-specification
         val indices = mnemonic.split(" ").map { word ->

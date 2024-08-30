@@ -21,7 +21,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.CardInformationItems
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.data.ImportViewItems
@@ -82,7 +82,7 @@ fun Navigation(
             HomeView
         }
     val viewModel = SharedViewModel()
-    viewModel.setContext(context)
+//    viewModel.setContext(context)
 
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
@@ -584,7 +584,7 @@ fun Navigation(
         composable<MySecretView> {
             val args = it.toRoute<MySecretView>()
             val data = remember {
-                mutableStateOf<GeneratePasswordData?>(null)
+                mutableStateOf<SecretData?>(null)
             }
             val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
             LaunchedEffect(viewModel.currentSecretId) {
@@ -595,7 +595,7 @@ fun Navigation(
                 }
             }
             LaunchedEffect(Unit) {
-                data.value = GeneratePasswordData(
+                data.value = SecretData(
                     password = "",
                     login = "",
                     url = "",
@@ -667,7 +667,7 @@ fun Navigation(
                 },
                 getSeedQR = { mnemonic ->
                     try {
-                        return@MySecretView viewModel.getSeedQr(mnemonic, context)
+                        return@MySecretView viewModel.getSeedQr(mnemonic)
                     } catch (e: Exception) {
                         Toast.makeText(context, retrieveTheSecretFirstText, Toast.LENGTH_SHORT).show()
                         return@MySecretView ""

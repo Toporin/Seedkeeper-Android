@@ -4,8 +4,7 @@ import android.util.Patterns
 import androidx.compose.runtime.MutableState
 import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
-import org.satochip.seedkeeper.data.GeneratePasswordData
-import org.satochip.seedkeeper.data.GenerateStatus
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.services.SatoLog
 import java.nio.ByteBuffer
 
@@ -30,7 +29,7 @@ fun stringToList(inputString: String?): List<String?>? {
     return inputString?.split("\\s+".toRegex())
 }
 
-fun parseMasterseedMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
+fun parseMasterseedMnemonicCardData(bytes: ByteArray): SecretData? {
     var index = 0
     var descriptor = ""
 
@@ -84,7 +83,7 @@ fun parseMasterseedMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
     }
 
 
-    return GeneratePasswordData(
+    return SecretData(
         password = passphrase ?: "",
         mnemonic = mnemonic,
         size = countWords(mnemonic),
@@ -94,7 +93,7 @@ fun parseMasterseedMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
     )
 }
 
-fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
+fun parseMnemonicCardData(bytes: ByteArray): SecretData? {
     var index = 0
 
     if (bytes.isEmpty()) {
@@ -126,7 +125,7 @@ fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
         }
     }
 
-    return GeneratePasswordData(
+    return SecretData(
         password = passphrase ?: "",
         mnemonic = mnemonic,
         size = countWords(mnemonic),
@@ -135,7 +134,7 @@ fun parseMnemonicCardData(bytes: ByteArray): GeneratePasswordData? {
     )
 }
 
-fun parsePubkeyData(bytes: ByteArray): GeneratePasswordData? {
+fun parsePubkeyData(bytes: ByteArray): SecretData? {
     val pubkeySize = bytes[0].toInt()
     if (1 + pubkeySize > bytes.size) {
         SatoLog.e(TAG, "Invalid pubkey size")
@@ -144,7 +143,7 @@ fun parsePubkeyData(bytes: ByteArray): GeneratePasswordData? {
     val pubkeyBytes = bytes.copyOfRange(1, 1 + pubkeySize)
     val hexString = pubkeyBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
 
-    return GeneratePasswordData(
+    return SecretData(
         password = hexString,
         login = "",
         url = "",
@@ -154,7 +153,7 @@ fun parsePubkeyData(bytes: ByteArray): GeneratePasswordData? {
     )
 }
 
-fun parseWalletDescriptorData(bytes: ByteArray): GeneratePasswordData? {
+fun parseWalletDescriptorData(bytes: ByteArray): SecretData? {
     var index = 0
 
     val descriptorSizeArray = bytes.sliceArray(0..1)
@@ -170,7 +169,7 @@ fun parseWalletDescriptorData(bytes: ByteArray): GeneratePasswordData? {
         SatoLog.e(TAG, "Descriptor bytes conversion to string failed")
         return null
     }
-    return GeneratePasswordData(
+    return SecretData(
         password = "",
         login = "",
         url = "",
@@ -181,7 +180,7 @@ fun parseWalletDescriptorData(bytes: ByteArray): GeneratePasswordData? {
     )
 }
 
-fun parsePasswordCardData(bytes: ByteArray): GeneratePasswordData? {
+fun parsePasswordCardData(bytes: ByteArray): SecretData? {
     var index = 0
 
     val passwordSize = bytes[index].toInt()
@@ -220,7 +219,7 @@ fun parsePasswordCardData(bytes: ByteArray): GeneratePasswordData? {
         }
     }
 
-    return GeneratePasswordData(
+    return SecretData(
         password = password,
         login = login ?: "",
         url = url ?: "",
@@ -228,12 +227,6 @@ fun parsePasswordCardData(bytes: ByteArray): GeneratePasswordData? {
         type = SeedkeeperSecretType.PASSWORD,
         size = 0
     )
-}
-
-fun getType(
-    generateStatus: GenerateStatus
-): SeedkeeperSecretType {
-    return if (generateStatus == GenerateStatus.LOGIN_PASSWORD) SeedkeeperSecretType.PASSWORD else SeedkeeperSecretType.MASTERSEED
 }
 
 fun countWords(mnemonic: String): Int {

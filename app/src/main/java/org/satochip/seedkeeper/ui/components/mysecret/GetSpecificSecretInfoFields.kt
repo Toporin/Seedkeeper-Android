@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 
 @Composable
 fun GetSpecificSecretInfoFields(
     type: String,
-    secret: MutableState<GeneratePasswordData?>,
+    secret: MutableState<SecretData?>,
 ) {
     if (type == SeedkeeperSecretType.BIP39_MNEMONIC.name || type == SeedkeeperSecretType.MASTERSEED.name || type == SeedkeeperSecretType.ELECTRUM_MNEMONIC.name) {
         SecretInfoField(

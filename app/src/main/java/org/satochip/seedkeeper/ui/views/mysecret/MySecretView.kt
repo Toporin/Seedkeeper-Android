@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -21,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.MySecretStatus
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
@@ -38,7 +39,7 @@ import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 
 @Composable
 fun MySecretView(
-    secret: MutableState<GeneratePasswordData?>,
+    secret: MutableState<SecretData?>,
     type: String,
     isOldVersion: Boolean,
     onClick: (MySecretItems) -> Unit,
@@ -126,7 +127,7 @@ fun MySecretView(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 TitleTextField(
-                    title = R.string.manageSecret,
+                    title = R.string.nfcTitleSuccess,
                     text = R.string.manageSecretMessage
                 )
                 Column {
@@ -191,7 +192,8 @@ fun MySecretView(
                         },
                         text = R.string.deleteSecret,
                         image = R.drawable.delete_icon,
-                        buttonColor = if (isOldVersion) SatoInactiveTracer else SatoButtonBlue
+                        buttonColor = if (isOldVersion) SatoInactiveTracer else SatoButtonBlue,
+                        horizontalPadding = 1.dp
                     )
                     SatoButton(
                         modifier = Modifier.weight(1f),
@@ -199,7 +201,8 @@ fun MySecretView(
                             onClick(MySecretItems.SHOW)
                         },
                         text = R.string.showSecret,
-                        image = R.drawable.show_password
+                        image = R.drawable.show_password,
+                        horizontalPadding = 1.dp
                     )
                 }
             }

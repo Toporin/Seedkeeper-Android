@@ -7,9 +7,9 @@ import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.utils.stringToList
 import java.nio.ByteBuffer
 
-private const val TAG = "GeneratePasswordData"
+private const val TAG = "SecretData"
 
-data class GeneratePasswordData(
+data class SecretData(
     var size: Int? = null,
     var type: SeedkeeperSecretType,
     var password: String,

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun BackupSingleText(
     text: Int,
-    fontWeight: FontWeight = FontWeight.W500
+    fontWeight: FontWeight = FontWeight.ExtraLight
 ) {
     Text(
         text = stringResource(text),

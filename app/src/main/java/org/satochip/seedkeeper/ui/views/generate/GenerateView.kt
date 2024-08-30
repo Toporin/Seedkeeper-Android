@@ -1,7 +1,6 @@
 package org.satochip.seedkeeper.ui.views.generate
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -31,7 +30,7 @@ fun GenerateView(
     settings: SharedPreferences,
     isImportDone: MutableState<Boolean>,
     onClick: (GenerateViewItems, String?, PasswordOptions?) -> String,
-    onImportSecret: (GeneratePasswordData) -> Unit
+    onImportSecret: (SecretData) -> Unit
 ) {
     val stringResourceMap = mapOf(
         R.string.loginPassword to "loginPassword",
@@ -149,7 +148,6 @@ fun GenerateView(
                             curValuePassphrase = curValuePassphrase,
                             curValueWalletDescriptor = curValueWalletDescriptor,
                             secret = secret,
-                            generateStatus = generateStatus,
                             onClick = { generateViewItems, secretValue, passOptions ->
                                 onClick(generateViewItems,secretValue,passOptions)
                             },
@@ -164,8 +162,6 @@ fun GenerateView(
                             curValueLabel = curValueLabel,
                             passwordOptions = passwordOptions,
                             secret = secret,
-                            generateStatus = generateStatus,
-                            typeOfSecret = typeOfSecret,
                             curValueLogin = curValueLogin,
                             curValueUrl = curValueUrl,
                             retrievedSet = retrievedSet,
