@@ -26,7 +26,7 @@ import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.shared.EditableField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.ui.theme.SatoGreen
 
@@ -154,7 +154,7 @@ fun CardInformation(
                                 onClick(CardInformationItems.SHOW_CARD_LOGS, null)
                             },
                             text = R.string.showLogs,
-                            buttonColor = SatoButtonBlue,
+                            buttonColor = SatoButtonPurple,
                         )
                     }
                 }

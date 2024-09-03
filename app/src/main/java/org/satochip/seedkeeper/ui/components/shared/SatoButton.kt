@@ -23,14 +23,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 
 @Composable
 fun SatoButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     text: Int,
-    buttonColor: Color = SatoButtonBlue,
+    buttonColor: Color = SatoButtonPurple,
     textColor: Color = Color.White,
     image: Int? = null,
     horizontalPadding: Dp = 16.dp,

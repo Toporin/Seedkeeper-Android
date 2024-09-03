@@ -32,8 +32,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import io.github.g0dkar.qrcode.QRCode
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ui.components.shared.DataAsQrCode
@@ -47,6 +49,7 @@ fun SecretTextField(
     containerColor: Color = SatoDividerPurple.copy(alpha = 0.2f),
     isQRCodeEnabled: Boolean = true,
     visualTransformation: VisualTransformation = PasswordVisualTransformation(),
+    minHeight: Dp = 150.dp,
     copyToClipboard: () -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -59,7 +62,7 @@ fun SecretTextField(
     Box(
         modifier = Modifier
             .heightIn(
-                min = 150.dp
+                min = minHeight
             )
             .background(
                 color = containerColor,
@@ -68,9 +71,10 @@ fun SecretTextField(
     ) {
         Row(
             modifier = Modifier
-            .padding(8.dp)
-            .width(if (isQRCodeEnabled) 96.dp else 64.dp)
-            .align(Alignment.TopEnd)
+                .padding(8.dp)
+                .width(if (isQRCodeEnabled) 96.dp else 64.dp)
+                .zIndex(1f)
+                .align(Alignment.TopEnd)
         ) {
             if (isQRCodeEnabled) {
                 Image(
@@ -128,7 +132,8 @@ fun SecretTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .padding(vertical = 24.dp, horizontal = 16.dp),
+                    .padding(vertical = 24.dp, horizontal = 16.dp)
+                    .zIndex(0.5f),
                 enabled = isEditable,
                 value = curValue.value,
                 onValueChange = {

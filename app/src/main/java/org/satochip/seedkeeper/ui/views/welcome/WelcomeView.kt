@@ -27,6 +27,8 @@ import org.satochip.seedkeeper.ui.components.shared.NextButton
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.StepCircles
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
+import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 
 @Composable
 fun WelcomeView(
@@ -110,6 +112,7 @@ fun WelcomeView(
                                     horizontal = 20.dp
                                 ),
                             onClick = onNext,
+                            buttonColor = SatoButtonBlue,
                             text = R.string.start
                         )
                     }

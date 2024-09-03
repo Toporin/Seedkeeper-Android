@@ -380,23 +380,20 @@ object NFCCardService {
     }
 
     /**
-     * Verifies the PIN entered by the user against the NFC card's set PIN and updates the application's state accordingly.
+     * Verifies the PIN entered by the user against the NFC card's set PIN.
      *
      * This method performs the following steps:
      * 1. Converts the provided PIN string into a byte array.
      * 2. Selects the "seedkeeper" application on the NFC card and sets the PIN for verification.
      * 3. Verifies the PIN by sending it to the card and analyzing the response status word (SW).
-     *
-     * Based on the response:
-     * - If the PIN is incorrect and the card is not yet blocked, updates the number of attempts left and posts an appropriate result code.
-     * - If the card is blocked due to too many incorrect attempts, posts a `CARD_BLOCKED`(Too many incorrect PIN attempts! Your card has been blocked.) result code.
-     * - If the PIN is correct optionally retrieves card secrets, gets cards authenticity, sets new card logs and gets cards authentikey
-     *
-     * @param shouldUpdateDataState Flag to determine whether to update the card label.
-     * @param shouldUpdateResultCodeLive Flag to determine whether to update the result code live and show nfc message.
-     * @param shouldGetCardData Flag to determine whether to fetch and update card data after successful PIN verification.
+     * 4. Handles the response from the card:
+     *    - If the PIN is incorrect and the card is not yet blocked, updates the number of attempts left and posts an appropriate result code.
+     *    - If the status word is 0x9C0C or 0x63C0, it indicates that the card is blocked, and posts an appropriate result code.
+     *    - Otherwise, it indicates a successful PIN verification, updates the isReadyForPinCode status, and returns true.
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
+     *
+     * @return true if the PIN is successfully verified, false otherwise.
      */
     private fun isPinVerified(): Boolean {
         try {
@@ -432,6 +429,24 @@ object NFCCardService {
         return false
     }
 
+    /**
+     * Verifies pin and fetches various data from the card using NFC.
+     *
+     * This method performs the following steps:
+     * 1. If isPinVerified() method returns true:
+     *    - Uses runBlocking block to execute next methods:
+     *      - getSecretHeaderList to fetch header list from the card without updating ResultCodeLive
+     *      - Retrieves card authenticity with GetCardAuthenticity()
+     *      - Retrieves card logs from the card using getCardLogs() method
+     *      - If card version equals 2:
+     *        - Retrieves cards status with seedkeeperGetStatus() method
+     *    - Updates cardLabel value by fetching a new card label from cmdSet
+     *    - Updates isCardDataAvailable with a true value
+     *    - If shouldUpdateResultCodeLive is true:
+     *      - Updates resultCodeLive to indicate the PIN verification was successful.
+     *
+     * @param shouldUpdateResultCodeLive Flag to determine whether to update the result code live data.
+     */
     private fun verifyAndFetchCardData(
         shouldUpdateResultCodeLive: Boolean = true
     ) {
@@ -452,6 +467,21 @@ object NFCCardService {
         }
     }
 
+    /**
+     * Checks if card being scanned is the same card used before by comparing authentikeys.
+     *
+     * This method performs the following steps:
+     * 1. Selects the "seedkeeper" application on the NFC card.
+     * 2. Retrieves and updates the card's application status.
+     * 3. If card version equals 2:
+     *    - Checks if current authentikey equals authentikey from the card:
+     *      - If the result is true, an error is logged and throws an exception indicating that different card is being used.
+     * 4. If card version doesn't equal 2:
+     *    - New list of two items of which one is authentikey is fetched by using method cardInitiateSecureChannel() from cmdSet
+     *    - Current list is being checked with the new list and if at least one of the items matches assigns true else assigns false to isAuthentikeyValid.
+     *    - Checks if isAuthentikeyValid
+     *      - If it is not, throws an exception indicating that different card is being used.
+     */
     private fun checkAuthentikey() {
         cmdSet.cardSelect("seedkeeper").checkOK()
         cmdSet.cardGetStatus()
@@ -837,7 +867,25 @@ object NFCCardService {
         }
     }
 
-    private fun getImportedAuthentikey(authentikeyBytes: ByteArray): SeedkeeperSecretHeader? {
+    /**
+     * Retrieves the SeedkeeperSecretHeader for a previously imported authentikey.
+     *
+     * This method performs the following steps:
+     * 1. Creates a new byte array, authentikeySecretBytes, to hold the authentikeyBytes data.
+     *    - The first byte of this array is set to the size of the authentikeyBytes array.
+     *    - The actual authentikeyBytes data is copied into the authentikeySecretBytes array starting from index 1.
+     * 2. Computes the authentikeyFingerprintBytes using the getFingerprintBytes method from SeedkeeperSecretHeader.
+     * 3. Searches the secretsList for a matching SeedkeeperSecretHeader based on the computed fingerprint bytes.
+     * 4. Logs the successful retrieval of the authentikey if a match is found.
+     * 5. Returns the SeedkeeperSecretHeader for the matched authentikey, or `null` if no match is found.
+     *
+     * @param authentikeyBytes The byte array containing the authentikey bytes to be matched against imported secrets.
+     *
+     * @return The SeedkeeperSecretHeader corresponding to the matched authentikeyFingerprintBytes, or `null` if no match is found.
+     */
+    private fun getImportedAuthentikey(
+        authentikeyBytes: ByteArray
+    ): SeedkeeperSecretHeader? {
         authentikeyBytes.let {
             SatoLog.d(TAG, "getImportedAuthentikey Start")
             val authentikeySecretBytes = ByteArray(authentikeyBytes.size + 1)

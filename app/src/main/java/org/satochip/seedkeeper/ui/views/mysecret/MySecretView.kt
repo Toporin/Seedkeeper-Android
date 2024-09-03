@@ -10,16 +10,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.SecretData
@@ -33,9 +39,7 @@ import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.components.shared.TitleTextField
-import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
-import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 
 @Composable
 fun MySecretView(
@@ -121,15 +125,22 @@ fun MySecretView(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 32.dp)
-                    .padding(bottom = 32.dp, top = 16.dp)
+                    .padding(bottom = 32.dp)
                     .verticalScroll(state = scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                TitleTextField(
-                    title = R.string.nfcTitleSuccess,
-                    text = R.string.manageSecretMessage
+                Text(
+                    text = stringResource(id = R.string.manageSecretMessage),
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                        textAlign = TextAlign.Center
+                    )
                 )
+                Spacer(modifier = Modifier.height(8.dp))
                 Column {
                     SecretInfoField(
                         title = R.string.label,
@@ -155,6 +166,7 @@ fun MySecretView(
                     MySecretStatus.SEED -> {
                         SecretTextField(
                             curValue = secretText,
+                            minHeight = 250.dp,
                             copyToClipboard = {
                                 copyToClipboard(secretText.value)
                             }
@@ -162,6 +174,7 @@ fun MySecretView(
                     }
                     MySecretStatus.SEED_QR -> {
                         SecretImageField(
+                            minHeight = 250.dp,
                             qrCodeString = seedQR
                         )
                     }
@@ -192,7 +205,7 @@ fun MySecretView(
                         },
                         text = R.string.deleteSecret,
                         image = R.drawable.delete_icon,
-                        buttonColor = if (isOldVersion) SatoInactiveTracer else SatoButtonBlue,
+                        buttonColor = if (isOldVersion) SatoButtonPurple.copy(alpha = 0.6f) else SatoButtonPurple,
                         horizontalPadding = 1.dp
                     )
                     SatoButton(

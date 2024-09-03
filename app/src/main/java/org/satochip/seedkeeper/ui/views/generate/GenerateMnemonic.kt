@@ -1,30 +1,25 @@
 package org.satochip.seedkeeper.ui.views.generate
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.SelectFieldItem
+import org.satochip.seedkeeper.ui.components.generate.ButtonsField
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.generate.SelectField
-import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
-import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 import org.satochip.seedkeeper.utils.isClickable
 
@@ -87,51 +82,32 @@ fun GenerateMnemonic(
                 onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
             }
         )
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            //Generate
-            SatoButton(
-                modifier = Modifier
-                    .weight(1f),
-                onClick = {
-                    secret.value = onClick(
-                        GenerateViewItems.GENERATE_MNEMONIC_PHRASE,
-                        null,
-                        passwordOptions.value
-                    )
-                },
-                text = if (secret.value.isNotEmpty()) R.string.regenerate else R.string.generate,
-            )
-            //Import
-            SatoButton(
-                modifier = Modifier
-                    .weight(1f),
-                onClick = {
-                    if (isClickable(secret, curValueLabel)) {
-                        onImportSecret(
-                            SecretData(
-                                size = passwordOptions.value.passwordLength,
-                                type = SeedkeeperSecretType.MASTERSEED,
-                                password = curValuePassphrase.value,
-                                label = curValueLabel.value,
-                                login = "",
-                                url = "",
-                                mnemonic = secret.value,
-                                descriptor = curValueWalletDescriptor.value
-                            )
+        ButtonsField(
+            secret = secret,
+            curValueLabel = curValueLabel,
+            onGenerateClick = {
+                secret.value = onClick(
+                    GenerateViewItems.GENERATE_MNEMONIC_PHRASE,
+                    null,
+                    passwordOptions.value
+                )
+            },
+            onImportSecret = {
+                if (isClickable(secret, curValueLabel)) {
+                    onImportSecret(
+                        SecretData(
+                            size = passwordOptions.value.passwordLength,
+                            type = SeedkeeperSecretType.MASTERSEED,
+                            password = curValuePassphrase.value,
+                            label = curValueLabel.value,
+                            login = "",
+                            url = "",
+                            mnemonic = secret.value,
+                            descriptor = curValueWalletDescriptor.value
                         )
-                    }
-                },
-                text = R.string.importButton,
-                textColor = if (
-                    isClickable(
-                        secret,
-                        curValueLabel
                     )
-                ) Color.White else SatoActiveTracer
-            )
-        }
+                }
+            }
+        )
     }
 }

@@ -4,7 +4,7 @@ import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.services.SatoLog
-import org.satochip.seedkeeper.utils.stringToList
+import org.satochip.seedkeeper.utils.toMnemonicList
 import java.nio.ByteBuffer
 
 private const val TAG = "SecretData"
@@ -18,7 +18,7 @@ data class SecretData(
     var url: String? = null,
     var mnemonic: String? = null,
     var exportRights: SeedkeeperExportRights = SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED,
-    val descriptor: String? = null
+    var descriptor: String? = null
 ) {
     fun getSecretBytes(): ByteArray {
         val secretBytes = mutableListOf<Byte>()
@@ -26,9 +26,9 @@ data class SecretData(
         when (this.type) {
             SeedkeeperSecretType.MASTERSEED -> {
                 this.mnemonic?.let { mnemonic ->
-                    val masterseedBytes = MnemonicCode.toSeed(stringToList(mnemonic), this.password)
+                    val masterseedBytes = MnemonicCode.toSeed(mnemonic.toMnemonicList(), this.password)
                     val masterseedSize = masterseedBytes.size.toByte()
-                    val entropyBytes = MnemonicCode.INSTANCE.toEntropy(stringToList(mnemonic))
+                    val entropyBytes = MnemonicCode.INSTANCE.toEntropy(mnemonic.toMnemonicList())
                     val entropySize = entropyBytes.size.toByte()
                     val passphraseBytes = this.password.toByteArray(Charsets.UTF_8)
                     val passphraseSize = passphraseBytes.size.toByte()

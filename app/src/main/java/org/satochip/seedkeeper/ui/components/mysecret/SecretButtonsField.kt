@@ -12,7 +12,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.MySecretStatus
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 
 @Composable
@@ -51,7 +51,7 @@ fun SecretButtonsField(
                     text = R.string.seedQR,
                     image = R.drawable.seedqr_icon,
                     horizontalPadding = 1.dp,
-                    buttonColor = if (isSecretShown.value) SatoButtonBlue else SatoInactiveTracer
+                    buttonColor = if (isSecretShown.value) SatoButtonPurple else SatoButtonPurple.copy(alpha = 0.6f)
                 )
 //                todo: logic should be changed
 //                SatoButton(

@@ -32,6 +32,7 @@ import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeStatus
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
+import org.satochip.seedkeeper.parsers.SecretDataParser
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
@@ -52,11 +53,6 @@ import org.satochip.seedkeeper.ui.views.showcardlogs.ShowCardLogsView
 import org.satochip.seedkeeper.ui.views.showlogs.ShowLogsView
 import org.satochip.seedkeeper.ui.views.splash.SplashView
 import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
-import org.satochip.seedkeeper.utils.parseMasterseedMnemonicCardData
-import org.satochip.seedkeeper.utils.parseMnemonicCardData
-import org.satochip.seedkeeper.utils.parsePasswordCardData
-import org.satochip.seedkeeper.utils.parsePubkeyData
-import org.satochip.seedkeeper.utils.parseWalletDescriptorData
 import org.satochip.seedkeeper.utils.webviewActivityIntent
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
@@ -82,7 +78,6 @@ fun Navigation(
             HomeView
         }
     val viewModel = SharedViewModel()
-//    viewModel.setContext(context)
 
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
@@ -604,28 +599,12 @@ fun Navigation(
                 )
             }
             LaunchedEffect(viewModel.currentSecretObject) {
-                if (viewModel.currentSecretObject != null) {
-                    viewModel.currentSecretObject?.let { secretObject ->
-                        when (SeedkeeperSecretType.valueOf(args.type)) {
-                            SeedkeeperSecretType.MASTERSEED -> {
-                                data.value = parseMasterseedMnemonicCardData(secretObject.secretBytes)
-                            }
-                            SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
-                                data.value = parseMnemonicCardData(secretObject.secretBytes)
-                            }
-                            SeedkeeperSecretType.PASSWORD -> {
-                                data.value = parsePasswordCardData(secretObject.secretBytes)
-                            }
-                            SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
-                                data.value = parseWalletDescriptorData(secretObject.secretBytes)
-                            }
-                            SeedkeeperSecretType.PUBKEY -> {
-                                data.value = parsePubkeyData(secretObject.secretBytes)
-                            }
-                            else -> {}
-                        }
-                        data.value?.label = secretObject.secretHeader.label
-                    }
+                viewModel.currentSecretObject?.let { secretObject ->
+                    data.value = SecretDataParser().parseByType(
+                        seedkeeperSecretType = SeedkeeperSecretType.valueOf(args.type),
+                        secretObject = secretObject
+                    )
+                    data.value?.label = secretObject.secretHeader.label
                 }
             }
 

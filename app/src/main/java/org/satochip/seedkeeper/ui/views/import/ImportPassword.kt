@@ -29,7 +29,7 @@ import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
-import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 import org.satochip.seedkeeper.utils.isClickable
 
@@ -136,12 +136,12 @@ fun ImportPassword(
                     }
                 },
                 text = R.string.importButton,
-                textColor = if (
+                buttonColor = if (
                     isClickable(
                         secret,
                         curValueLabel
                     )
-                ) Color.White else SatoActiveTracer
+                ) SatoButtonPurple else SatoButtonPurple.copy(alpha = 0.6f),
             )
         }
     }
