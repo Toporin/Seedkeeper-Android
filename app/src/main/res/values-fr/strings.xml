@@ -20,20 +20,30 @@
     <string name="cardNeedToBeScannedMessage">Vous devez scanner une carte pour afficher ses informations.</string>
     <string name="close">Fermer</string>
     <string name="retrieveTheSecretFirst">Veuillez d\'abord récupérer le secret</string>
-
+    <string name="mnemonicValidText">Le mnémonique n\'est pas valide!</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess"></string>
     <string name="nfcOk">Opération réussie !</string>
     <string name="nfcTitleWarning">Attention</string>
     <string name="nfcErrorOccured">Une erreur s\'est produite, veuillez réessayer</string>
+    <string name="pinVerified">Code PIN vérifié!</string>
+    <string name="secretHeaderListSet">Secrets récupérés!</string>
+    <string name="secretImportedSuccessfully">Secret importé avec succès!</string>
+    <string name="secretFetchedSuccessfully">Secret récupéré avec succès!</string>
+    <string name="cardLabelChangedSuccessfully">L\'étiquette de la carte a été modifiée avec succès!</string>
+    <string name="cardSuccessfullyScanned">Carte numérisée avec succès!</string>
+    <string name="cardSuccessfullyBackedUp">Carte sauvegardée avec succès!</string>
+    <string name="cardSetupSuccessful">Configuration de la carte réussie!</string>
     <string name="scanning">Scanning</string>
     <string name="nfcResultCodeNone">Aucun</string>
     <string name="nfcResultCodeBusy">Occupé</string>
     <string name="nfcResultCodeNfcError">Erreur lors de la lecture de la carte</string>
     <string name="nfcSeedkeeperNeedsSetup">Votre Seedkeeper doit être configurée !</string>
-    <string name="nfcWrongPin">Mauvais PIN</string>
+    <string name="nfcWrongPin">Mauvais PIN, tentatives à gauche:</string>
     <string name="nfcCardBlocked">Trop de tentatives incorrectes de saisie du code PIN ! Votre carte a été bloquée.</string>
+    <string name="nfcSecretDeleted">Secret supprimé avec succès.</string>
+    <string name="cardMismatch">Carte différente détectée, veuillez utiliser la bonne carte!</string>
 
     <!--Generate View-->
     <string name="generate">Générer</string>
@@ -41,6 +51,7 @@
     <string name="generateASecret">Générer un secret</string>
     <string name="generateAMnemonicPhrase">Générer une seedphrase</string>
     <string name="generateAPassword">Générer un mot de passe</string>
+    <string name="generateABitcoinDescriptor">Générer un bitcoin descriptor</string>
     <string name="generateExplanation">Permet de générer et d\'importer rapidement un nouveau mot de passe.</string>
     <string name="generateSuccessful">Le secret suivant a été importé avec succès dans votre Seedkeeper</string>
     <string name="importButton">Importer</string>
@@ -51,12 +62,13 @@
         <string name="mnemonicPhrase">Phrase mnémotechnique</string>
         <string name="loginPassword">Mot de passe</string>
         <string name="label">Label</string>
-        <string name="mnemonicSize">Sélectionnez la taille</string>
+        <string name="mnemonicSize">taille mnémonique</string>
         <string name="mnemonicWords">%d mots</string>
         <string name="passphrase"> Passphrase (optionel)</string>
+        <string name="walletDescriptorOptional"> Descripteur de portefeuille (optionel)</string>
         <!--Login/Password-->
         <string name="loginOptional">Login (optionel)</string>
-        <string name="urlOptional">URL (optional)</string>
+        <string name="urlOptional">URL (optionel)</string>
         <string name="passwordLength">Longueur</string>
         <string name="passwordImport">Importer</string>
         <string name="copiedToClipboard">Copié</string>
@@ -69,13 +81,21 @@
     <!--Import View-->
     <string name="importHeader">Importer</string>
     <string name="importAMnemonicPhrase">Importer une seedphrase</string>
-    <string name="importAMnemonicPhraseMessage">Importer une seedphrase</string>
-    <string name="importAPassword">Importer une seedphrase</string>
-    <string name="importAPasswordMessage">Importer une seedphrase</string>
-    <string name="enterYourMnemonic">Entrer votre seedphrase :</string>
-    <string name="enterYourPassword">Entrer votre mot de passe :</string>
+    <string name="importAMnemonicPhraseMessage">Vous permet d\'importer une phrase mnémotechnique existante dans votre Seedkeeper.</string>
+    <string name="importAPassword">Importer un mot de passe</string>
+    <string name="importAPasswordMessage">Vous permet d\'importer un mot de passe existant dans votre Seedkeeper.</string>
+    <string name="importAWalletDescriptor">Importer un descripteur portefeuille</string>
+    <string name="importAWalletDescriptorMessage">Vous permet d\'importer un descripteur de portefeuille existant dans votre Seedkeeper.</string>
+    <string name="importFreeField">Importez ce que vous voulez</string>
+    <string name="importFreeFieldMessage">Vous permet d\'importer n\'importe quelle donnée dans votre Seedkeeper</string>
+    <string name="enterYourMnemonic">Entrer votre seedphrase:</string>
+    <string name="enterYourPassword">Entrer votre mot de passe:</string>
+    <string name="enterYourWalletDescriptor">Entrez le descripteur de votre portefeuille:</string>
+    <string name="enterYourData">Entrez vos données:</string>
     <string name="mnemonicType">Type de seedphrase</string>
     <string name="bip">BIP39</string>
+    <string name="walletDescriptor">Portefeuille descripteur</string>
+    <string name="freeField">Champ libre</string>
 
     <!--Menu View-->
     <string name="cardInfo">Informations de la carte</string>

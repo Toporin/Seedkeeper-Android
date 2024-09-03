@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.ui.components.home
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -63,7 +62,8 @@ fun NfcDialog(
                 message = resultCodeLive.resMsg,
                 colorFilter = if (resultCodeLive.resTitle == R.string.nfcTitleWarning) ColorFilter.tint(
                     Color.Red
-                ) else null
+                ) else null,
+                triesLeft = resultCodeLive.triesLeft
             )
             LaunchedEffect(Unit) {
                 delay(1.seconds)

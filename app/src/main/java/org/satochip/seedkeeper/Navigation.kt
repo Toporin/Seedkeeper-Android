@@ -21,7 +21,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.CardInformationItems
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.data.ImportViewItems
@@ -55,6 +55,8 @@ import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
 import org.satochip.seedkeeper.utils.parseMasterseedMnemonicCardData
 import org.satochip.seedkeeper.utils.parseMnemonicCardData
 import org.satochip.seedkeeper.utils.parsePasswordCardData
+import org.satochip.seedkeeper.utils.parsePubkeyData
+import org.satochip.seedkeeper.utils.parseWalletDescriptorData
 import org.satochip.seedkeeper.utils.webviewActivityIntent
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
@@ -80,7 +82,7 @@ fun Navigation(
             HomeView
         }
     val viewModel = SharedViewModel()
-    viewModel.setContext(context)
+//    viewModel.setContext(context)
 
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
@@ -131,7 +133,7 @@ fun Navigation(
                 title = R.string.welcome,
                 text = R.string.welcomeInfo,
                 colors = listOf(Color.White, SatoGray, SatoGray),
-                backgroundImage = R.drawable.seedkeeper_background_welcome_first_screen,
+                backgroundImage = R.drawable.first_welcome_card,
                 onNext = {
                     navController.navigate(SecondWelcomeView) {
                         popUpTo(0)
@@ -145,7 +147,7 @@ fun Navigation(
                 title = R.string.seedphraseManager,
                 text = R.string.seedphraseManagerInfo,
                 colors = listOf(SatoGray, Color.White, SatoGray),
-                backgroundImage = R.drawable.seedkeeper_background_welcome_second_screen,
+                backgroundImage = R.drawable.second_welcome_card,
                 onNext = {
                     navController.navigate(ThirdWelcomeView) {
                         popUpTo(0)
@@ -162,7 +164,8 @@ fun Navigation(
             WelcomeView(
                 title = R.string.usingNfc,
                 text = R.string.usingNfcInfo,
-                backgroundImage = R.drawable.seedkeeper_background_welcome_third_screen,
+                backgroundImage = R.drawable.third_welcome_screen,
+                isFullWidth = true,
                 onNext = {
                     navController.navigate(HomeView) {
                         popUpTo(0)
@@ -485,11 +488,6 @@ fun Navigation(
                                 )
                             }
                         }
-                        CardInformationItems.EDIT_CARD_LABEL -> {
-                            if (pinString == viewModel.getCurrentPinString()) {
-
-                            }
-                        }
                         else -> {}
                     }
                 }
@@ -586,7 +584,7 @@ fun Navigation(
         composable<MySecretView> {
             val args = it.toRoute<MySecretView>()
             val data = remember {
-                mutableStateOf<GeneratePasswordData?>(null)
+                mutableStateOf<SecretData?>(null)
             }
             val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
             LaunchedEffect(viewModel.currentSecretId) {
@@ -597,7 +595,7 @@ fun Navigation(
                 }
             }
             LaunchedEffect(Unit) {
-                data.value = GeneratePasswordData(
+                data.value = SecretData(
                     password = "",
                     login = "",
                     url = "",
@@ -612,11 +610,17 @@ fun Navigation(
                             SeedkeeperSecretType.MASTERSEED -> {
                                 data.value = parseMasterseedMnemonicCardData(secretObject.secretBytes)
                             }
-                            SeedkeeperSecretType.BIP39_MNEMONIC -> {
+                            SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
                                 data.value = parseMnemonicCardData(secretObject.secretBytes)
                             }
                             SeedkeeperSecretType.PASSWORD -> {
                                 data.value = parsePasswordCardData(secretObject.secretBytes)
+                            }
+                            SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
+                                data.value = parseWalletDescriptorData(secretObject.secretBytes)
+                            }
+                            SeedkeeperSecretType.PUBKEY -> {
+                                data.value = parsePubkeyData(secretObject.secretBytes)
                             }
                             else -> {}
                         }
@@ -661,9 +665,9 @@ fun Navigation(
                     clipboardManager.setText(AnnotatedString(secret))
                     Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                 },
-                getCompactSeedQR = { mnemonic ->
+                getSeedQR = { mnemonic ->
                     try {
-                        return@MySecretView viewModel.getSeedQr(mnemonic, context)
+                        return@MySecretView viewModel.getSeedQr(mnemonic)
                     } catch (e: Exception) {
                         Toast.makeText(context, retrieveTheSecretFirstText, Toast.LENGTH_SHORT).show()
                         return@MySecretView ""
@@ -680,7 +684,7 @@ fun Navigation(
                 mutableStateOf(false)
             }
             LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.OK && isImportInitiated.value) {
+                if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
                     isImportDone.value = true
                 } else {
                     isImportDone.value = false
@@ -721,9 +725,7 @@ fun Navigation(
                                     viewModel.generateMemorablePassword(options, context)
                                 } else {
                                     val password = viewModel.generatePassword(options)
-                                    password?.let {
-                                        it
-                                    } ?: run {
+                                    password ?: run {
                                         Toast.makeText(context, selectMoreSets, Toast.LENGTH_SHORT)
                                             .show()
                                         ""
@@ -758,8 +760,9 @@ fun Navigation(
             val isImportInitiated = remember {
                 mutableStateOf(false)
             }
+            val mnemonicValidText = stringResource(id = R.string.mnemonicValidText)
             LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.OK && isImportInitiated.value) {
+                if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
                     isImportDone.value = true
                 } else {
                     isImportDone.value = false
@@ -788,11 +791,26 @@ fun Navigation(
                 onImportSecret = { passwordData ->
                     isImportInitiated.value = true
                     viewModel.setPasswordData(passwordData)
-                    showNfcDialog.value = true // NfcDialog
-                    viewModel.scanCardForAction(
-                        activity = context as Activity,
-                        nfcActionType = NfcActionType.GENERATE_A_SECRET
-                    )
+                    val isMasterSeed = passwordData.type == SeedkeeperSecretType.MASTERSEED
+                    val mnemonic = passwordData.mnemonic
+
+                    if (isMasterSeed && mnemonic != null) {
+                        if (viewModel.isMnemonicValid(mnemonic)) {
+                            showNfcDialog.value = true
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = NfcActionType.GENERATE_A_SECRET
+                            )
+                        } else {
+                            Toast.makeText(context, mnemonicValidText, Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        showNfcDialog.value = true
+                        viewModel.scanCardForAction(
+                            activity = context as Activity,
+                            nfcActionType = NfcActionType.GENERATE_A_SECRET
+                        )
+                    }
                 }
             )
         }

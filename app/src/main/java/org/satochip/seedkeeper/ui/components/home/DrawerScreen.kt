@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
@@ -31,6 +32,7 @@ fun DrawerScreen(
     message: Int? = null,
     image: Int? = null,
     colorFilter: ColorFilter? = null,
+    triesLeft: Int? = null
 ) {
     Column(
         modifier = Modifier
@@ -62,11 +64,12 @@ fun DrawerScreen(
 
         message?.let {
             Text(
-                text = stringResource(message),
+                text = stringResource(message) + if (triesLeft != null && triesLeft > 0) " $triesLeft" else "",
                 style = TextStyle(
                     color = Color.Black,
                     fontSize = 16.sp
-                )
+                ),
+                textAlign = TextAlign.Center
             )
         }
         Spacer(modifier = Modifier.height(16.dp))

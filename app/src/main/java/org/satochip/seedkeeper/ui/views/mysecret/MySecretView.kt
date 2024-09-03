@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -21,10 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.MySecretStatus
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog
@@ -32,7 +32,6 @@ import org.satochip.seedkeeper.ui.components.mysecret.SecretButtonsField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
-import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
@@ -40,18 +39,18 @@ import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 
 @Composable
 fun MySecretView(
-    secret: MutableState<GeneratePasswordData?>,
+    secret: MutableState<SecretData?>,
     type: String,
     isOldVersion: Boolean,
     onClick: (MySecretItems) -> Unit,
-    getCompactSeedQR: (String) -> String,
+    getSeedQR: (String) -> String,
     copyToClipboard: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
         mutableStateOf("")
     }
-    val compactSeedQR = remember {
+    val seedQR = remember {
         mutableStateOf("")
     }
     val isSecretShown = remember {
@@ -77,12 +76,22 @@ fun MySecretView(
     }
 
     when (SeedkeeperSecretType.valueOf(type)) {
-        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC -> {
+        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
             secret.value?.mnemonic?.let { mnemonic ->
                 secretText.value = mnemonic
             }
         }
         SeedkeeperSecretType.PASSWORD -> {
+            secret.value?.password?.let { password ->
+                secretText.value = password
+            }
+        }
+        SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
+            secret.value?.descriptor?.let { descriptor ->
+                secretText.value = descriptor
+            }
+        }
+        SeedkeeperSecretType.PUBKEY -> {
             secret.value?.password?.let { password ->
                 secretText.value = password
             }
@@ -118,7 +127,7 @@ fun MySecretView(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 TitleTextField(
-                    title = R.string.manageSecret,
+                    title = R.string.nfcTitleSuccess,
                     text = R.string.manageSecretMessage
                 )
                 Column {
@@ -136,8 +145,8 @@ fun MySecretView(
                         type = type,
                         isSecretShown = isSecretShown,
                         onClick = {
-                            if (isSecretShown.value && compactSeedQR.value.isEmpty()) {
-                                compactSeedQR.value = getCompactSeedQR(secretText.value)
+                            if (isSecretShown.value && seedQR.value.isEmpty()) {
+                                seedQR.value = getSeedQR(secretText.value)
                             }
                         }
                     )
@@ -153,7 +162,7 @@ fun MySecretView(
                     }
                     MySecretStatus.SEED_QR -> {
                         SecretImageField(
-                            qrCodeString = compactSeedQR
+                            qrCodeString = seedQR
                         )
                     }
                     MySecretStatus.X_PUB -> {
@@ -183,7 +192,8 @@ fun MySecretView(
                         },
                         text = R.string.deleteSecret,
                         image = R.drawable.delete_icon,
-                        buttonColor = if (isOldVersion) SatoInactiveTracer else SatoButtonBlue
+                        buttonColor = if (isOldVersion) SatoInactiveTracer else SatoButtonBlue,
+                        horizontalPadding = 1.dp
                     )
                     SatoButton(
                         modifier = Modifier.weight(1f),
@@ -191,7 +201,8 @@ fun MySecretView(
                             onClick(MySecretItems.SHOW)
                         },
                         text = R.string.showSecret,
-                        image = R.drawable.show_password
+                        image = R.drawable.show_password,
+                        horizontalPadding = 1.dp
                     )
                 }
             }

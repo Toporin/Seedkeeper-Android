@@ -95,7 +95,7 @@ fun SecretsList(
                 color = Color.Black,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                fontWeight = FontWeight.W500,
+                fontWeight = FontWeight.ExtraLight,
                 textAlign = TextAlign.Center
             )
         )
@@ -114,7 +114,7 @@ fun SecretsList(
                         color = Color.Black,
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
-                        fontWeight = FontWeight.W500,
+                        fontWeight = FontWeight.ExtraLight,
                         textAlign = TextAlign.Center
                     )
                 )
@@ -150,21 +150,18 @@ fun SecretsList(
                             SeedkeeperSecretType.DEFAULT_TYPE -> {
                                 filteredList = secretHeaders.toList()
                             }
-
-                            SeedkeeperSecretType.PASSWORD -> {
-                                filteredList = secretHeaders.toList()
-                                filteredList = secretHeaders.toList().filter {
-                                    it?.type == filter
-                                }
-                            }
-
                             SeedkeeperSecretType.BIP39_MNEMONIC -> {
                                 filteredList = secretHeaders.toList()
                                 filteredList = secretHeaders.toList().filter {
+                                    it?.type == filter || it?.type == SeedkeeperSecretType.MASTERSEED || it?.type == SeedkeeperSecretType.ELECTRUM_MNEMONIC
+                                }
+                            }
+                            SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR, SeedkeeperSecretType.PASSWORD -> {
+                                filteredList = secretHeaders.toList()
+                                filteredList = secretHeaders.toList().filter {
                                     it?.type == filter
                                 }
                             }
-
                             else -> {}
                         }
                     }
@@ -183,7 +180,7 @@ fun SecretsList(
                     color = Color.Black,
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
-                    fontWeight = FontWeight.W500,
+                    fontWeight = FontWeight.ExtraLight,
                     textAlign = TextAlign.Center
                 )
             )
