@@ -21,7 +21,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.CardInformationItems
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.data.ImportViewItems
@@ -55,6 +55,7 @@ import org.satochip.seedkeeper.ui.views.welcome.WelcomeView
 import org.satochip.seedkeeper.utils.parseMasterseedMnemonicCardData
 import org.satochip.seedkeeper.utils.parseMnemonicCardData
 import org.satochip.seedkeeper.utils.parsePasswordCardData
+import org.satochip.seedkeeper.utils.parsePubkeyData
 import org.satochip.seedkeeper.utils.parseWalletDescriptorData
 import org.satochip.seedkeeper.utils.webviewActivityIntent
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
@@ -81,7 +82,7 @@ fun Navigation(
             HomeView
         }
     val viewModel = SharedViewModel()
-    viewModel.setContext(context)
+//    viewModel.setContext(context)
 
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
@@ -132,7 +133,7 @@ fun Navigation(
                 title = R.string.welcome,
                 text = R.string.welcomeInfo,
                 colors = listOf(Color.White, SatoGray, SatoGray),
-                backgroundImage = R.drawable.seedkeeper_background_welcome_first_screen,
+                backgroundImage = R.drawable.first_welcome_card,
                 onNext = {
                     navController.navigate(SecondWelcomeView) {
                         popUpTo(0)
@@ -146,7 +147,7 @@ fun Navigation(
                 title = R.string.seedphraseManager,
                 text = R.string.seedphraseManagerInfo,
                 colors = listOf(SatoGray, Color.White, SatoGray),
-                backgroundImage = R.drawable.seedkeeper_background_welcome_second_screen,
+                backgroundImage = R.drawable.second_welcome_card,
                 onNext = {
                     navController.navigate(ThirdWelcomeView) {
                         popUpTo(0)
@@ -163,7 +164,8 @@ fun Navigation(
             WelcomeView(
                 title = R.string.usingNfc,
                 text = R.string.usingNfcInfo,
-                backgroundImage = R.drawable.seedkeeper_background_welcome_third_screen,
+                backgroundImage = R.drawable.third_welcome_screen,
+                isFullWidth = true,
                 onNext = {
                     navController.navigate(HomeView) {
                         popUpTo(0)
@@ -582,7 +584,7 @@ fun Navigation(
         composable<MySecretView> {
             val args = it.toRoute<MySecretView>()
             val data = remember {
-                mutableStateOf<GeneratePasswordData?>(null)
+                mutableStateOf<SecretData?>(null)
             }
             val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
             LaunchedEffect(viewModel.currentSecretId) {
@@ -593,7 +595,7 @@ fun Navigation(
                 }
             }
             LaunchedEffect(Unit) {
-                data.value = GeneratePasswordData(
+                data.value = SecretData(
                     password = "",
                     login = "",
                     url = "",
@@ -616,6 +618,9 @@ fun Navigation(
                             }
                             SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
                                 data.value = parseWalletDescriptorData(secretObject.secretBytes)
+                            }
+                            SeedkeeperSecretType.PUBKEY -> {
+                                data.value = parsePubkeyData(secretObject.secretBytes)
                             }
                             else -> {}
                         }
@@ -662,7 +667,7 @@ fun Navigation(
                 },
                 getSeedQR = { mnemonic ->
                     try {
-                        return@MySecretView viewModel.getSeedQr(mnemonic, context)
+                        return@MySecretView viewModel.getSeedQr(mnemonic)
                     } catch (e: Exception) {
                         Toast.makeText(context, retrieveTheSecretFirstText, Toast.LENGTH_SHORT).show()
                         return@MySecretView ""

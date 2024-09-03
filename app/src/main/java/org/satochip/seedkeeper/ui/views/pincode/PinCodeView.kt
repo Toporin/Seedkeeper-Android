@@ -86,7 +86,7 @@ fun PinCodeView(
                         color = Color.Black,
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
-                        fontWeight = FontWeight.W500,
+                        fontWeight = FontWeight.ExtraLight,
                         textAlign = TextAlign.Center
                     )
                 )

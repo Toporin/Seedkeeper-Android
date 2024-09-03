@@ -43,6 +43,7 @@
     <string name="nfcWrongPin">Mauvais PIN, tentatives à gauche:</string>
     <string name="nfcCardBlocked">Trop de tentatives incorrectes de saisie du code PIN ! Votre carte a été bloquée.</string>
     <string name="nfcSecretDeleted">Secret supprimé avec succès.</string>
+    <string name="cardMismatch">Carte différente détectée, veuillez utiliser la bonne carte!</string>
 
     <!--Generate View-->
     <string name="generate">Générer</string>
@@ -61,7 +62,7 @@
         <string name="mnemonicPhrase">Phrase mnémotechnique</string>
         <string name="loginPassword">Mot de passe</string>
         <string name="label">Label</string>
-        <string name="mnemonicSize">Sélectionnez la taille</string>
+        <string name="mnemonicSize">taille mnémonique</string>
         <string name="mnemonicWords">%d mots</string>
         <string name="passphrase"> Passphrase (optionel)</string>
         <string name="walletDescriptorOptional"> Descripteur de portefeuille (optionel)</string>

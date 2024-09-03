@@ -22,11 +22,12 @@ fun WelcomeViewContent(
 ) {
     Text(
         text = stringResource(title),
+        modifier = Modifier.padding(horizontal = 8.dp),
         style = TextStyle(
             color = Color.Black,
             fontWeight = FontWeight.ExtraBold,
             fontSize = 24.sp,
-            lineHeight = (14.5).sp,
+            textAlign = TextAlign.Center
         ),
     )
     Spacer(modifier = Modifier.height(20.dp))

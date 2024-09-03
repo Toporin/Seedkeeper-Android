@@ -38,7 +38,7 @@ fun SecretButtonsField(
                     },
                     text = R.string.seed,
                     image = R.drawable.seed_icon,
-                    horizontalPadding = 2.dp
+                    horizontalPadding = 1.dp
                 )
                 SatoButton(
                     modifier = Modifier.weight(1f),
@@ -50,7 +50,7 @@ fun SecretButtonsField(
                     },
                     text = R.string.seedQR,
                     image = R.drawable.seedqr_icon,
-                    horizontalPadding = 2.dp,
+                    horizontalPadding = 1.dp,
                     buttonColor = if (isSecretShown.value) SatoButtonBlue else SatoInactiveTracer
                 )
 //                todo: logic should be changed

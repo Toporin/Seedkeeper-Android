@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
@@ -35,7 +35,7 @@ fun ImportFreeField(
     curValueLabel: MutableState<String>,
     secret: MutableState<String>,
     onClick: (ImportViewItems, String?) -> Unit,
-    onImportSecret: (GeneratePasswordData) -> Unit,
+    onImportSecret: (SecretData) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -88,7 +88,7 @@ fun ImportFreeField(
                 onClick = {
                     if (isClickable(secret, curValueLabel)) {
                         onImportSecret(
-                            GeneratePasswordData(
+                            SecretData(
                                 type = SeedkeeperSecretType.DATA,
                                 password = "",
                                 label = curValueLabel.value,

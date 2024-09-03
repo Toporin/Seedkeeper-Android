@@ -7,8 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,9 +35,11 @@ fun WelcomeView(
     link: String? = null,
     colors: List<Color>? = null,
     backgroundImage: Int,
+    isFullWidth: Boolean = false,
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
+    val scrollState = rememberScrollState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +60,7 @@ fun WelcomeView(
             }
     ) {
         Image(
-            painter = painterResource(backgroundImage),
+            painter = painterResource(R.drawable.seedkeeper_background_welcome),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -65,13 +71,23 @@ fun WelcomeView(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(state = scrollState),
         ) {
             WelcomeViewTitle()
-            Spacer(modifier = Modifier.height(37.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             WelcomeViewContent(
                 title = title,
                 text = text,
                 link = link
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            Image(
+                painter = painterResource(backgroundImage),
+                contentDescription = null,
+                alignment = Alignment.Center,
+                modifier = if (isFullWidth) Modifier.fillMaxWidth() else Modifier
+                    .size(300.dp),
+                contentScale = if (isFullWidth) ContentScale.FillWidth else ContentScale.Fit
             )
             Spacer(modifier = Modifier.weight(1f))
             Box(

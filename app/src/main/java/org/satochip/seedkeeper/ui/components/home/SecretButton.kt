@@ -80,7 +80,7 @@ fun SecretButton(
                         color = Color.White,
                         fontSize = 18.sp,
                         lineHeight = 22.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.ExtraLight
                     )
                 )
             }

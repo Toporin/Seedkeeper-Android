@@ -69,7 +69,7 @@ fun SatoButton(
                 )
             )
             image?.let {
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(4.dp))
                 GifImage(
                     modifier = Modifier
                         .size(16.dp),

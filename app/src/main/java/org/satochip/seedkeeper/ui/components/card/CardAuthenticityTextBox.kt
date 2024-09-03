@@ -30,7 +30,7 @@ fun CardAuthenticityTextBox(
                 color = Color.Black,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                fontWeight = FontWeight.W500
+                fontWeight = FontWeight.ExtraLight
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -40,7 +40,7 @@ fun CardAuthenticityTextBox(
                 color = Color.Black,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                fontWeight = FontWeight.W500
+                fontWeight = FontWeight.ExtraLight
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -50,7 +50,7 @@ fun CardAuthenticityTextBox(
                 color = Color.Black,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                fontWeight = FontWeight.W500
+                fontWeight = FontWeight.ExtraLight
             )
         )
     }

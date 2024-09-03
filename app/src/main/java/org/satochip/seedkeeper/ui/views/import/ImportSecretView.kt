@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.GeneratePasswordData
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -30,7 +30,7 @@ fun ImportSecretView(
     settings: SharedPreferences,
     isImportDone: MutableState<Boolean>,
     onClick: (ImportViewItems, String?) -> Unit,
-    onImportSecret: (GeneratePasswordData) -> Unit
+    onImportSecret: (SecretData) -> Unit
 ) {
     val stringResourceMap = mapOf(
         R.string.loginPassword to "loginPassword",
@@ -150,7 +150,6 @@ fun ImportSecretView(
                             curValueWalletDescriptor = curValueWalletDescriptor,
                             secret = secret,
                             passwordOptions = passwordOptions,
-                            generateStatus = generateStatus,
                             onClick = { importItems, text ->
                                 onClick(importItems,text)
                             },
@@ -165,8 +164,6 @@ fun ImportSecretView(
                             curValueLabel = curValueLabel,
                             secret = secret,
                             passwordOptions = passwordOptions,
-                            generateStatus = generateStatus,
-                            typeOfSecret = typeOfSecret,
                             curValueLogin = curValueLogin,
                             curValueUrl = curValueUrl,
                             isPopUpOpened = isPopUpOpened,
