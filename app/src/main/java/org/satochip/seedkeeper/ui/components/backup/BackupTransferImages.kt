@@ -23,7 +23,7 @@ fun BackupTransferImages(
     ) {
         if (backupStatus != BackupStatus.FIFTH_STEP) {
             BackupTransferImage(
-                image = R.drawable.first_welcome_card,
+                image = R.drawable.backup_card,
                 text = R.string.masterCard,
                 alpha = if (backupStatus == BackupStatus.FIRST_STEP || backupStatus == BackupStatus.FOURTH_STEP) 0.3f else 1f
             )
@@ -35,7 +35,7 @@ fun BackupTransferImages(
                 alpha = if (backupStatus == BackupStatus.FIRST_STEP || backupStatus == BackupStatus.SECOND_STEP) 0.3f else 1f
             )
             BackupTransferImage(
-                image = R.drawable.first_welcome_card,
+                image = R.drawable.backup_card,
                 text = R.string.backupCard,
                 alpha = if (backupStatus == BackupStatus.SECOND_STEP) 0.3f else 1f
             )
