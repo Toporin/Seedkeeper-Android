@@ -63,7 +63,7 @@ fun SatoButton(
                 text = stringResource(text),
                 style = TextStyle(
                     color = textColor,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     lineHeight = 22.sp,
                     fontWeight = FontWeight.Bold
                 )

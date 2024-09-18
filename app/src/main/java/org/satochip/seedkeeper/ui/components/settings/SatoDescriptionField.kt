@@ -37,7 +37,7 @@ fun SatoDescriptionField(
                 color = Color.Black,
                 fontSize = 14.sp,
                 lineHeight = 24.sp,
-                fontWeight = FontWeight.W400
+                fontWeight = FontWeight.ExtraLight
             )
         )
     }
