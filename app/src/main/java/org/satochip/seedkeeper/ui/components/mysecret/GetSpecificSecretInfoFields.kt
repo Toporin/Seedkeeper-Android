@@ -19,7 +19,7 @@ fun GetSpecificSecretInfoFields(
         SecretInfoField(
             title = R.string.passphrase,
             optional = R.string.optional,
-            text = secret.value?.password ?: ""
+            text = if (secret.value?.subType == 0 ) "" else secret.value?.password ?: ""
         )
         SecretInfoField(
             title = R.string.walletDescriptorOptional,

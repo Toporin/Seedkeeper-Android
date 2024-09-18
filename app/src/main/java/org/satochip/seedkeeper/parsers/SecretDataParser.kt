@@ -15,7 +15,11 @@ class SecretDataParser {
     fun parseByType(seedkeeperSecretType: SeedkeeperSecretType, secretObject: SeedkeeperSecretObject): SecretData? {
         return when (seedkeeperSecretType) {
             SeedkeeperSecretType.MASTERSEED -> {
-                parseMasterseedMnemonicCardData(secretObject.secretBytes)
+                if (secretObject.secretHeader.subtype == 0x00.toByte()) {
+                    parseGeneralData(secretObject.secretBytes)
+                } else {
+                    parseMasterseedMnemonicCardData(secretObject.secretBytes)
+                }
             }
             SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
                 parseMnemonicCardData(secretObject.secretBytes)
@@ -27,7 +31,7 @@ class SecretDataParser {
                  parseWalletDescriptorData(secretObject.secretBytes)
             }
             else -> {
-                parsePubkeyData(secretObject.secretBytes)
+                parseGeneralData(secretObject.secretBytes)
             }
         }
     }
@@ -137,7 +141,7 @@ class SecretDataParser {
         )
     }
 
-    private fun parsePubkeyData(bytes: ByteArray): SecretData? {
+    private fun parseGeneralData(bytes: ByteArray): SecretData? {
         val pubkeySize = bytes[0].toInt()
         if (1 + pubkeySize > bytes.size) {
             SatoLog.e(TAG, "Invalid pubkey size")

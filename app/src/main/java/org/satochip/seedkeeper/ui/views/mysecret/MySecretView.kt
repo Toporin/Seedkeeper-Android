@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.SecretData
@@ -81,8 +82,14 @@ fun MySecretView(
 
     when (SeedkeeperSecretType.valueOf(type)) {
         SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
-            secret.value?.mnemonic?.let { mnemonic ->
-                secretText.value = mnemonic
+            if (secret.value?.subType != 0) {
+                secret.value?.mnemonic?.let { mnemonic ->
+                    secretText.value = mnemonic
+                }
+            } else {
+                secret.value?.password?.let { password ->
+                    secretText.value = password
+                }
             }
         }
         SeedkeeperSecretType.PASSWORD -> {
@@ -95,7 +102,7 @@ fun MySecretView(
                 secretText.value = descriptor
             }
         }
-        SeedkeeperSecretType.PUBKEY -> {
+        SeedkeeperSecretType.PUBKEY, SeedkeeperSecretType.SECRET_2FA -> {
             secret.value?.password?.let { password ->
                 secretText.value = password
             }
@@ -211,7 +218,11 @@ fun MySecretView(
                     SatoButton(
                         modifier = Modifier.weight(1f),
                         onClick = {
-                            onClick(MySecretItems.SHOW)
+                            if (secret.value?.exportRights == SeedkeeperExportRights.EXPORT_ENCRYPTED_ONLY.value.toInt()) {
+                                onClick(MySecretItems.ENCRYPTED_EXPORT)
+                            } else {
+                                onClick(MySecretItems.SHOW)
+                            }
                         },
                         text = R.string.showSecret,
                         image = R.drawable.show_password,

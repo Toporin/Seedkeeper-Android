@@ -17,7 +17,8 @@ data class SecretData(
     var login: String? = null,
     var url: String? = null,
     var mnemonic: String? = null,
-    var exportRights: SeedkeeperExportRights = SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED,
+    var exportRights: Int = SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED.value.toInt(),
+    var subType: Int? = null,
     var descriptor: String? = null
 ) {
     fun getSecretBytes(): ByteArray {

@@ -253,7 +253,9 @@ fun Navigation(
                                     MySecretView(
                                         sid = secret.sid,
                                         type = secret.type.name,
-                                        label = secret.label
+                                        label = secret.label,
+                                        exportRights = secret.exportRights.value.toInt(),
+                                        subType = secret.subtype.toInt()
                                     )
                                 )
                             }
@@ -612,6 +614,7 @@ fun Navigation(
             val data = remember {
                 mutableStateOf<SecretData?>(null)
             }
+            val encryptedText = stringResource(id = R.string.encryptedOnlySecretText)
             val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
             val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
 
@@ -628,7 +631,9 @@ fun Navigation(
                     login = "",
                     url = "",
                     label = args.label,
-                    type = SeedkeeperSecretType.valueOf(args.type)
+                    type = SeedkeeperSecretType.valueOf(args.type),
+                    exportRights = args.exportRights,
+                    subType = args.subType
                 )
             }
             LaunchedEffect(viewModel.currentSecretObject) {
@@ -638,6 +643,7 @@ fun Navigation(
                         secretObject = secretObject
                     )
                     data.value?.label = secretObject.secretHeader.label
+                    data.value?.subType = secretObject.secretHeader.subtype.toInt()
                 }
             }
 
@@ -670,6 +676,9 @@ fun Navigation(
                                 url = buySeedkeeperUrl,
                                 context = context
                             )
+                        }
+                        MySecretItems.ENCRYPTED_EXPORT -> {
+                            Toast.makeText(context, encryptedText, Toast.LENGTH_SHORT).show()
                         }
                     }
                 },
@@ -887,7 +896,9 @@ object ShowCardLogs
 data class MySecretView (
     val sid: Int,
     val type: String,
-    val label: String
+    val label: String,
+    val exportRights: Int,
+    val subType: Int
 )
 
 @Serializable

@@ -211,6 +211,8 @@
     <string name="url">URL</string>
     <string name="oldSeedkeeper">This option is only available for the latest Seedkeeper card - buy yours at https://satochip.io/product/seedkeeper</string>
     <string name="buySeedkeeper">Buy Seedkeeper</string>
+    <string name="encryptedOnlySecret">Encrypted secret</string>
+    <string name="encryptedOnlySecretText">Can\'t export this secret due to specific export policy</string>
 
     <!--Show Logs View-->
     <string name="logs">Logs</string>

@@ -4,5 +4,6 @@ enum class MySecretItems {
     SHOW,
     DELETE,
     BUY_SEEDKEEPER,
+    ENCRYPTED_EXPORT,
     BACK
 }
