@@ -2,11 +2,14 @@ package org.satochip.seedkeeper.ui.components.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
@@ -51,16 +54,15 @@ fun HomeHeaderRow(
             Color.Black
         }
     }
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp, bottom = 5.dp, start = 20.dp, end = 5.dp)
-            .height(50.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .height(50.dp)
     ) {
         // LOGO
         IconButton(
+            modifier = Modifier.align(Alignment.CenterStart),
             onClick = {
                 onClick(HomeItems.CARD_INFO)
             },
@@ -76,6 +78,7 @@ fun HomeHeaderRow(
         }
         // TITLE
         Text(
+            modifier = Modifier.align(Alignment.Center),
             text = stringResource(id = R.string.seedkeeper),
             style = TextStyle(
                 color = Color.Black,
@@ -84,7 +87,9 @@ fun HomeHeaderRow(
                 lineHeight = 34.sp,
             ),
         )
-        Row {
+        Row(
+            modifier = Modifier.align(Alignment.CenterEnd),
+        ) {
             if (isCardDataAvailable) {
                 // RESCAN BUTTON
                 IconButton(

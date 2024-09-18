@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -51,7 +52,7 @@ fun NewSeedkeeperPopUpDialog(
         Column(
             modifier = Modifier
                 .width(350.dp)
-                .height(250.dp)
+                .heightIn(min = 250.dp)
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(8.dp)

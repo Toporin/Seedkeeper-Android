@@ -16,7 +16,7 @@ import org.satochip.seedkeeper.R
 @Composable
 fun WelcomeViewTitle(
     modifier: Modifier = Modifier
-        .padding(20.dp)
+        .padding(horizontal = 20.dp)
         .width(200.dp)
         .height(100.dp)
 ) {

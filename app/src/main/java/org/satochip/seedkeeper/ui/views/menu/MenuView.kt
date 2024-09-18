@@ -42,6 +42,12 @@ fun MenuView(
     webViewAction: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
+
+    val howToUseSeedkeeperUrl = stringResource(id = R.string.howToUseSeedkeeper)
+    val termsOfServiceUrl = stringResource(id = R.string.termsOfServiceUrl)
+    val privacyPolicyUrl = stringResource(id = R.string.privacyPolicyUrl)
+    val allOurProducsUrl = stringResource(id = R.string.allOurProducsUrl)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -150,7 +156,7 @@ fun MenuView(
                 color = SatoLightPurple,
                 drawableId = R.drawable.how_to
             ) {
-                webViewAction("https://satochip.io/setup-use-seedkeeper-on-mobile/")
+                webViewAction(howToUseSeedkeeperUrl)
             }
         }
         Row(
@@ -173,7 +179,7 @@ fun MenuView(
                 textAlign = Alignment.Center,
                 color = SatoDarkPurple,
             ) {
-                webViewAction("https://satochip.io/terms-of-service/")
+                webViewAction(termsOfServiceUrl)
             }
             Spacer(modifier = Modifier.width(8.dp))
             // PRIVACY POLICY
@@ -185,7 +191,7 @@ fun MenuView(
                 textAlign = Alignment.Center,
                 color = SatoDarkPurple,
             ) {
-                webViewAction("https://satochip.io/privacy-policy/")
+                webViewAction(privacyPolicyUrl)
             }
         }
         Spacer(
@@ -206,7 +212,7 @@ fun MenuView(
                     shape = RoundedCornerShape(15.dp)
                 )
                 .clickable {
-                    webViewAction("https://satochip.io/shop/")
+                    webViewAction(allOurProducsUrl)
                 }
         ) {
             Text(

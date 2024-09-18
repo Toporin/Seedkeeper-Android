@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
@@ -27,15 +27,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 
 @Composable
@@ -45,6 +48,7 @@ fun InputField(
     curValue: MutableState<String>,
     drawableId: Int = R.drawable.edit_icon,
     placeHolder: Int? = null,
+    optional: Int? = null,
     containerColor: Color = SatoPurple.copy(alpha = 0.5f),
     isEmail: Boolean = false,
     textColor: Color = Color.White,
@@ -76,7 +80,9 @@ fun InputField(
     ) {
         BasicTextField(
             modifier = Modifier
-                .focusRequester(focusRequester),
+                .focusRequester(focusRequester)
+                .weight(1f)
+                .padding(end = 8.dp),
             value = curValue.value,
             onValueChange = {
                 curValue.value = it
@@ -97,7 +103,6 @@ fun InputField(
             textStyle = TextStyle(
                 color = textColor,
                 fontSize = 16.sp,
-                lineHeight = 21.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = if (isEditable || isEmail) TextAlign.Start else TextAlign.Center
             ),
@@ -107,14 +112,31 @@ fun InputField(
                         modifier = Modifier
                     ) {
                         if (curValue.value.isEmpty()) {
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterStart),
-                                text = stringResource(id = placeHolder),
+                            BasicText(
+                                text = buildAnnotatedString {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = Color.LightGray,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        )
+                                    ) {
+                                        append(stringResource(id = placeHolder))
+                                    }
+                                    append(" ")
+                                    optional?.let {
+                                        withStyle(
+                                            style = SpanStyle(
+                                                fontStyle = FontStyle.Italic,
+                                                fontSize = 13.sp,
+                                                color = Color.LightGray,
+                                            )
+                                        ) {
+                                            append(stringResource(id = optional))
+                                        }
+                                    }
+                                },
                                 style = TextStyle(
-                                    color = Color.LightGray,
-                                    fontSize = 16.sp,
-                                    lineHeight = 21.sp,
-                                    fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Start
                                 )
                             )

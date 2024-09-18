@@ -18,20 +18,24 @@ fun GetSpecificSecretInfoFields(
         )
         SecretInfoField(
             title = R.string.passphrase,
+            optional = R.string.optional,
             text = secret.value?.password ?: ""
         )
         SecretInfoField(
             title = R.string.walletDescriptorOptional,
+            optional = R.string.optional,
             text = secret.value?.descriptor ?: ""
         )
     } else if (type == SeedkeeperSecretType.PASSWORD.name) {
             SecretInfoField(
                 title = R.string.login,
+                optional = R.string.optional,
                 text = secret.value?.login ?: ""
             )
 
             SecretInfoField(
                 title = R.string.url,
+                optional = R.string.optional,
                 text = secret.value?.url ?: ""
             )
     }

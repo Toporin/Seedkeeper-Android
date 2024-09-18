@@ -60,7 +60,8 @@ private const val TAG = "Navigation"
 
 @Composable
 fun Navigation(
-    context: Context
+    context: Context,
+    viewModel: SharedViewModel,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val navController = rememberNavController()
@@ -77,7 +78,6 @@ fun Navigation(
         } else {
             HomeView
         }
-    val viewModel = SharedViewModel()
 
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
@@ -236,6 +236,14 @@ fun Navigation(
                             }
                         }
                     }
+                },
+                onEditCardLabel = { cardLabel ->
+                    showNfcDialog.value = true // NfcDialog
+                    viewModel.setupNewCardLabel(cardLabel)
+                    viewModel.scanCardForAction(
+                        activity = context as Activity,
+                        nfcActionType = NfcActionType.EDIT_CARD_LABEL
+                    )
                 },
                 webViewAction = { link ->
                     webviewActivityIntent(
@@ -463,7 +471,7 @@ fun Navigation(
                 }
             }
             PinCodeView (
-                title = args.title,
+                title = R.string.blankTextField,
                 messageTitle = args.messageTitle,
                 message = args.message,
                 placeholderText = args.placeholderText,
@@ -582,6 +590,8 @@ fun Navigation(
                 mutableStateOf<SecretData?>(null)
             }
             val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
+            val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
+
             LaunchedEffect(viewModel.currentSecretId) {
                 if (viewModel.currentSecretId == null) {
                     navController.navigate(HomeView) {
@@ -634,7 +644,7 @@ fun Navigation(
                         }
                         MySecretItems.BUY_SEEDKEEPER -> {
                             webviewActivityIntent(
-                                url = "https://satochip.io/product/seedkeeper",
+                                url = buySeedkeeperUrl,
                                 context = context
                             )
                         }

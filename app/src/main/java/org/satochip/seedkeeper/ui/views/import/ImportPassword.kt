@@ -64,6 +64,7 @@ fun ImportPassword(
             isEditable = retrievedSet.value.isEmpty(),
             curValue = curValueLogin,
             placeHolder = R.string.loginOptional,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f),
             isEmail = true,
             onClick = {
@@ -76,6 +77,7 @@ fun ImportPassword(
         InputField(
             curValue = curValueUrl,
             placeHolder = R.string.urlOptional,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -91,9 +93,8 @@ fun ImportPassword(
                 text = stringResource(R.string.enterYourPassword),
                 style = TextStyle(
                     color = Color.Black,
-                    fontSize = 18.sp,
-                    lineHeight = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraLight,
                 )
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -101,6 +102,7 @@ fun ImportPassword(
                 curValue = secret,
                 isEditable = true,
                 isQRCodeEnabled = false,
+                minHeight = 250.dp,
                 copyToClipboard = {
                     onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
                 }

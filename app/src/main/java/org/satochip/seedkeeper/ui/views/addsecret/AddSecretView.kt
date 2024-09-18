@@ -41,7 +41,7 @@ fun AddSecretView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeaderAlternateRow(
-                titleText = R.string.addSecret,
+                titleText = R.string.blankTextField,
                 onClick = {
                     onClick(AddSecretItems.BACK)
                 }
@@ -53,17 +53,32 @@ fun AddSecretView(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-
-                Text(
-                    text = stringResource(id = R.string.addSecretMessage),
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight.ExtraLight,
-                        textAlign = TextAlign.Center
+                Column(
+                     modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.addSecret),
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            textAlign = TextAlign.Center
+                        )
                     )
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = stringResource(id = R.string.addSecretMessage),
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.ExtraLight,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
                 Column {
                     // GENERATE A SECRET
                     MenuCard(
@@ -97,6 +112,7 @@ fun AddSecretView(
                 }
 
                 // HOW TO USE SEEDKEEPER
+                val howToUseSeedkeeperUri = stringResource(id = R.string.howToUseSeedkeeper)
                 MenuCard(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -106,7 +122,7 @@ fun AddSecretView(
                     color = SatoLightPurple,
                     drawableId = R.drawable.how_to
                 ) {
-                    webViewAction("https://satochip.io/setup-use-seedkeeper-on-mobile/")
+                    webViewAction(howToUseSeedkeeperUri)
                 }
                 Spacer(modifier = Modifier)
             }

@@ -44,7 +44,7 @@ fun EditPinCodeView(
     val pinCodeStatus = remember {
         mutableStateOf(pinCode)
     }
-    val title =  R.string.setup
+    val title =  R.string.blankTextField
     val messageTitle =  remember { mutableStateOf(0) }
     val message =  remember { mutableStateOf(0) }
     val buttonText =  remember { mutableStateOf(0) }

@@ -29,7 +29,6 @@ import org.satochip.seedkeeper.ui.components.import.MnemonicImportField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
-import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 import org.satochip.seedkeeper.utils.isClickable
 
@@ -65,12 +64,14 @@ fun ImportMnemonic(
         InputField(
             curValue = curValuePassphrase,
             placeHolder = R.string.passphrase,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(20.dp))
         InputField(
             curValue = curValueWalletDescriptor,
             placeHolder = R.string.walletDescriptorOptional,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
     }
@@ -81,13 +82,13 @@ fun ImportMnemonic(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = stringResource(R.string.enterYourMnemonic),
                 style = TextStyle(
                     color = Color.Black,
-                    fontSize = 18.sp,
-                    lineHeight = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraLight,
                 )
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -95,6 +96,7 @@ fun ImportMnemonic(
                 curValue = secret,
                 isEditable = true,
                 isQRCodeEnabled = false,
+                minHeight = 250.dp,
                 copyToClipboard = {
                     onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
                 }

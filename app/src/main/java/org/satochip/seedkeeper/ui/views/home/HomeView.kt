@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
@@ -23,8 +24,10 @@ fun HomeView(
     secretHeaders: SnapshotStateList<SeedkeeperSecretHeader?>,
     authenticityStatus: AuthenticityStatus,
     onClick: (HomeItems, SeedkeeperSecretHeader?) -> Unit,
+    onEditCardLabel: (String) -> Unit,
     webViewAction: (String) -> Unit
 ) {
+    val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -51,6 +54,9 @@ fun HomeView(
                     },
                     onSecretClick = { item ->
                         onClick(HomeItems.OPEN_SECRET, item)
+                    },
+                    onEditCardLabel = { cardLabel ->
+                        onEditCardLabel(cardLabel)
                     }
                 )
             } else {
@@ -63,7 +69,7 @@ fun HomeView(
                 // WEBVIEW
                 SatoGradientButton(
                     onClick = {
-                        webViewAction("https://satochip.io/product/seedkeeper/")
+                        webViewAction(buySeedkeeperUrl)
                     },
                     text = R.string.noSeedkeeper
                 )

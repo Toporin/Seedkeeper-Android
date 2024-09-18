@@ -63,9 +63,8 @@ fun ImportFreeField(
                 text = stringResource(R.string.enterYourData),
                 style = TextStyle(
                     color = Color.Black,
-                    fontSize = 18.sp,
-                    lineHeight = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraLight,
                 )
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -73,6 +72,7 @@ fun ImportFreeField(
                 curValue = secret,
                 isEditable = true,
                 isQRCodeEnabled = false,
+                minHeight = 250.dp,
                 copyToClipboard = {
                     onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
                 }

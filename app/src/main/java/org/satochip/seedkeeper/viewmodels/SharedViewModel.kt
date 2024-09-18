@@ -24,8 +24,10 @@ import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.StringConstants
 import org.satochip.seedkeeper.services.NFCCardService
 import org.satochip.seedkeeper.services.SatoLog
+import org.satochip.seedkeeper.utils.isFrench
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.util.Locale
 
 private const val TAG = "SharedViewModel"
 
@@ -41,7 +43,7 @@ class SharedViewModel : ViewModel() {
     var resultCodeLive by mutableStateOf(NfcResultCode.BUSY)
     var backupStatusState by mutableStateOf(BackupStatus.DEFAULT)
     var cardLabel by mutableStateOf("")
-    var updateSecretsJob: Job? = null
+    private var updateSecretsJob: Job? = null
 
     init {
         NFCCardService.isSetupNeeded.observeForever {
@@ -242,10 +244,10 @@ class SharedViewModel : ViewModel() {
         return mnemonic.joinToString(" ")
     }
 
-
     private fun getWordList(context: Context): List<String> {
         val wordList = mutableListOf<String>()
-        context.assets.open("password-replacement.txt").use { inputStream ->
+        val fileName = if (isFrench()) "password-replacement-fr.txt" else "password-replacement.txt"
+        context.assets.open(fileName).use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
                 reader.forEachLine { line ->
                     wordList.add(line)

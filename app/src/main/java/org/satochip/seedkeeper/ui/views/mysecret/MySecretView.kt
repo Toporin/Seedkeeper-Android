@@ -140,7 +140,7 @@ fun MySecretView(
                         textAlign = TextAlign.Center
                     )
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 Column {
                     SecretInfoField(
                         title = R.string.label,

@@ -57,7 +57,8 @@ fun MenuCard(
                     modifier = Modifier,
                     color = Color.White,
                     fontSize = 14.sp,
-                    text = textMessage
+                    text = textMessage,
+                    fontWeight =  FontWeight.ExtraLight
                 )
             }
         }

@@ -62,12 +62,14 @@ fun GenerateMnemonic(
         InputField(
             curValue = curValuePassphrase,
             placeHolder = R.string.passphrase,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(20.dp))
         InputField(
             curValue = curValueWalletDescriptor,
             placeHolder = R.string.walletDescriptorOptional,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
     }

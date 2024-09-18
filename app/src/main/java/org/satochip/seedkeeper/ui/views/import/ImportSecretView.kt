@@ -124,13 +124,13 @@ fun ImportSecretView(
                 onClick = {
                     onClick(ImportViewItems.BACK, null)
                 },
-                titleText = R.string.importHeader
+                titleText = R.string.blankTextField
             )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 32.dp)
-                    .padding(bottom = 32.dp, top = 16.dp)
+                    .padding(bottom = 16.dp, top = 16.dp)
                     .verticalScroll(state = scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween

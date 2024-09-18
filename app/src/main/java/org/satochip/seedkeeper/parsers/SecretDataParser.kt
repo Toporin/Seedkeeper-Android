@@ -26,11 +26,8 @@ class SecretDataParser {
             SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
                  parseWalletDescriptorData(secretObject.secretBytes)
             }
-            SeedkeeperSecretType.PUBKEY -> {
-                parsePubkeyData(secretObject.secretBytes)
-            }
             else -> {
-                null
+                parsePubkeyData(secretObject.secretBytes)
             }
         }
     }

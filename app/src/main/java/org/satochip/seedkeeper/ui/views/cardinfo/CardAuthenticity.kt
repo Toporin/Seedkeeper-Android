@@ -81,7 +81,7 @@ fun CardAuthenticity(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 50.dp)
+                .padding(top = 8.dp)
                 .verticalScroll(state = scrollState)
                 .padding(horizontal = 16.dp)
         ) {

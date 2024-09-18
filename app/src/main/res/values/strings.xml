@@ -21,6 +21,14 @@
     <string name="close">Close</string>
     <string name="retrieveTheSecretFirst">Please retrieve the secret first</string>
     <string name="mnemonicValidText">Mnemonic is not valid!</string>
+    <string name="blankTextField"></string>
+
+    <!--Secrets filters-->
+    <string name="all">All</string>
+    <string name="mnemonic">Mnemonic</string>
+    <string name="password">Password</string>
+    <string name="descriptors">Descriptors</string>
+    <string name="data">Data</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess"></string>
@@ -55,7 +63,7 @@
     <string name="generateExplanation">Allows you to quickly generate and import a new secret.</string>
     <string name="generateSuccessful">The following secret has been successfully imported into your Seedkeeper</string>
     <string name="importButton">Import</string>
-    <string name="memorablePassword">Memorable password</string>
+    <string name="memorablePassword">Easy to read</string>
 
         <!--Mnemonic phrase-->
         <string name="typeOfSecret">Type of secret</string>
@@ -64,11 +72,12 @@
         <string name="label">Label</string>
         <string name="mnemonicSize">Mnemonic size</string>
         <string name="mnemonicWords">%d words</string>
-        <string name="passphrase"> Passphrase (optional)</string>
-        <string name="walletDescriptorOptional"> Wallet descriptor (optional)</string>
+        <string name="passphrase"> Passphrase</string>
+        <string name="walletDescriptorOptional"> Wallet descriptor</string>
         <!--Login/Password-->
-        <string name="loginOptional">Login (optional)</string>
-        <string name="urlOptional">URL (optional)</string>
+        <string name="loginOptional">Login</string>
+        <string name="urlOptional">URL</string>
+        <string name="optional">(optional)</string>
         <string name="passwordLength">Length</string>
         <string name="passwordImport">Import</string>
         <string name="copiedToClipboard">Copied to clipboard</string>
@@ -209,4 +218,12 @@
 
     <!--Show Card Logs View-->
     <string name="cardLogs">Card logs</string>
+
+    <!-- Links -->
+    <string name="howToUseSeedkeeper">https://satochip.io/setup-use-seedkeeper-on-mobile/</string>
+    <string name="termsOfServiceUrl">https://satochip.io/terms-of-service/</string>
+    <string name="privacyPolicyUrl">https://satochip.io/privacy-policy/</string>
+    <string name="allOurProducsUrl">https://satochip.io/shop/</string>
+    <string name="buySeedkeeperUrl">https://satochip.io/product/seedkeeper/</string>
+
 </resources>

@@ -29,7 +29,6 @@ fun CardAuthenticityTextBox(
             style = TextStyle(
                 color = Color.Black,
                 fontSize = 16.sp,
-                lineHeight = 24.sp,
                 fontWeight = FontWeight.ExtraLight
             )
         )
@@ -39,7 +38,6 @@ fun CardAuthenticityTextBox(
             style = TextStyle(
                 color = Color.Black,
                 fontSize = 16.sp,
-                lineHeight = 24.sp,
                 fontWeight = FontWeight.ExtraLight
             )
         )
@@ -49,7 +47,6 @@ fun CardAuthenticityTextBox(
             style = TextStyle(
                 color = Color.Black,
                 fontSize = 16.sp,
-                lineHeight = 24.sp,
                 fontWeight = FontWeight.ExtraLight
             )
         )

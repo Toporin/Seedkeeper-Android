@@ -1,6 +1,7 @@
 package org.satochip.seedkeeper.ui.components.generate
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -117,31 +118,27 @@ fun PasswordLengthField(
                         Text(
                             modifier = Modifier,
                             text = passwordOptions.value.passwordLength.toString(),
+                            color = Color.White
                         )
                     }
                 },
             )
         }
-        LazyRow(
-            modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
-            item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 ToggleOption(
                     label = "abc",
                     isChecked = passwordOptions.value.isLowercaseSelected
                 ) {
                     passwordOptions.value = passwordOptions.value.copy(isLowercaseSelected = it)
                 }
-            }
-            item {
-                ToggleOption(
-                    label = "ABC",
-                    isChecked = passwordOptions.value.isUppercaseSelected
-                ) {
-                    passwordOptions.value = passwordOptions.value.copy(isUppercaseSelected = it)
-                }
-            }
-            item {
                 ToggleOption(
                     label = "123",
                     isChecked = passwordOptions.value.isNumbersSelected
@@ -149,7 +146,16 @@ fun PasswordLengthField(
                     passwordOptions.value = passwordOptions.value.copy(isNumbersSelected = it)
                 }
             }
-            item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                ToggleOption(
+                    label = "ABC",
+                    isChecked = passwordOptions.value.isUppercaseSelected
+                ) {
+                    passwordOptions.value = passwordOptions.value.copy(isUppercaseSelected = it)
+                }
                 ToggleOption(
                     label = "#$!",
                     isChecked = passwordOptions.value.isSymbolsSelected
@@ -157,13 +163,15 @@ fun PasswordLengthField(
                     passwordOptions.value = passwordOptions.value.copy(isSymbolsSelected = it)
                 }
             }
-        }
-        //Memorable password
-        ToggleOption(
-            label = stringResource(id = R.string.memorablePassword) + " ",
-            isChecked = passwordOptions.value.isMemorableSelected
-        ) {
-            passwordOptions.value = passwordOptions.value.copy(isMemorableSelected = it)
+            //Memorable password
+            ToggleOption(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                label = stringResource(id = R.string.memorablePassword) + " ",
+                isChecked = passwordOptions.value.isMemorableSelected
+            ) {
+                passwordOptions.value = passwordOptions.value.copy(isMemorableSelected = it)
+            }
         }
     }
 }

@@ -66,7 +66,10 @@ fun SecretButton(
                     }
                 }
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
                 GifImage(
                     modifier = Modifier
                         .size(24.dp),

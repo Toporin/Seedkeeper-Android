@@ -55,6 +55,7 @@ fun GeneratePassword(
             isEditable = retrievedSet.value.isEmpty(),
             curValue = curValueLogin,
             placeHolder = R.string.loginOptional,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f),
             isEmail = true,
             onClick = {
@@ -67,6 +68,7 @@ fun GeneratePassword(
         InputField(
             curValue = curValueUrl,
             placeHolder = R.string.urlOptional,
+            optional = R.string.optional,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(12.dp))

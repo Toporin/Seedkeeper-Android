@@ -1,6 +1,8 @@
 package org.satochip.seedkeeper.utils
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
+import java.util.Locale
 
 const val TAG = "Utlis"
 
@@ -10,6 +12,11 @@ fun isClickable(
 ): Boolean {
     return secret.value.isNotEmpty()
             && curValueLabel.value.isNotEmpty()
+}
+
+fun isFrench(): Boolean {
+    val locale = Locale.getDefault()
+    return locale.language == Locale.FRENCH.language
 }
 
 val instructionsMap: Map<Byte, String> = mapOf(

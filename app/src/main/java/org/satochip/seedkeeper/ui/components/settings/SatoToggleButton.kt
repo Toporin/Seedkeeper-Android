@@ -56,8 +56,7 @@ fun SatoToggleButton(
             )
         )
         Switch(
-            modifier = Modifier
-                .rotate(180f),
+            modifier = Modifier,
             checked = isChecked.value,
             onCheckedChange = {
                 isChecked.value = !isChecked.value

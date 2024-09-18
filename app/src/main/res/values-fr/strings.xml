@@ -21,6 +21,14 @@
     <string name="close">Fermer</string>
     <string name="retrieveTheSecretFirst">Veuillez d\'abord récupérer le secret</string>
     <string name="mnemonicValidText">Le mnémonique n\'est pas valide!</string>
+    <string name="blankTextField"></string>
+
+    <!--Secrets filters-->
+    <string name="all">Tout</string>
+    <string name="mnemonic">Mnémonique</string>
+    <string name="password">Mot de passe</string>
+    <string name="descriptors">Descripteur</string>
+    <string name="data">Texte libre</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess"></string>
@@ -52,23 +60,24 @@
     <string name="generateAMnemonicPhrase">Générer une seedphrase</string>
     <string name="generateAPassword">Générer un mot de passe</string>
     <string name="generateABitcoinDescriptor">Générer un bitcoin descriptor</string>
-    <string name="generateExplanation">Permet de générer et d\'importer rapidement un nouveau mot de passe.</string>
+    <string name="generateExplanation">Permet de générer et d\'importer rapidement un nouveau secret.</string>
     <string name="generateSuccessful">Le secret suivant a été importé avec succès dans votre Seedkeeper</string>
     <string name="importButton">Importer</string>
-    <string name="memorablePassword">Mot de passe mémorisable</string>
+    <string name="memorablePassword">Facile à lire</string>
 
         <!--Mnemonic phrase-->
         <string name="typeOfSecret">Type de secret</string>
-        <string name="mnemonicPhrase">Phrase mnémotechnique</string>
+        <string name="mnemonicPhrase">Phrase mnémonique</string>
         <string name="loginPassword">Mot de passe</string>
         <string name="label">Label</string>
-        <string name="mnemonicSize">taille mnémonique</string>
+        <string name="mnemonicSize">Taille</string>
         <string name="mnemonicWords">%d mots</string>
-        <string name="passphrase"> Passphrase (optionel)</string>
-        <string name="walletDescriptorOptional"> Descripteur de portefeuille (optionel)</string>
+        <string name="passphrase"> Passphrase</string>
+        <string name="walletDescriptorOptional"> Descripteur de portefeuille</string>
         <!--Login/Password-->
-        <string name="loginOptional">Login (optionel)</string>
-        <string name="urlOptional">URL (optionel)</string>
+        <string name="loginOptional">Login</string>
+        <string name="urlOptional">URL</string>
+        <string name="optional">(optionnel)</string>
         <string name="passwordLength">Longueur</string>
         <string name="passwordImport">Importer</string>
         <string name="copiedToClipboard">Copié</string>
@@ -81,20 +90,20 @@
     <!--Import View-->
     <string name="importHeader">Importer</string>
     <string name="importAMnemonicPhrase">Importer une seedphrase</string>
-    <string name="importAMnemonicPhraseMessage">Vous permet d\'importer une phrase mnémotechnique existante dans votre Seedkeeper.</string>
+    <string name="importAMnemonicPhraseMessage">Vous permet d\'importer une phrase mnémonique existante dans votre Seedkeeper.</string>
     <string name="importAPassword">Importer un mot de passe</string>
     <string name="importAPasswordMessage">Vous permet d\'importer un mot de passe existant dans votre Seedkeeper.</string>
     <string name="importAWalletDescriptor">Importer un descripteur portefeuille</string>
     <string name="importAWalletDescriptorMessage">Vous permet d\'importer un descripteur de portefeuille existant dans votre Seedkeeper.</string>
     <string name="importFreeField">Importez ce que vous voulez</string>
-    <string name="importFreeFieldMessage">Vous permet d\'importer n\'importe quelle donnée dans votre Seedkeeper</string>
+    <string name="importFreeFieldMessage">Vous permet d\'importer n\'importe quelles données dans votre Seedkeeper</string>
     <string name="enterYourMnemonic">Entrer votre seedphrase:</string>
     <string name="enterYourPassword">Entrer votre mot de passe:</string>
-    <string name="enterYourWalletDescriptor">Entrez le descripteur de votre portefeuille:</string>
+    <string name="enterYourWalletDescriptor">Entrez votre descripteur:</string>
     <string name="enterYourData">Entrez vos données:</string>
     <string name="mnemonicType">Type de seedphrase</string>
     <string name="bip">BIP39</string>
-    <string name="walletDescriptor">Portefeuille descripteur</string>
+    <string name="walletDescriptor">Descripteur de portefeuille</string>
     <string name="freeField">Champ libre</string>
 
     <!--Menu View-->
@@ -166,13 +175,13 @@
     <string name="restart">Restart</string>
     <string name="scanMySeedkeeper">Scanner ma Seedkeeper</string>
     <string name="makeTheBackup">Initier le backup</string>
-    <string name="backupDescription">Pour effectuer une sauvegarde de votre Seedkeeper (carte principale) sur une autre carte, vous devez d\'abord appairer la carte de sauvegarde.</string>
+    <string name="backupDescription">Pour effectuer une sauvegarde de votre Seedkeeper (carte principale) sur une autre carte, vous devez d\'abord appairer la carte de backup.</string>
     <string name="pairingStartProcess">Lancez la procédure de sauvegarde et suivez les instructions.</string>
-    <string name="pairingFirstStep">Veuillez préparer votre carte de sauvegarde Seedkeeper et cliquez sur suivant pour appairer la carte.</string>
-    <string name="pairingSecondStep">Maintenant que votre carte de backup a été appariée, veuillez scanner à nouveau votre carte Seedkeeper principale.</string>
+    <string name="pairingFirstStep">Veuillez préparer votre carte de backup Seedkeeper et cliquez sur suivant pour appairer la carte.</string>
+    <string name="pairingSecondStep">Maintenant que votre carte de backup a été appairée, veuillez scanner à nouveau votre carte Seedkeeper principale.</string>
     <string name="pairingThirdStepDoneTitle">Parfait!</string>
-    <string name="pairingThirdStepDoneText">Vous êtes maintenant prêt à copier le contenu de cette carte sur votre carte de sauvegarde en utilisant une communication cryptée.</string>
-    <string name="pairingFourthStep">Veuillez préparer votre carte de sauvegarde Seedkeeper et cliquez sur suivant pour copier votre sauvegarde.</string>
+    <string name="pairingThirdStepDoneText">Vous êtes maintenant prêt à copier le contenu de cette carte sur votre carte de backup en utilisant une communication cryptée.</string>
+    <string name="pairingFourthStep">Veuillez préparer votre carte de backup Seedkeeper et cliquez sur suivant pour copier votre sauvegarde.</string>
     <string name="congratulations">Félicitations !</string>
     <string name="backupFifthText">Vous avez réussi à faire une sauvegarde de votre carte Seedkeeper.</string>
 
@@ -184,9 +193,9 @@
     <!--Add Secret View-->
     <string name="addSecret">Ajouter un secret</string>
     <string name="addSecretMessage">Générez et enregistrez un nouveau secret ou importez-en simplement un existant dans votre Seedkeeper.</string>
-    <string name="generateASecretMessage">APermet de générer et importer rapidement un nouveau secret.</string>
+    <string name="generateASecretMessage">Permet de générer et importer rapidement un nouveau secret.</string>
     <string name="importASecret">Importer un secret</string>
-    <string name="importASecretMessage">Permet d\'importer un secret existant dans votre Seedkeeper.</string>
+    <string name="importASecretMessage">Permet d\'importer un secret existant \n dans votre Seedkeeper.</string>
 
     <!--My Secret View-->
     <string name="mySecret">Mes secrets</string>
@@ -208,5 +217,13 @@
     <string name="logsDisabledText">Veuillez activer le mode débogage</string>
 
     <!--Show Card Logs View-->
-    <string name="cardLogs">Journaux de cartes</string>
+    <string name="cardLogs">Journaux de logs</string>
+    
+    <!-- Links -->
+    <string name="howToUseSeedkeeper">https://satochip.io/fr/installation-et-utilisation-de-seedkeeper-sur-mobile/</string>
+    <string name="termsOfServiceUrl">https://satochip.io/fr/conditions-dutilisation/</string>
+    <string name="privacyPolicyUrl">https://satochip.io/fr/politique-de-confidentialite/</string>
+    <string name="allOurProducsUrl">https://satochip.io/fr/shop/</string>
+    <string name="buySeedkeeperUrl">https://satochip.io/fr/product/seedkeeper/</string>
+
 </resources>
