@@ -1015,6 +1015,7 @@ object NFCCardService {
             } else {
                 if (isBackupCard) {
                     oldPinString = pinString
+                    isInBackupProcess = true
                     isReadyForPinCode.postValue(true)
                 } else {
                     val backupPin = pinString
