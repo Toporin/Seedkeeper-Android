@@ -39,7 +39,8 @@ fun WelcomeView(
     backgroundImage: Int,
     isFullWidth: Boolean = false,
     onNext: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Box(
@@ -80,7 +81,8 @@ fun WelcomeView(
             WelcomeViewContent(
                 title = title,
                 text = text,
-                link = link
+                urlString = link,
+                onClick = onClick
             )
             Spacer(modifier = Modifier.height(30.dp))
             Image(

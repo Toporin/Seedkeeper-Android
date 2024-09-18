@@ -2,6 +2,8 @@ package org.satochip.seedkeeper
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -134,7 +136,8 @@ fun Navigation(
                         popUpTo(0)
                     }
                 },
-                onBack = {}
+                onBack = {},
+                onClick = {}
             )
         }
         composable<SecondWelcomeView> {
@@ -152,15 +155,18 @@ fun Navigation(
                     navController.navigate(FirstWelcomeView) {
                         popUpTo(0)
                     }
-                }
+                },
+                onClick = {}
             )
         }
         composable<ThirdWelcomeView> {
+            val linkUrl = stringResource(id = R.string.moreInfoUrl)
             WelcomeView(
                 title = R.string.usingNfc,
                 text = R.string.usingNfcInfo,
                 backgroundImage = R.drawable.third_welcome_screen,
                 isFullWidth = true,
+                link = linkUrl,
                 onNext = {
                     navController.navigate(HomeView) {
                         popUpTo(0)
@@ -169,6 +175,23 @@ fun Navigation(
                 onBack = {
                     navController.navigate(SecondWelcomeView) {
                         popUpTo(0)
+                    }
+                },
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(linkUrl)
+                    )
+                    val packageManager = context.packageManager
+                    val chooserIntent = Intent.createChooser(intent, "Open with")
+
+                    if (chooserIntent.resolveActivity(packageManager) != null) {
+                        context.startActivity(chooserIntent)
+                    } else {
+                        webviewActivityIntent(
+                            url = linkUrl,
+                            context = context
+                        )
                     }
                 }
             )

@@ -21,6 +21,7 @@
     <string name="close">Fermer</string>
     <string name="retrieveTheSecretFirst">Veuillez d\'abord récupérer le secret</string>
     <string name="mnemonicValidText">Le mnémonique n\'est pas valide!</string>
+    <string name="moreInfo">Plus d\'info</string>
     <string name="blankTextField"></string>
 
     <!--Secrets filters-->
@@ -225,5 +226,6 @@
     <string name="privacyPolicyUrl">https://satochip.io/fr/politique-de-confidentialite/</string>
     <string name="allOurProducsUrl">https://satochip.io/fr/shop/</string>
     <string name="buySeedkeeperUrl">https://satochip.io/fr/product/seedkeeper/</string>
+    <string name="moreInfoUrl">https://www.youtube.com/watch?v=ToSah4y16Jc</string>
 
 </resources>
