@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.utils
 
-import android.content.Context
 import androidx.compose.runtime.MutableState
 import java.util.Locale
 

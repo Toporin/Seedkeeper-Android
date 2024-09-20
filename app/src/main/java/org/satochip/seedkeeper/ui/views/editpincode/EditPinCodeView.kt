@@ -24,9 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.CardInformationItems
-import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.PinCodeStatus
-import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.InputPinField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton

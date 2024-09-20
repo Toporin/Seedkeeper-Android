@@ -62,6 +62,8 @@
     <string name="generateAPassword">Générer un mot de passe</string>
     <string name="generateABitcoinDescriptor">Générer un bitcoin descriptor</string>
     <string name="generateExplanation">Permet de générer et d\'importer rapidement un nouveau secret.</string>
+    <string name="generateAMnemonicPhraseExplanation">Permet de générer rapidement une phrase mnémonique.</string>
+    <string name="generateAPasswordExplanation">Permet de générer rapidement un mot de passe.</string>
     <string name="generateSuccessful">Le secret suivant a été importé avec succès dans votre Seedkeeper</string>
     <string name="importButton">Importer</string>
     <string name="memorablePassword">Facile à lire</string>
@@ -213,6 +215,11 @@
     <string name="buySeedkeeper">Acheter Seedkeeper</string>
     <string name="encryptedOnlySecret">Secret crypté</string>
     <string name="encryptedOnlySecretText">Impossible d\'exporter ce secret en raison d\'une politique d\'exportation spécifique</string>
+        <!--Seedkeeper Secret Type-->
+        <string name="masterseed">Mnémonique</string>
+        <string name="pubkey">Clé publique</string>
+        <string name="descriptor">Descripteur</string>
+        <string name="secret2FA">2FA</string>
 
     <!--Show Logs View-->
     <string name="logs">Journaux</string>

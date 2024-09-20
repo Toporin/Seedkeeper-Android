@@ -21,7 +21,6 @@ import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
-import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 
@@ -32,11 +31,6 @@ fun GenerateView(
     onClick: (GenerateViewItems, String?, PasswordOptions?) -> String,
     onImportSecret: (SecretData) -> Unit
 ) {
-    val stringResourceMap = mapOf(
-        R.string.loginPassword to "loginPassword",
-        R.string.typeOfSecret to "typeOfSecret",
-        R.string.mnemonicPhrase to "mnemonicPhrase"
-    )
     val scrollState = rememberScrollState()
 
     Box(
@@ -45,9 +39,6 @@ fun GenerateView(
     ) {
         val generateStatus = remember {
             mutableStateOf(GenerateStatus.DEFAULT)
-        }
-        val typeOfSecret = remember {
-            mutableStateOf(TypeOfSecret.TYPE_OF_SECRET)
         }
         val secret = remember {
             mutableStateOf("")
@@ -128,7 +119,7 @@ fun GenerateView(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 32.dp)
-                    .padding(bottom = 32.dp)
+                    .padding(bottom = 16.dp, top = 16.dp)
                     .verticalScroll(state = scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
@@ -136,9 +127,7 @@ fun GenerateView(
                 when(generateStatus.value) {
                     GenerateStatus.DEFAULT -> {
                         GenerateDefault(
-                            generateStatus = generateStatus,
-                            typeOfSecret = typeOfSecret,
-                            stringResourceMap = stringResourceMap
+                            generateStatus = generateStatus
                         )
                     }
                     GenerateStatus.MNEMONIC_PHRASE -> {

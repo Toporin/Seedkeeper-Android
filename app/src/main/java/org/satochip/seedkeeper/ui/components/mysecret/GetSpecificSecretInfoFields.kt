@@ -11,22 +11,27 @@ fun GetSpecificSecretInfoFields(
     type: String,
     secret: MutableState<SecretData?>,
 ) {
-    if (type == SeedkeeperSecretType.BIP39_MNEMONIC.name || type == SeedkeeperSecretType.MASTERSEED.name || type == SeedkeeperSecretType.ELECTRUM_MNEMONIC.name) {
-        SecretInfoField(
-            title = R.string.mnemonicSize,
-            text = (secret.value?.size ?: "").toString()
-        )
-        SecretInfoField(
-            title = R.string.passphrase,
-            optional = R.string.optional,
-            text = if (secret.value?.subType == 0 ) "" else secret.value?.password ?: ""
-        )
-        SecretInfoField(
-            title = R.string.walletDescriptorOptional,
-            optional = R.string.optional,
-            text = secret.value?.descriptor ?: ""
-        )
-    } else if (type == SeedkeeperSecretType.PASSWORD.name) {
+    val secretType = SeedkeeperSecretType.valueOf(type)
+    when (secretType) {
+        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
+            if (secret.value?.subType != 0 || secretType != SeedkeeperSecretType.MASTERSEED) {
+                SecretInfoField(
+                    title = R.string.mnemonicSize,
+                    text = (secret.value?.size ?: "").toString()
+                )
+                SecretInfoField(
+                    title = R.string.passphrase,
+                    optional = R.string.optional,
+                    text = secret.value?.password ?: ""
+                )
+                SecretInfoField(
+                    title = R.string.walletDescriptorOptional,
+                    optional = R.string.optional,
+                    text = secret.value?.descriptor ?: ""
+                )
+            }
+        }
+        SeedkeeperSecretType.PASSWORD -> {
             SecretInfoField(
                 title = R.string.login,
                 optional = R.string.optional,
@@ -38,5 +43,7 @@ fun GetSpecificSecretInfoFields(
                 optional = R.string.optional,
                 text = secret.value?.url ?: ""
             )
+        }
+        else -> {}
     }
 }

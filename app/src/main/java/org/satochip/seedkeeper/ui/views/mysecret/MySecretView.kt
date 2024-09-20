@@ -79,6 +79,17 @@ fun MySecretView(
     if (secretText.value.isNotEmpty()) {
         isSecretShown.value = true
     }
+    val stringResourceMap = mapOf(
+        SeedkeeperSecretType.MASTERSEED.name to stringResource(id = R.string.masterseed),
+        SeedkeeperSecretType.BIP39_MNEMONIC.name to stringResource(id = R.string.masterseed),
+        SeedkeeperSecretType.ELECTRUM_MNEMONIC.name to stringResource(id = R.string.masterseed),
+        SeedkeeperSecretType.PUBKEY.name to stringResource(id = R.string.pubkey),
+        SeedkeeperSecretType.PASSWORD.name to stringResource(id = R.string.password),
+        SeedkeeperSecretType.MASTER_PASSWORD.name to stringResource(id = R.string.password),
+        SeedkeeperSecretType.DATA.name to stringResource(id = R.string.data),
+        SeedkeeperSecretType.WALLET_DESCRIPTOR.name to stringResource(id = R.string.walletDescriptor),
+        SeedkeeperSecretType.SECRET_2FA.name to stringResource(id = R.string.secret2FA),
+    )
 
     when (SeedkeeperSecretType.valueOf(type)) {
         SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
@@ -137,16 +148,31 @@ fun MySecretView(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = stringResource(id = R.string.manageSecretMessage),
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight.ExtraLight,
-                        textAlign = TextAlign.Center
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResourceMap[type] ?: "",
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
                     )
-                )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.manageSecretMessage),
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.ExtraLight,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Column {
                     SecretInfoField(
@@ -162,6 +188,7 @@ fun MySecretView(
                         mySecretStatus = mySecretStatus,
                         type = type,
                         isSecretShown = isSecretShown,
+                        subType = secret.value?.subType ?: 1,
                         onClick = {
                             if (isSecretShown.value && seedQR.value.isEmpty()) {
                                 seedQR.value = getSeedQR(secretText.value)

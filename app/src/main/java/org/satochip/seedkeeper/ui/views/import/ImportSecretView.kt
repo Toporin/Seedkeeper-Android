@@ -21,7 +21,6 @@ import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
-import org.satochip.seedkeeper.data.TypeOfSecret
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 
@@ -32,13 +31,6 @@ fun ImportSecretView(
     onClick: (ImportViewItems, String?) -> Unit,
     onImportSecret: (SecretData) -> Unit
 ) {
-    val stringResourceMap = mapOf(
-        R.string.loginPassword to "loginPassword",
-        R.string.typeOfSecret to "typeOfSecret",
-        R.string.mnemonicPhrase to "mnemonicPhrase",
-        R.string.walletDescriptor to "walletDescriptor",
-        R.string.freeField to "freeField"
-    )
     val scrollState = rememberScrollState()
 
     Box(
@@ -47,9 +39,6 @@ fun ImportSecretView(
     ) {
         val generateStatus = remember {
             mutableStateOf(GenerateStatus.DEFAULT)
-        }
-        val typeOfSecret = remember {
-            mutableStateOf(TypeOfSecret.TYPE_OF_SECRET)
         }
         val secret = remember {
             mutableStateOf("")
@@ -138,8 +127,6 @@ fun ImportSecretView(
                 when (generateStatus.value) {
                     GenerateStatus.DEFAULT -> {
                         ImportDefault(
-                            stringResourceMap = stringResourceMap,
-                            typeOfSecret = typeOfSecret,
                             generateStatus = generateStatus
                         )
                     }
