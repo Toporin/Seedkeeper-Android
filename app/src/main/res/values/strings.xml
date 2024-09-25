@@ -53,6 +53,8 @@
     <string name="nfcCardBlocked">Too many incorrect PIN attempts! Your card has been blocked.</string>
     <string name="nfcSecretDeleted">Secret successfully deleted.</string>
     <string name="cardMismatch">Different card detected, please use right card!</string>
+    <string name="cardReadyToReset">Card is ready to reset!</string>
+    <string name="cardResetSuccess">Card reset was successful!</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>
@@ -125,6 +127,22 @@
     <string name="debugMode">Debug mode</string>
     <string name="verbouseLogs">Activate the verbose logs collection</string>
     <string name="showLogs">Show logs</string>
+    <string name="factoryReset">Factory reset</string>
+    <string name="factoryResetText">Reinitialize your card to its factory state.</string>
+    <string name="factoryResetWarning">Warning: this will erase all secrets!</string>
+    <string name="resetMyCard">Reset my card</string>
+        <!--Factory Reset View-->
+        <string name="reset">Reset</string>
+        <string name="factoryResetWarningText">You are about to reset your card to factory settings.</string>
+        <string name="allDataErasedWarning">All data including secrets will be erased!</string>
+        <string name="allDataErasedIrreversible">This process is irreversible.</string>
+        <string name="checkToProceed">Check this box to proceed</string>
+        <string name="sendResetCommand">Send reset command</string>
+        <string name="currentlyPerformingReset">You are currently performing the reset of your card.</string>
+        <string name="clickOnResetToContinue">Click on the reset command to continue...</string>
+        <string name="orCancelToQuit">Or cancel to quit.</string>
+        <string name="resetSuccessful">Your card has been factory reset.</string>
+        <string name="stepsRemaining">Steps remaining: </string>
 
     <!--Card's Information View-->
     <string name="cardVersion">Card version</string>

@@ -31,6 +31,7 @@ fun InfoField(
     isClickable: Boolean = false,
     onClick: () -> Unit,
     textColor: Color = Color.White,
+    titleColor: Color = Color.Black
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -41,7 +42,7 @@ fun InfoField(
             Text(
                 text = stringResource(id = title),
                 style = TextStyle(
-                    color = Color.Black,
+                    color = titleColor,
                     fontSize = 18.sp,
                     lineHeight = 22.sp,
                     fontWeight = FontWeight.ExtraBold

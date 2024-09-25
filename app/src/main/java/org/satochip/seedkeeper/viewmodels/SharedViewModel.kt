@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.bitcoinj.crypto.MnemonicCode
+import org.satochip.client.ApplicationStatus
 import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
@@ -96,6 +97,10 @@ class SharedViewModel : ViewModel() {
 
     fun getSeedkeeperStatus(): SeedkeeperStatus? {
         return NFCCardService.seedkeeperStatus
+    }
+
+    fun getCardStatus(): ApplicationStatus {
+        return NFCCardService.cardStatus
     }
 
     fun getCardLogs(): List<SeedkeeperLog> {
