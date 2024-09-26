@@ -845,7 +845,8 @@ object NFCCardService {
             }
             val uniqueNewSecrets = masterSecretObjects.toList().filterNot { newSecret ->
                 secretsList.any {
-                    it.fingerprintBytes.contentEquals(newSecret.fingerprintFromSecret)
+                    it.fingerprintBytes.contentEquals(newSecret.fingerprintFromSecret) ||
+                            newSecret.secretHeader.type == SeedkeeperSecretType.PUBKEY
                 }
             }
             val masterAuthentikeySecret = masterAuthentikey?.let {

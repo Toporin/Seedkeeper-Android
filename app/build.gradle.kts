@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebaseCrashlitics)
 }
 
 android {
@@ -86,4 +88,8 @@ dependencies {
 
     //QR string to image converter
     implementation("io.github.g0dkar:qrcode-kotlin-android:3.3.0")
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
 }
