@@ -1136,6 +1136,19 @@ object NFCCardService {
         }
     }
 
+    /**
+     * Retrieves the current status of the NFC card.
+     *
+     * This method performs the following steps:
+     * 1. Selects the "seedkeeper" application on the NFC card and ensures the selection is successful.
+     * 2. Retrieves the current status of the card using the cardGetStatus method.
+     * 3. Posts a result code indicating that the card is ready for a reset.
+     * 4. Returns the application status of the card.
+     *
+     * If any step fails, an error is logged, and the appropriate result code is posted.
+     *
+     * @return ApplicationStatus? The current status of the card, or null if an error occurred.
+     */
     private fun getCardStatusInfo(): ApplicationStatus? {
         try {
             SatoLog.d(TAG, "getCardStatus start")
@@ -1160,34 +1173,27 @@ object NFCCardService {
                 return
             }
             if (cardStatus.protocolVersion >= 2) {
+                val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+                val randomString = (1..5)
+                    .map { allowedChars.random() }
+                    .joinToString("")
+
                 if (cardStatus.pin0RemainingCounter > 0) {
                     SatoLog.d(TAG, "requestFactoryReset block pin")
-                    val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-                    pinString = (1..5)
-                        .map { allowedChars.random() }
-                        .joinToString("")
-                    val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
+                    val pinBytes = randomString.toByteArray(Charsets.UTF_8)
 
                     cmdSet.cardSelect("seedkeeper").checkOK()
                     cmdSet.setPin0(pinBytes)
-                    var i = 0
-                    do {
+                    repeat(5) {
                         cmdSet.cardVerifyPIN()
-                        i++
-                    } while (i <= 5)
+                    }
                 }
                 if (cardStatus.puk0RemainingCounter > 0) {
                     SatoLog.d(TAG, "requestFactoryReset block puk")
-                    val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-                    val pukString = (1..5)
-                        .map { allowedChars.random() }
-                        .joinToString("")
-                    val pukBytes = pukString.toByteArray(Charsets.UTF_8)
-                    var i = 0
-                    do {
+                    val pukBytes = randomString.toByteArray(Charsets.UTF_8)
+                    repeat(5) {
                         cmdSet.cardUnblockPin(pukBytes)
-                        i++
-                    } while (i <= 5)
+                    }
                 }
             } else {
                 cmdSet.cardSendResetCommand()

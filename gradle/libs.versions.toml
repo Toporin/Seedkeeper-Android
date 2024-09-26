@@ -14,6 +14,10 @@ serialization = "1.6.3"
 googleServicesVersion = "4.4.1"
 crashliticsVersion = "3.0.0"
 firebaseBom = "33.3.0"
+qrcodeKotlinAndroid = "3.3.0"
+bitcoinjCore = "0.16.2"
+coilCompose = "2.0.0-rc02"
+guava = "32.1.2-jre"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +38,11 @@ navigation-compose = { module = "androidx.navigation:navigation-compose", versio
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization"}
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+qrcode-kotlin-android = { module = "io.github.g0dkar:qrcode-kotlin-android", version.ref = "qrcodeKotlinAndroid" }
+bitcoinj-core = { module = "org.bitcoinj:bitcoinj-core", version.ref = "bitcoinjCore" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilCompose" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
