@@ -371,7 +371,8 @@ fun Navigation(
                     }
                     factoryResetStatus.value = FactoryResetStatus.RESET_READY
                 }
-                if (viewModel.resultCodeLive == NfcResultCode.CARD_RESET) {
+                if (viewModel.resultCodeLive == NfcResultCode.CARD_RESET &&
+                    factoryResetStatus.value == FactoryResetStatus.RESET_READY) {
                     steps.value--
                     if (steps.value == 0) {
                         factoryResetStatus.value = FactoryResetStatus.RESET_SUCCESSFUL
@@ -411,6 +412,7 @@ fun Navigation(
                 cardLabel = viewModel.cardLabel,
                 cardAppletVersion = viewModel.getAppletVersion(),
                 cardStatus = viewModel.getSeedkeeperStatus(),
+                cardAuthentikey = viewModel.getCardAuthentikey(),
                 onClick = { item, cardLabel ->
                     when (item) {
                         CardInformationItems.BACK -> {
@@ -441,6 +443,10 @@ fun Navigation(
                         }
                         else -> {}
                     }
+                },
+                copyToClipboard = { text ->
+                    clipboardManager.setText(AnnotatedString(text))
+                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -478,12 +484,14 @@ fun Navigation(
                     when (item) {
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setNewPinString(pinString)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.SETUP_CARD
-                                )
+                                if (pinString.length >= 4) {
+                                    showNfcDialog.value = true // NfcDialog
+                                    viewModel.setNewPinString(pinString)
+                                    viewModel.scanCardForAction(
+                                        activity = context as Activity,
+                                        nfcActionType = NfcActionType.SETUP_CARD
+                                    )
+                                }
                             }
                         }
                         CardInformationItems.BACK -> {
@@ -524,12 +532,14 @@ fun Navigation(
                         }
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setNewPinString(pinString)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.CHANGE_PIN
-                                )
+                                if (pinString.length >= 4) {
+                                    showNfcDialog.value = true // NfcDialog
+                                    viewModel.setNewPinString(pinString)
+                                    viewModel.scanCardForAction(
+                                        activity = context as Activity,
+                                        nfcActionType = NfcActionType.CHANGE_PIN
+                                    )
+                                }
                             }
                         }
                         CardInformationItems.BACK -> {
@@ -561,12 +571,14 @@ fun Navigation(
                         }
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setNewPinString(pinString)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.VERIFY_PIN
-                                )
+                                if (pinString.length >= 4) {
+                                    showNfcDialog.value = true // NfcDialog
+                                    viewModel.setNewPinString(pinString)
+                                    viewModel.scanCardForAction(
+                                        activity = context as Activity,
+                                        nfcActionType = NfcActionType.VERIFY_PIN
+                                    )
+                                }
                             }
                         }
                         else -> {}

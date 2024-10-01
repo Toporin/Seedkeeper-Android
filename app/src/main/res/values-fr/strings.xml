@@ -55,6 +55,7 @@
     <string name="cardMismatch">Carte différente détectée, veuillez utiliser la bonne carte!</string>
     <string name="cardResetSuccess">La réinitialisation de la carte a réussi!</string>
     <string name="cardReadyToReset">La carte est prête à être réinitialisée!</string>
+    <string name="cardNotInitialized">Carte non initialisée!</string>
 
     <!--Generate View-->
     <string name="generate">Générer</string>
@@ -150,6 +151,7 @@
     <string name="pinCode">Code PIN</string>
     <string name="changePinCode">Changer le code PIN</string>
     <string name="cardAuthenticity">Authenticité de la carte</string>
+    <string name="cardAuthentikey">Card authentikey</string>
     <string name="cardIsGenuine">Cette carte est authentique</string>
     <string name="cardIsNotGenuine">Cette carte n\'est pas authentique</string>
     <string name="memoryAvailable">Mémoire disponible</string>

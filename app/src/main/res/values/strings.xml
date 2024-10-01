@@ -55,6 +55,7 @@
     <string name="cardMismatch">Different card detected, please use right card!</string>
     <string name="cardReadyToReset">Card is ready to reset!</string>
     <string name="cardResetSuccess">Card reset was successful!</string>
+    <string name="cardNotInitialized">Card not initialized!</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>
@@ -150,6 +151,7 @@
     <string name="pinCode">PIN code</string>
     <string name="changePinCode">Change PIN code</string>
     <string name="cardAuthenticity">Card authenticity</string>
+    <string name="cardAuthentikey">Card authentikey</string>
     <string name="cardIsGenuine">this card is genuine</string>
     <string name="cardIsNotGenuine">this card is not genuine</string>
     <string name="memoryAvailable">Memory available</string>

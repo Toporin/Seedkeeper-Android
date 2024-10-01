@@ -20,9 +20,9 @@ import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.io.APDUResponse
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.BackupStatus
-import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.utils.CardMismatchException
 
 private const val TAG = "NFCCardService"
@@ -50,7 +50,7 @@ object NFCCardService {
     var certificateList: MutableList<String> = mutableListOf()
     var cardAppletVersion: String = "undefined"
     lateinit var cardStatus: ApplicationStatus
-    private var authentikey: ByteArray?  = null
+    var authentikey: ByteArray?  = null
 
     //V1 SEEDKEEPER
     var authentikeyList: MutableList<ByteArray> = mutableListOf()
@@ -290,6 +290,7 @@ object NFCCardService {
                 } else {
                     authentikeyList.clear()
                     authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
+                    checkAuthentikey()
                 }
                 isReadyForPinCode.postValue(true)
             }
@@ -504,6 +505,10 @@ object NFCCardService {
             val isAuthentikeyValid = authentikeyList.any { authentikey -> newAuthentikeyList.any { it.contentEquals(authentikey) } }
             if (!isAuthentikeyValid) {
                 throw CardMismatchException("authentikey doesnt match")
+            } else {
+                authentikey = authentikeyList.firstOrNull { authentikey ->
+                    newAuthentikeyList.any { it.contentEquals(authentikey) }
+                }
             }
         }
     }
@@ -1154,7 +1159,11 @@ object NFCCardService {
             SatoLog.d(TAG, "getCardStatus start")
             cmdSet.cardSelect("seedkeeper").checkOK()
             cmdSet.cardGetStatus()
-            resultCodeLive.postValue(NfcResultCode.CARD_READY_FOR_RESET)
+            if (cmdSet.applicationStatus.isSetupDone) {
+                resultCodeLive.postValue(NfcResultCode.CARD_READY_FOR_RESET)
+            } else {
+                resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
+            }
             return cmdSet.applicationStatus
         }  catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
