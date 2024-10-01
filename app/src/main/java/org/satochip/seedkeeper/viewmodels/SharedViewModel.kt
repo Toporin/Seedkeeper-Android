@@ -11,23 +11,23 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.bitcoinj.crypto.MnemonicCode
+import org.satochip.client.ApplicationStatus
 import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.BackupStatus
-import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PasswordOptions
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.StringConstants
 import org.satochip.seedkeeper.services.NFCCardService
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.utils.isFrench
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.Locale
 
 private const val TAG = "SharedViewModel"
 
@@ -96,6 +96,19 @@ class SharedViewModel : ViewModel() {
 
     fun getSeedkeeperStatus(): SeedkeeperStatus? {
         return NFCCardService.seedkeeperStatus
+    }
+
+    fun getCardStatus(): ApplicationStatus {
+        return NFCCardService.cardStatus
+    }
+
+    fun getCardAuthentikey(): String {
+        val authentikey = NFCCardService.authentikey
+        var hexString = ""
+        authentikey?.let {
+            hexString = authentikey.joinToString(separator = "") { byte -> "%02x".format(byte) }
+        }
+        return hexString
     }
 
     fun getCardLogs(): List<SeedkeeperLog> {

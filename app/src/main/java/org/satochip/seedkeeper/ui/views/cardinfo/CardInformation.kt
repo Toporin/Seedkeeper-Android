@@ -36,7 +36,9 @@ fun CardInformation(
     cardLabel: String,
     cardAppletVersion: String,
     cardStatus: SeedkeeperStatus? = null,
+    cardAuthentikey: String,
     onClick: (CardInformationItems, String?) -> Unit,
+    copyToClipboard: (String) -> Unit
 ) {
     val logoColor = remember {
         mutableStateOf(Color.Black)
@@ -121,7 +123,8 @@ fun CardInformation(
                 item {
                     Spacer(
                         modifier = Modifier
-                            .padding(vertical = 32.dp, horizontal = 16.dp)
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 32.dp)
                             .height(2.dp)
                             .fillMaxWidth()
                             .background(SatoDividerPurple),
@@ -138,9 +141,8 @@ fun CardInformation(
                         isClickable = true
                     )
                 }
-
                 item {
-                    Spacer(modifier = Modifier.height(35.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
                     Box(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
@@ -157,6 +159,17 @@ fun CardInformation(
                             buttonColor = SatoButtonPurple,
                         )
                     }
+                }
+                item {
+                    InfoField(
+                        title = R.string.cardAuthentikey,
+                        text = cardAuthentikey,
+                        isClickable = true,
+                        onClick = {
+                            copyToClipboard(cardAuthentikey)
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }

@@ -13,5 +13,7 @@ enum class NfcActionType {
     SCAN_BACKUP_CARD,
     SCAN_MASTER_CARD,
     TRANSFER_TO_BACKUP,
+    RESET_CARD,
+    GET_STATUS,
     EDIT_CARD_LABEL
 }

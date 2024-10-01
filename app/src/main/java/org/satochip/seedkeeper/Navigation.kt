@@ -23,6 +23,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.CardInformationItems
+import org.satochip.seedkeeper.data.FactoryResetStatus
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
@@ -44,6 +45,7 @@ import org.satochip.seedkeeper.ui.views.backup.BackupView
 import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
 import org.satochip.seedkeeper.ui.views.editpincode.EditPinCodeView
+import org.satochip.seedkeeper.ui.views.factoryreset.FactoryResetView
 import org.satochip.seedkeeper.ui.views.generate.GenerateView
 import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.import.ImportSecretView
@@ -348,6 +350,58 @@ fun Navigation(
                         SettingsItems.SHOW_TOAST -> {
                             Toast.makeText(context, logsDisabledText, Toast.LENGTH_SHORT).show()
                         }
+                        SettingsItems.RESET_CARD -> {
+                            navController.navigate(FactoryResetView)
+                        }
+                    }
+                }
+            )
+        }
+        composable<FactoryResetView> {
+            val factoryResetStatus = remember {
+                mutableStateOf(FactoryResetStatus.DEFAULT)
+            }
+            val steps = remember {
+                mutableStateOf(1)
+            }
+            LaunchedEffect(viewModel.resultCodeLive) {
+                if (viewModel.resultCodeLive == NfcResultCode.CARD_READY_FOR_RESET) {
+                    if (viewModel.getCardStatus().protocolVersion == 1) {
+                        steps.value = 5
+                    }
+                    factoryResetStatus.value = FactoryResetStatus.RESET_READY
+                }
+                if (viewModel.resultCodeLive == NfcResultCode.CARD_RESET &&
+                    factoryResetStatus.value == FactoryResetStatus.RESET_READY) {
+                    steps.value--
+                    if (steps.value == 0) {
+                        factoryResetStatus.value = FactoryResetStatus.RESET_SUCCESSFUL
+                    }
+                }
+            }
+            FactoryResetView(
+                factoryResetStatus = factoryResetStatus,
+                steps = steps,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onCardGetStatusClick = {
+                    showNfcDialog.value = true // NfcDialog
+                    viewModel.scanCardForAction(
+                        activity = context as Activity,
+                        nfcActionType = NfcActionType.GET_STATUS
+                    )
+                },
+                onCardResetClick = {
+                    showNfcDialog.value = true // NfcDialog
+                    viewModel.scanCardForAction(
+                        activity = context as Activity,
+                        nfcActionType = NfcActionType.RESET_CARD
+                    )
+                },
+                onHomeClick = {
+                    navController.navigate(HomeView) {
+                        popUpTo(0)
                     }
                 }
             )
@@ -358,6 +412,7 @@ fun Navigation(
                 cardLabel = viewModel.cardLabel,
                 cardAppletVersion = viewModel.getAppletVersion(),
                 cardStatus = viewModel.getSeedkeeperStatus(),
+                cardAuthentikey = viewModel.getCardAuthentikey(),
                 onClick = { item, cardLabel ->
                     when (item) {
                         CardInformationItems.BACK -> {
@@ -388,6 +443,10 @@ fun Navigation(
                         }
                         else -> {}
                     }
+                },
+                copyToClipboard = { text ->
+                    clipboardManager.setText(AnnotatedString(text))
+                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                 }
             )
         }
@@ -425,12 +484,14 @@ fun Navigation(
                     when (item) {
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setNewPinString(pinString)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.SETUP_CARD
-                                )
+                                if (pinString.length >= 4) {
+                                    showNfcDialog.value = true // NfcDialog
+                                    viewModel.setNewPinString(pinString)
+                                    viewModel.scanCardForAction(
+                                        activity = context as Activity,
+                                        nfcActionType = NfcActionType.SETUP_CARD
+                                    )
+                                }
                             }
                         }
                         CardInformationItems.BACK -> {
@@ -471,12 +532,14 @@ fun Navigation(
                         }
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setNewPinString(pinString)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.CHANGE_PIN
-                                )
+                                if (pinString.length >= 4) {
+                                    showNfcDialog.value = true // NfcDialog
+                                    viewModel.setNewPinString(pinString)
+                                    viewModel.scanCardForAction(
+                                        activity = context as Activity,
+                                        nfcActionType = NfcActionType.CHANGE_PIN
+                                    )
+                                }
                             }
                         }
                         CardInformationItems.BACK -> {
@@ -508,12 +571,14 @@ fun Navigation(
                         }
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setNewPinString(pinString)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.VERIFY_PIN
-                                )
+                                if (pinString.length >= 4) {
+                                    showNfcDialog.value = true // NfcDialog
+                                    viewModel.setNewPinString(pinString)
+                                    viewModel.scanCardForAction(
+                                        activity = context as Activity,
+                                        nfcActionType = NfcActionType.VERIFY_PIN
+                                    )
+                                }
                             }
                         }
                         else -> {}
@@ -891,6 +956,8 @@ object AddSecretView
 object ShowLogsView
 @Serializable
 object ShowCardLogs
+@Serializable
+object FactoryResetView
 
 @Serializable
 data class MySecretView (

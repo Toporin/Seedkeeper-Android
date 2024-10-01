@@ -53,6 +53,9 @@
     <string name="nfcCardBlocked">Trop de tentatives incorrectes de saisie du code PIN ! Votre carte a été bloquée.</string>
     <string name="nfcSecretDeleted">Secret supprimé avec succès.</string>
     <string name="cardMismatch">Carte différente détectée, veuillez utiliser la bonne carte!</string>
+    <string name="cardResetSuccess">La réinitialisation de la carte a réussi!</string>
+    <string name="cardReadyToReset">La carte est prête à être réinitialisée!</string>
+    <string name="cardNotInitialized">Carte non initialisée!</string>
 
     <!--Generate View-->
     <string name="generate">Générer</string>
@@ -125,6 +128,22 @@
     <string name="debugMode">Mode débogage</string>
     <string name="verbouseLogs">Activez la collecte des journaux détaillés</string>
     <string name="showLogs">Afficher les journaux</string>
+    <string name="factoryReset">Réinitialisation d\'usine</string>
+    <string name="factoryResetText">Réinitialisez votre carte à son état d\'usine.</string>
+    <string name="factoryResetWarning">Attention: cela effacera tous les secrets!</string>
+    <string name="resetMyCard">Réinitialiser ma carte</string>
+        <!--Factory Reset View-->
+        <string name="reset">Réinitialiser</string>
+        <string name="factoryResetWarningText">Vous êtes sur le point de réinitialiser votre carte aux paramètres d\'usine.</string>
+        <string name="allDataErasedWarning">Toutes les données, y compris les secrets, seront effacées!</string>
+        <string name="allDataErasedIrreversible">Ce processus est irréversible.</string>
+        <string name="checkToProceed">Cochez cette case pour continuer</string>
+        <string name="sendResetCommand">Envoyer la commande de réinitialisation</string>
+        <string name="currentlyPerformingReset">Vous effectuez actuellement la réinitialisation de votre carte.</string>
+        <string name="clickOnResetToContinue">Cliquez sur la commande de réinitialisation pour continuer...</string>
+        <string name="orCancelToQuit">Ou annulez pour quitter.</string>
+        <string name="resetSuccessful">Votre carte a été réinitialisée aux paramètres d\'usine.</string>
+        <string name="stepsRemaining">Étapes restantes: </string>
 
     <!--Card's Information View-->
     <string name="cardVersion">Version de la carte</string>
@@ -132,6 +151,7 @@
     <string name="pinCode">Code PIN</string>
     <string name="changePinCode">Changer le code PIN</string>
     <string name="cardAuthenticity">Authenticité de la carte</string>
+    <string name="cardAuthentikey">Card authentikey</string>
     <string name="cardIsGenuine">Cette carte est authentique</string>
     <string name="cardIsNotGenuine">Cette carte n\'est pas authentique</string>
     <string name="memoryAvailable">Mémoire disponible</string>

@@ -5,5 +5,6 @@ enum class SettingsItems {
     DEBUG_MODE,
     SHOW_LOGS,
     SHOW_TOAST,
+    RESET_CARD,
     BACK
 }
