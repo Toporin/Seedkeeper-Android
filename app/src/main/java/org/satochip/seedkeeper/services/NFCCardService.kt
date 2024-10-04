@@ -93,6 +93,11 @@ object NFCCardService {
             NfcActionType.DO_NOTHING -> {}
             NfcActionType.SCAN_CARD -> {
                 readCard()
+                verifyAndFetchCardData()
+                if (isInBackupProcess) {
+                    authentikey = cmdSet.cardGetAuthentikey()
+                    isInBackupProcess = false
+                }
             }
             NfcActionType.VERIFY_PIN -> {
                 verifyAndFetchCardData()
@@ -134,6 +139,9 @@ object NFCCardService {
                 backupProcessCardScan(
                     isBackupCard = true
                 )
+                authentikey = cmdSet.cardGetAuthentikey()
+
+                isCardDataAvailable.postValue(true)
             }
             NfcActionType.SCAN_MASTER_CARD -> {
                 backupProcessCardScan(
@@ -294,7 +302,7 @@ object NFCCardService {
                 }
                 isReadyForPinCode.postValue(true)
             }
-            resultCodeLive.postValue(NfcResultCode.OK)
+//            resultCodeLive.postValue(NfcResultCode.OK)
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "readCard exception: $e")

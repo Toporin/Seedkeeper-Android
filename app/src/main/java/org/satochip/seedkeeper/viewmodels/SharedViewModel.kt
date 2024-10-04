@@ -90,6 +90,10 @@ class SharedViewModel : ViewModel() {
         NFCCardService.pinString = pinString
     }
 
+    fun setIsReadyForPinCode() {
+        NFCCardService.isReadyForPinCode.postValue(true)
+    }
+
     fun getCurrentPinString(): String {
         return NFCCardService.pinString ?: ""
     }
