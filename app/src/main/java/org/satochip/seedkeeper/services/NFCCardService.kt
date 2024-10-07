@@ -92,7 +92,10 @@ object NFCCardService {
         when (actionType) {
             NfcActionType.DO_NOTHING -> {}
             NfcActionType.SCAN_CARD -> {
-                readCard()
+                val isCardInitialized = readCard()
+                if (isCardInitialized) {
+                    verifyAndFetchCardData()
+                }
             }
             NfcActionType.VERIFY_PIN -> {
                 verifyAndFetchCardData()
@@ -134,11 +137,22 @@ object NFCCardService {
                 backupProcessCardScan(
                     isBackupCard = true
                 )
+                val isPinVerified = verifyAndFetchCardData(
+                    shouldUpdateResultCodeLive = false
+                )
+                if (isPinVerified) {
+                    authentikey = cmdSet.cardGetAuthentikey()
+                    isInBackupProcess = false
+                    resultCodeLive.postValue(NfcResultCode.CARD_SUCCESSFULLY_SCANNED)
+                    backupStatus.postValue(BackupStatus.SECOND_STEP)
+                }
             }
             NfcActionType.SCAN_MASTER_CARD -> {
                 backupProcessCardScan(
                     isBackupCard = false
                 )
+                resultCodeLive.postValue(NfcResultCode.CARD_SUCCESSFULLY_SCANNED)
+                backupStatus.postValue(BackupStatus.THIRD_STEP)
             }
             NfcActionType.TRANSFER_TO_BACKUP -> {
                 backupCardImportNewSecrets()
@@ -266,13 +280,13 @@ object NFCCardService {
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
      */
-    private fun readCard() {
+    private fun readCard(): Boolean {
         try {
             SatoLog.d(TAG, "readCard Start")
             isCardDataAvailable.postValue(false)
             cmdSet.cardSelect("seedkeeper").checkOK()
             val rapduStatus = cmdSet.cardGetStatus()
-            cardStatus = cmdSet.applicationStatus ?: return
+            cardStatus = cmdSet.applicationStatus ?: return false
             cardStatus = ApplicationStatus(rapduStatus)
             getCardVersionString(rapduStatus)
             seedkeeperStatus = null
@@ -283,7 +297,7 @@ object NFCCardService {
                 SatoLog.d(TAG, "CardVersionInt: ${cardStatus.getCardVersionInt()}, setup not done")
                 isSetupNeeded.postValue(true)
                 resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
-                return
+                return false
             } else {
                 if (cardStatus.protocolVersion == 2) {
                     authentikey = cmdSet.cardGetAuthentikey()
@@ -294,12 +308,12 @@ object NFCCardService {
                 }
                 isReadyForPinCode.postValue(true)
             }
-            resultCodeLive.postValue(NfcResultCode.OK)
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "readCard exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
+        return true
     }
 
     /**
@@ -458,8 +472,9 @@ object NFCCardService {
      */
     private fun verifyAndFetchCardData(
         shouldUpdateResultCodeLive: Boolean = true
-    ) {
-        if (isPinVerified()) {
+    ) : Boolean {
+        val isPinVerified = isPinVerified()
+        if (isPinVerified) {
             runBlocking {
                 getSecretHeaderList(false)
                 getCardAuthenticty()
@@ -474,6 +489,7 @@ object NFCCardService {
                 resultCodeLive.postValue(NfcResultCode.PIN_VERIFIED)
             }
         }
+        return isPinVerified
     }
 
     /**
@@ -1021,7 +1037,6 @@ object NFCCardService {
                 if (isBackupCard) {
                     oldPinString = pinString
                     SatoLog.d(TAG, "CardVersionInt: ${cardStatus.cardVersionInt}, setup not done")
-                    isInBackupProcess = true
                     backupCardSetup()
                 } else {
                     throw Exception("Card should've been already setup")
@@ -1030,7 +1045,6 @@ object NFCCardService {
                 if (isBackupCard) {
                     oldPinString = pinString
                     isInBackupProcess = true
-                    isReadyForPinCode.postValue(true)
                 } else {
                     val backupPin = pinString
                     pinString = oldPinString
@@ -1050,13 +1064,7 @@ object NFCCardService {
                     getMasterCardSecrets(backupAuthentikeySecret?.sid)
                 }
             }
-            resultCodeLive.postValue(NfcResultCode.CARD_SUCCESSFULLY_SCANNED)
 
-            if (isBackupCard) {
-                backupStatus.postValue(BackupStatus.SECOND_STEP)
-            } else {
-                backupStatus.postValue(BackupStatus.THIRD_STEP)
-            }
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
             SatoLog.e(TAG, "card mismatch exception: $e")

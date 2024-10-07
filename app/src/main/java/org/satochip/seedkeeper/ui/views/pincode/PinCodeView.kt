@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.CardInformationItems
+import org.satochip.seedkeeper.data.PinViewItems
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.InputPinField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
@@ -34,8 +34,8 @@ fun PinCodeView(
     messageTitle: Int,
     message: Int,
     placeholderText: Int,
-    isMultiStep: Boolean,
-    onClick: (CardInformationItems, String?) -> Unit
+    isBackupCardScan: Boolean,
+    onClick: (PinViewItems, String?) -> Unit
 ) {
     val curValue = remember {
         mutableStateOf("")
@@ -51,7 +51,7 @@ fun PinCodeView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(CardInformationItems.BACK, null)
+                    onClick(PinViewItems.BACK, null)
                 },
                 titleText = title
             )
@@ -100,12 +100,12 @@ fun PinCodeView(
                     SatoButton(
                         modifier = Modifier,
                         onClick = {
-                            if (isMultiStep)
-                                onClick(CardInformationItems.NEXT, curValue.value)
+                            if (isBackupCardScan)
+                                onClick(PinViewItems.BACKUP_CARD_SCAN, curValue.value)
                             else
-                                onClick(CardInformationItems.CONFIRM, curValue.value)
+                                onClick(PinViewItems.CONFIRM, curValue.value)
                         },
-                        text = if (isMultiStep) R.string.next else R.string.confirm
+                        text = R.string.confirm
                     )
                 }
             }
@@ -113,15 +113,15 @@ fun PinCodeView(
                 SatoButton(
                     modifier = Modifier,
                     onClick = {
-                        if (isMultiStep)
-                            onClick(CardInformationItems.NEXT, curValue.value)
+                        if (isBackupCardScan)
+                            onClick(PinViewItems.BACKUP_CARD_SCAN, curValue.value)
                         else
-                            onClick(CardInformationItems.CONFIRM, curValue.value)
-                    },
-                    text = if (isMultiStep) R.string.next else R.string.confirm
-                )
-                Spacer(modifier = Modifier.height(16.dp))
+                            onClick(PinViewItems.CONFIRM, curValue.value)
+                        },
+                        text = R.string.confirm
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
         }
     }
-}

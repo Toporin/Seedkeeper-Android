@@ -37,12 +37,10 @@ import kotlinx.coroutines.launch
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.ui.components.home.EditField
 import org.satochip.seedkeeper.ui.components.home.SearchSecretsField
 import org.satochip.seedkeeper.ui.components.home.SecretButton
 import org.satochip.seedkeeper.ui.components.home.SecretsFilter
-import org.satochip.seedkeeper.ui.components.shared.EditableField
 
 @Composable
 fun SecretsList(
@@ -214,7 +212,6 @@ fun SecretsList(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
-
         }
     }
 }
