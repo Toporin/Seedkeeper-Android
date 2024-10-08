@@ -179,7 +179,7 @@
     <string name="editPinCode">Change the PIN code</string>
     <string name="editPinCodeMessage">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="enterCurrentPinCode">Enter the current PIN code</string>
-    <string name="enterPinCodeText">Brand new card, please create a PIN \n Existing card, please provide your PIN</string>
+    <string name="enterPinCodeText">For new card, this will create a PIN. \nYou will need to confirm this PIN on the next screen.</string>-->
     <string name="enterPinCode">Enter your PIN code (4–16 char)</string>
     <string name="createPinCode">Create a PIN code</string>
     <string name="createPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>

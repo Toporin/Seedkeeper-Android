@@ -179,7 +179,7 @@
     <string name="editPinCode">Modifier le code PIN</string>
     <string name="editPinCodeMessage">Modifiez le code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
     <string name="enterCurrentPinCode">Saisir le code PIN actuel</string>
-    <string name="enterPinCodeText">Carte neuve, veuillez créer un code PIN \n Carte existante, veuillez fournir votre code PIN</string>
+    <string name="enterPinCodeText">Pour une nouvelle carte, cela créera un PIN. \nVous devrez confirmer ce PIN à l\'écran suivant.</string>
     <string name="enterPinCode">Entrez votre code PIN (4–16 caractères)</string>
     <string name="createPinCode">Créer un code PIN</string>
     <string name="createPinCodeMessage">Créez un code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
