@@ -113,7 +113,7 @@
     <string name="freeField">Free field</string>
 
     <!--Menu View-->
-    <string name="cardInfo">Card\'s Information</string>
+    <string name="cardInfo">Card Information</string>
     <string name="makeBackup">Make a backup</string>
     <string name="useSeedkeeper">How to use Seedkeeper</string>
     <string name="tos">Terms of service</string>
