@@ -74,23 +74,26 @@ fun SecretsList(
             .padding(24.dp)
     ) {
         Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            val curValue = remember {
-                mutableStateOf(cardLabel)
+
+        // Card Label
+        if (!cardLabel.isEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = cardLabel,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        lineHeight = 22.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                        textAlign = TextAlign.Center
+                    )
+                )
             }
-            if (cardLabel.isEmpty()) {
-                curValue.value = "Card label"
-            }
-            EditField(
-                curValue = curValue,
-                onClick = {
-                    onEditCardLabel(curValue.value)
-                }
-            )
         }
+
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
