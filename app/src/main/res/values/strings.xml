@@ -152,9 +152,11 @@
     <string name="changePinCode">Change PIN code</string>
     <string name="cardAuthenticity">Card authenticity</string>
     <string name="cardAuthentikey">Card authentikey</string>
+    <string name="seedkeeperStatus">Seedkeeper status</string>
     <string name="cardIsGenuine">this card is genuine</string>
     <string name="cardIsNotGenuine">this card is not genuine</string>
-    <string name="memoryAvailable">Memory available</string>
+    <string name="memoryAvailable">Available memory</string>
+    <string name="memoryTotal">Total memory</string>
     <string name="secretsStored">Secrets stored</string>
     <string name="showCardLogs">Show card logs</string>
 

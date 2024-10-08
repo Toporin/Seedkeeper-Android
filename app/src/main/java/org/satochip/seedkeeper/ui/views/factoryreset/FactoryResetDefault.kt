@@ -21,9 +21,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ui.components.settings.CardResetButton
 import org.satochip.seedkeeper.ui.components.settings.ResetCardTextField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.views.settings.CardResetButton
 
 @Composable
 fun FactoryResetDefault(

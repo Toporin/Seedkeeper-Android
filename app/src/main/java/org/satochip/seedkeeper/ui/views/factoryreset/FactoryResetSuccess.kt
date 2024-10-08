@@ -12,11 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.settings.ResetCardTextField
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.theme.SatoPurple
 
 @Composable
 fun FactoryResetSuccess(

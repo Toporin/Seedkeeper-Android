@@ -22,6 +22,7 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.ui.components.card.CardInformationField
+import org.satochip.seedkeeper.ui.components.card.CardStatusField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.shared.EditableField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
@@ -77,19 +78,29 @@ fun CardInformation(
                     .fillMaxSize()
                     .padding(horizontal = 16.dp)
             ) {
-                cardStatus?.let { status ->
-                    item {
-                        CardInformationField(status = status)
-                    }
-                }
                 item {
-                    InfoField(
-                        text = cardAppletVersion,
-                        onClick = {}
+                    Spacer(modifier = Modifier.height(24.dp))
+                    CardStatusField(
+                        title = R.string.seedkeeperStatus,
+                        cardAppletVersion = cardAppletVersion,
+                        cardAuthentikey = cardAuthentikey,
+                        cardStatus = cardStatus
                     )
                 }
                 item {
-                    // Mocked data
+                    InfoField(
+                        title = R.string.cardAuthenticity,
+                        text = stringResource(id = cardAuthenticityText.value),
+                        onClick = {
+                            onClick(CardInformationItems.CARD_AUTHENTICITY, null)
+                        },
+                        containerColor = logoColor.value,
+                        isClickable = true,
+                        icon = R.drawable.show_password,
+                        isPadded = false
+                    )
+                }
+                item {
                     val curValue = remember {
                         mutableStateOf(cardLabel)
                     }
@@ -121,27 +132,6 @@ fun CardInformation(
                     )
                 }
                 item {
-                    Spacer(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 32.dp)
-                            .height(2.dp)
-                            .fillMaxWidth()
-                            .background(SatoDividerPurple),
-                    )
-                }
-                item {
-                    InfoField(
-                        title = R.string.cardAuthenticity,
-                        text = stringResource(id = cardAuthenticityText.value),
-                        onClick = {
-                            onClick(CardInformationItems.CARD_AUTHENTICITY, null)
-                        },
-                        containerColor = logoColor.value,
-                        isClickable = true
-                    )
-                }
-                item {
                     Spacer(modifier = Modifier.height(12.dp))
                     Box(
                         modifier = Modifier.fillMaxWidth(),
@@ -159,17 +149,6 @@ fun CardInformation(
                             buttonColor = SatoButtonPurple,
                         )
                     }
-                }
-                item {
-                    InfoField(
-                        title = R.string.cardAuthentikey,
-                        text = cardAuthentikey,
-                        isClickable = true,
-                        onClick = {
-                            copyToClipboard(cardAuthentikey)
-                        }
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }
