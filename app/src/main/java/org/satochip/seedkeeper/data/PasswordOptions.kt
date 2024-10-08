@@ -6,5 +6,5 @@ data class PasswordOptions(
     var isNumbersSelected: Boolean = true,
     var isSymbolsSelected: Boolean = true,
     var isMemorableSelected: Boolean = false,
-    var passwordLength: Int = 4
+    var passwordLength: Int = 12
 )
