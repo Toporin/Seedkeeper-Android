@@ -59,7 +59,7 @@ fun MySecretView(
         mutableStateOf("")
     }
     val isSecretShown = remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     val mySecretStatus = remember {
         mutableStateOf(MySecretStatus.SEED)
