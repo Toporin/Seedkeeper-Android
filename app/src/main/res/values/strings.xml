@@ -37,7 +37,7 @@
     <string name="nfcTitleWarning">Warning</string>
     <string name="nfcErrorOccured">An error occured, please try again</string>
     <string name="pinVerified">Pin verified!</string>
-    <string name="secretHeaderListSet">Secrets fetched!</string>
+    <string name="secretHeaderListSet">Card scanned successfully!</string>
     <string name="secretImportedSuccessfully">Secret imported successfully!</string>
     <string name="secretFetchedSuccessfully">Secret fetched successfully!</string>
     <string name="cardLabelChangedSuccessfully">Card Label changed successfully!</string>

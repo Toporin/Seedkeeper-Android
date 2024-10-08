@@ -478,7 +478,7 @@ object NFCCardService {
             runBlocking {
                 getSecretHeaderList(false)
                 getCardAuthenticty()
-                getCardLogs()
+                getCardLogs() // TODO: do that elsewhere
                 if (cardStatus.protocolVersion == 2) {
                     seedkeeperStatus = cmdSet.seedkeeperGetStatus()
                 }
@@ -486,7 +486,8 @@ object NFCCardService {
             cardLabel.postValue(cmdSet.cardLabel)
             isCardDataAvailable.postValue(true)
             if (shouldUpdateResultCodeLive) {
-                resultCodeLive.postValue(NfcResultCode.PIN_VERIFIED)
+                //resultCodeLive.postValue(NfcResultCode.PIN_VERIFIED)
+                resultCodeLive.postValue(NfcResultCode.SECRET_HEADER_LIST_SET)
             }
         }
         return isPinVerified
