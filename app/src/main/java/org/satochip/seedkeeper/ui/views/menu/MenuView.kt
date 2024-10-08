@@ -31,10 +31,10 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
-import org.satochip.seedkeeper.ui.theme.SatoCardPurple
 import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
+import org.satochip.seedkeeper.ui.theme.SatoPurple
 
 @Composable
 fun MenuView(
@@ -208,7 +208,7 @@ fun MenuView(
                 .padding(10.dp)
                 .padding(bottom = 50.dp)
                 .background(
-                    color = SatoCardPurple,
+                    color = SatoPurple.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(15.dp)
                 )
                 .clickable {
