@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.satochip.seedkeeper.ui.theme.SatoChecked
 import org.satochip.seedkeeper.ui.theme.SatoChecker
 import org.satochip.seedkeeper.ui.theme.SatoToggled
 
@@ -42,8 +43,8 @@ fun ToggleOption(
             checked = isChecked,
             onCheckedChange = { onCheckedChange(it) },
             colors = SwitchDefaults.colors(
-                checkedThumbColor = SatoChecker,
-                checkedTrackColor = SatoToggled,
+                checkedThumbColor = SatoChecked,
+                checkedTrackColor = Color.White,
                 uncheckedThumbColor = SatoChecker,
                 uncheckedTrackColor = Color.White,
                 checkedBorderColor = Color.Transparent,
@@ -57,7 +58,7 @@ fun ToggleOption(
                     .size(16.dp)
                     .background(
                         shape = CircleShape,
-                        color = SatoChecker
+                        color = if (isChecked) SatoChecked else SatoChecker
                     )
                 )
             }
