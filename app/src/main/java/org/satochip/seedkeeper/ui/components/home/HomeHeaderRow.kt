@@ -98,11 +98,11 @@ fun HomeHeaderRow(
                     },
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.rescan),
+                        painter = painterResource(R.drawable.refresh_button),
                         contentDescription = "logo",
                         modifier = Modifier
-                            .size(16.dp),
-                        contentScale = ContentScale.Crop,
+                            .size(24.dp),
+                        contentScale = ContentScale.Fit,
                         colorFilter = ColorFilter.tint(Color.Black)
                     )
                 }

@@ -152,9 +152,11 @@
     <string name="changePinCode">Changer le code PIN</string>
     <string name="cardAuthenticity">Authenticité de la carte</string>
     <string name="cardAuthentikey">Card authentikey</string>
+    <string name="seedkeeperStatus">Seedkeeper status</string>
     <string name="cardIsGenuine">Cette carte est authentique</string>
     <string name="cardIsNotGenuine">Cette carte n\'est pas authentique</string>
     <string name="memoryAvailable">Mémoire disponible</string>
+    <string name="memoryTotal">Mémoire totale</string>
     <string name="secretsStored">Secrets stockés</string>
     <string name="showCardLogs">Afficher les journaux de cartes</string>
 
@@ -177,7 +179,8 @@
     <string name="editPinCode">Modifier le code PIN</string>
     <string name="editPinCodeMessage">Modifiez le code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
     <string name="enterCurrentPinCode">Saisir le code PIN actuel</string>
-    <string name="enterPinCode">Saisir le code PIN</string>
+    <string name="enterPinCodeText">Carte neuve, veuillez créer un code PIN \n Carte existante, veuillez fournir votre code PIN</string>
+    <string name="enterPinCode">Entrez votre code PIN (4–16 caractères)</string>
     <string name="createPinCode">Créer un code PIN</string>
     <string name="createPinCodeMessage">Créez un code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
     <string name="wrongPinCode">Code PIN erroné! </string>

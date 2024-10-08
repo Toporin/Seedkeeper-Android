@@ -61,6 +61,9 @@ fun SecretButton(
                     SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
                         R.drawable.wallet
                     }
+                    SeedkeeperSecretType.PUBKEY -> {
+                        R.drawable.key
+                    }
                     else -> {
                         R.drawable.password_icon
                     }

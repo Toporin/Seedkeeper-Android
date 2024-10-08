@@ -14,13 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ui.components.settings.CardResetButton
 import org.satochip.seedkeeper.ui.components.settings.ResetCardTextField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.views.settings.CardResetButton
 
 @Composable
 fun FactoryResetReady(

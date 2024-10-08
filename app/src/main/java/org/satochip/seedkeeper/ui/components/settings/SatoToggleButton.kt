@@ -24,6 +24,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.satochip.seedkeeper.ui.theme.SatoChecked
 import org.satochip.seedkeeper.ui.theme.SatoChecker
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
 import org.satochip.seedkeeper.ui.theme.SatoToggleBlack
@@ -69,8 +70,8 @@ fun SatoToggleButton(
                 onClick()
             },
             colors = SwitchDefaults.colors(
-                checkedThumbColor = SatoChecker,
-                checkedTrackColor = SatoToggled,
+                checkedThumbColor = SatoChecked,
+                checkedTrackColor = Color.White,
                 uncheckedThumbColor = SatoChecker,
                 uncheckedTrackColor = Color.White,
                 checkedBorderColor = Color.Transparent,
@@ -84,7 +85,7 @@ fun SatoToggleButton(
                         .size(16.dp)
                         .background(
                             shape = CircleShape,
-                            color = SatoChecker
+                            color = if (isChecked.value) SatoChecked else SatoChecker
                         )
                 )
             }

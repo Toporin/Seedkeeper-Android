@@ -152,9 +152,11 @@
     <string name="changePinCode">Change PIN code</string>
     <string name="cardAuthenticity">Card authenticity</string>
     <string name="cardAuthentikey">Card authentikey</string>
+    <string name="seedkeeperStatus">Seedkeeper status</string>
     <string name="cardIsGenuine">this card is genuine</string>
     <string name="cardIsNotGenuine">this card is not genuine</string>
-    <string name="memoryAvailable">Memory available</string>
+    <string name="memoryAvailable">Available memory</string>
+    <string name="memoryTotal">Total memory</string>
     <string name="secretsStored">Secrets stored</string>
     <string name="showCardLogs">Show card logs</string>
 
@@ -177,7 +179,8 @@
     <string name="editPinCode">Change the PIN code</string>
     <string name="editPinCodeMessage">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="enterCurrentPinCode">Enter the current PIN code</string>
-    <string name="enterPinCode">Enter your PIN code</string>
+    <string name="enterPinCodeText">Brand new card, please create a PIN \n Existing card, please provide your PIN</string>
+    <string name="enterPinCode">Enter your PIN code (4–16 char)</string>
     <string name="createPinCode">Create a PIN code</string>
     <string name="createPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="wrongPinCode">Wrong PIN code!</string>
