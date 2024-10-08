@@ -110,7 +110,7 @@ fun MenuView(
             // MAKE A BACKUP
             MenuCard(
                 modifier = Modifier
-                    .weight(2f)
+                    .weight(3f)
                     .heightIn(min = 110.dp),
                 text = stringResource(R.string.makeBackup),
                 textAlign = Alignment.TopStart,
@@ -124,7 +124,7 @@ fun MenuView(
             // SETTINGS
             MenuCard(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(2f)
                     .heightIn(min = 110.dp),
                 text = stringResource(R.string.settings),
                 textAlign = Alignment.TopStart,
