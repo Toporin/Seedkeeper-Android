@@ -85,6 +85,7 @@ fun SecretTextField(
                 .zIndex(1f)
                 .align(Alignment.TopEnd)
         ) {
+            // QR code image
             if (isQRCodeEnabled) {
                 Image(
                     modifier = Modifier
@@ -101,6 +102,7 @@ fun SecretTextField(
                     colorFilter = ColorFilter.tint(Color.White)
                 )
             }
+            // Copy-to-clipboard
             Image(
                 modifier = Modifier
                     .padding(8.dp)
@@ -116,6 +118,7 @@ fun SecretTextField(
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(Color.White)
             )
+            // Show/hide password
             Image(
                 modifier = Modifier
                     .padding(8.dp)
