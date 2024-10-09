@@ -45,11 +45,10 @@ import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 @Composable
 fun MySecretView(
     secret: MutableState<SecretData?>,
-    type: String,
+    type: String, // TODO: redundant with secret?
     isOldVersion: Boolean,
-    onClick: (MySecretItems) -> Unit,
-    getSeedQR: (String) -> String,
-    copyToClipboard: (String) -> Unit,
+    onClick: (MySecretItems) -> Unit, // TODO: integrate directly?
+    getSeedQR: (String) -> String, // TODO: redundant with secret?
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
@@ -179,11 +178,14 @@ fun MySecretView(
                         title = R.string.label,
                         text = secret.value?.label ?: ""
                     )
+                    // TODO: refactor GetSpecificSecretInfoFields
                     GetSpecificSecretInfoFields(
                         type = type,
                         secret = secret
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    // TODO: remove these 2 buttons
                     SecretButtonsField(
                         mySecretStatus = mySecretStatus,
                         type = type,
@@ -200,10 +202,7 @@ fun MySecretView(
                     MySecretStatus.SEED -> {
                         SecretTextField(
                             curValue = secretText,
-                            minHeight = 250.dp,
-                            copyToClipboard = {
-                                copyToClipboard(secretText.value)
-                            }
+                            minHeight = 250.dp
                         )
                     }
                     MySecretStatus.SEED_QR -> {
@@ -212,22 +211,18 @@ fun MySecretView(
                             qrCodeString = seedQR
                         )
                     }
-                    MySecretStatus.X_PUB -> {
-//                        SecretTextField(
-//                            curValue = secretText,
-//                            copyToClipboard = {
-//                                copyToClipboard(secretText.value)
-//                            }
-//                        )
+                    MySecretStatus.X_PUB -> {//TODO: remove
                     }
                 }
 
+                // Action buttons
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // delete button
                     SatoButton(
                         modifier = Modifier.weight(1f),
                         onClick = {
@@ -242,6 +237,7 @@ fun MySecretView(
                         buttonColor = if (isOldVersion) SatoButtonPurple.copy(alpha = 0.6f) else SatoButtonPurple,
                         horizontalPadding = 1.dp
                     )
+                    // Reveal button
                     SatoButton(
                         modifier = Modifier.weight(1f),
                         onClick = {

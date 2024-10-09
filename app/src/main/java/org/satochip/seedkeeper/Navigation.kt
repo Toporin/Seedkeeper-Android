@@ -744,10 +744,6 @@ fun Navigation(
                         }
                     }
                 },
-                copyToClipboard = { secret ->
-                    clipboardManager.setText(AnnotatedString(secret))
-                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
-                },
                 getSeedQR = { mnemonic ->
                     try {
                         return@MySecretView viewModel.getSeedQr(mnemonic)

@@ -1,5 +1,7 @@
 package org.satochip.seedkeeper.ui.components.generate
 
+import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,8 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -49,16 +55,19 @@ fun SecretTextField(
     containerColor: Color = SatoDividerPurple.copy(alpha = 0.2f),
     isQRCodeEnabled: Boolean = true,
     visualTransformation: VisualTransformation = PasswordVisualTransformation(),
-    minHeight: Dp = 150.dp,
-    copyToClipboard: () -> Unit
+    minHeight: Dp = 150.dp
 ) {
+    val context = LocalContext.current as Activity
+    val clipboardManager = LocalClipboardManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val passwordVisibility = remember {
-        mutableStateOf(visualTransformation != PasswordVisualTransformation())
+        mutableStateOf(visualTransformation == PasswordVisualTransformation())
     }
     val isQRCodeSelected = remember {
         mutableStateOf(false)
     }
+    val copyText = stringResource(id = R.string.copiedToClipboard)
+
     Box(
         modifier = Modifier
             .heightIn(
@@ -98,7 +107,8 @@ fun SecretTextField(
                     .size(16.dp)
                     .satoClickEffect(
                         onClick = {
-                            copyToClipboard()
+                            clipboardManager.setText(AnnotatedString(curValue.value))
+                            Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                         }
                     ),
                 painter = painterResource(id = R.drawable.copy_icon),

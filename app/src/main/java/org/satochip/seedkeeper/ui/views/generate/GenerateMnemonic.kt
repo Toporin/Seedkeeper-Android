@@ -80,10 +80,7 @@ fun GenerateMnemonic(
         SecretTextField(
             curValue = secret,
             isQRCodeEnabled = false,
-            minHeight = 250.dp,
-            copyToClipboard = {
-                onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
-            }
+            minHeight = 250.dp
         )
         ButtonsField(
             secret = secret,

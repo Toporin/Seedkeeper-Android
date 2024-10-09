@@ -226,7 +226,7 @@
     <!--My Secret View-->
     <string name="mySecret">My secret</string>
     <string name="manageSecret">Manage your secret</string>
-    <string name="manageSecretMessage">Secret\’s information and related actions</string>
+    <string name="manageSecretMessage">Secret information and related actions</string>
     <string name="showSecret">Show</string>
     <string name="deleteSecret">Delete</string>
     <string name="seed">Seed</string>

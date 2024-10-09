@@ -83,10 +83,7 @@ fun GeneratePassword(
     ) {
         SecretTextField(
             curValue = secret,
-            isQRCodeEnabled = false,
-            copyToClipboard = {
-                onClick(GenerateViewItems.COPY_TO_CLIPBOARD, secret.value, null)
-            }
+            isQRCodeEnabled = false
         )
         ButtonsField(
             secret = secret,

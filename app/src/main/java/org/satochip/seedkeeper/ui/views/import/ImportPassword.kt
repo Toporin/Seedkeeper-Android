@@ -102,10 +102,7 @@ fun ImportPassword(
                 curValue = secret,
                 isEditable = true,
                 isQRCodeEnabled = false,
-                minHeight = 250.dp,
-                copyToClipboard = {
-                    onClick(ImportViewItems.COPY_TO_CLIPBOARD, secret.value)
-                }
+                minHeight = 250.dp
             )
         }
         Row(
