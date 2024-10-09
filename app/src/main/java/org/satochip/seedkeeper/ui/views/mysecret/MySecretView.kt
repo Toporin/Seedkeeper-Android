@@ -27,10 +27,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
@@ -70,9 +70,13 @@ fun MySecretView(
     val hasUserConfirmedTerms = remember {
         mutableStateOf(false)
     }
+    val showError = remember {
+        mutableStateOf(false)
+    }
+    val appError = remember {
+        mutableStateOf(AppErrorMsg.OK)
+    }
 
-    val checkThisBoxToContinue = stringResource(id = R.string.checkThisBoxToContinue)
-    val secretResetWarningText = stringResource(id = R.string.secretResetWarningText)
     val stringResourceMap = mapOf(
         SeedkeeperSecretType.MASTERSEED.name to stringResource(id = R.string.masterseed),
         SeedkeeperSecretType.BIP39_MNEMONIC.name to stringResource(id = R.string.masterseed),
@@ -197,7 +201,7 @@ fun MySecretView(
                 // Confirm delete msg
                 if (showConfirmDeleteMsg.value) {
                     Text(
-                        text = secretResetWarningText,
+                        text = stringResource(R.string.secretResetWarningText),
                         style = TextStyle(
                             color = Color.Red,
                             fontSize = 16.sp,
@@ -210,7 +214,7 @@ fun MySecretView(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            checkThisBoxToContinue,
+                            text = stringResource(R.string.checkThisBoxToContinue),
                             style = TextStyle(
                                 color = Color.Red,
                                 fontSize = 16.sp,
@@ -224,6 +228,20 @@ fun MySecretView(
                             onCheckedChange = { hasUserConfirmedTerms.value = it }
                         )
                     }
+                }
+
+                // error msg
+                if (showError.value) {
+                    Text(
+                        text = stringResource(appError.value.msg),
+                        style = TextStyle(
+                            color = Color.Red,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center
+                        )
+                    )
                 }
 
                 // Action buttons
@@ -259,7 +277,8 @@ fun MySecretView(
                         modifier = Modifier.weight(1f),
                         onClick = {
                             if (secret.value?.exportRights == SeedkeeperExportRights.EXPORT_ENCRYPTED_ONLY.value.toInt()) {
-                                onClick(MySecretItems.ENCRYPTED_EXPORT)
+                                appError.value = AppErrorMsg.PLAINTEXT_EXPORT_NOT_ALLOWED
+                                showError.value = true
                             } else {
                                 onClick(MySecretItems.SHOW)
                             }

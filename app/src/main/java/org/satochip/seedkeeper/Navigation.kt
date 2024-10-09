@@ -736,7 +736,7 @@ fun Navigation(
                                 context = context
                             )
                         }
-                        MySecretItems.ENCRYPTED_EXPORT -> {
+                        MySecretItems.ENCRYPTED_EXPORT -> { // TODO remove?
                             Toast.makeText(context, encryptedText, Toast.LENGTH_SHORT).show()
                         }
                     }

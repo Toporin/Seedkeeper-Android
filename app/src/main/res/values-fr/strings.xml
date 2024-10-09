@@ -262,4 +262,8 @@
     <string name="buySeedkeeperUrl">https://satochip.io/fr/product/seedkeeper/</string>
     <string name="moreInfoUrl">https://www.youtube.com/watch?v=ToSah4y16Jc</string>
 
+    <!-- AppErrorMsg -->
+    <string name="errorPlaintextExportNotAllowed">This secret policy does not allow export in plaintext!</string>
+
+
 </resources>
