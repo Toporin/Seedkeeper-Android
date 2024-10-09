@@ -227,7 +227,7 @@
     <string name="mySecret">Mes secrets</string>
     <string name="manageSecret">Gérez votre secret</string>
     <string name="manageSecretMessage">Informations et actions liées au secret</string>
-    <string name="showSecret">Voir</string>
+    <string name="showSecret">Révéler</string>
     <string name="deleteSecret">Supprimer</string>
     <string name="seed">Seed</string>
     <string name="seedQR">SeedQR</string>
