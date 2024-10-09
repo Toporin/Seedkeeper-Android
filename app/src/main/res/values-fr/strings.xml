@@ -238,6 +238,8 @@
     <string name="buySeedkeeper">Acheter Seedkeeper</string>
     <string name="encryptedOnlySecret">Secret crypté</string>
     <string name="encryptedOnlySecretText">Impossible d\'exporter ce secret en raison d\'une politique d\'exportation spécifique</string>
+    <string name="secretResetWarningText">Vous êtes sur le point d\'effacer un secret. \nCe processus est irreversible!</string>
+    <string name="checkThisBoxToContinue">Cochez cette case pour continuer</string>
         <!--Seedkeeper Secret Type-->
         <string name="masterseed">Mnémonique</string>
         <string name="pubkey">Clé publique</string>

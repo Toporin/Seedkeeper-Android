@@ -238,6 +238,8 @@
     <string name="buySeedkeeper">Buy Seedkeeper</string>
     <string name="encryptedOnlySecret">Encrypted secret</string>
     <string name="encryptedOnlySecretText">Can\'t export this secret due to specific export policy</string>
+    <string name="secretResetWarningText">"You are about to reset a secret. \nThis process is irreversible!"</string>
+    <string name="checkThisBoxToContinue">Check this box to proceed</string>
         <!--Seedkeeper Secret Type-->
         <string name="masterseed">Mnemonic</string>
         <string name="pubkey">Public key</string>

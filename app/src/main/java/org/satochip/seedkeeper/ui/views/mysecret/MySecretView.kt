@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -26,17 +27,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.MySecretItems
-import org.satochip.seedkeeper.data.MySecretStatus
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog
-import org.satochip.seedkeeper.ui.components.mysecret.SecretButtonsField
-import org.satochip.seedkeeper.ui.components.mysecret.SecretImageField
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
@@ -53,15 +52,6 @@ fun MySecretView(
     val secretText = remember {
         mutableStateOf("")
     }
-    val seedQR = remember {
-        mutableStateOf("")
-    }
-    val isSecretShown = remember {
-        mutableStateOf(true)
-    }
-    val mySecretStatus = remember {
-        mutableStateOf(MySecretStatus.SEED)
-    }
     val isPopUpOpened = remember {
         mutableStateOf(false)
     }
@@ -74,9 +64,15 @@ fun MySecretView(
             }
         )
     }
-    if (secretText.value.isNotEmpty()) {
-        isSecretShown.value = true
+    val showConfirmDeleteMsg = remember {
+        mutableStateOf(false)
     }
+    val hasUserConfirmedTerms = remember {
+        mutableStateOf(false)
+    }
+
+    val checkThisBoxToContinue = stringResource(id = R.string.checkThisBoxToContinue)
+    val secretResetWarningText = stringResource(id = R.string.secretResetWarningText)
     val stringResourceMap = mapOf(
         SeedkeeperSecretType.MASTERSEED.name to stringResource(id = R.string.masterseed),
         SeedkeeperSecretType.BIP39_MNEMONIC.name to stringResource(id = R.string.masterseed),
@@ -196,6 +192,40 @@ fun MySecretView(
                     minHeight = 250.dp
                 )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Confirm delete msg
+                if (showConfirmDeleteMsg.value) {
+                    Text(
+                        text = secretResetWarningText,
+                        style = TextStyle(
+                            color = Color.Red,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            checkThisBoxToContinue,
+                            style = TextStyle(
+                                color = Color.Red,
+                                fontSize = 16.sp,
+                                lineHeight = 24.sp,
+                                fontWeight = FontWeight.Normal,
+                                textAlign = TextAlign.Center
+                            )
+                        )
+                        Checkbox(
+                            checked = hasUserConfirmedTerms.value,
+                            onCheckedChange = { hasUserConfirmedTerms.value = it }
+                        )
+                    }
+                }
+
                 // Action buttons
                 Row(
                     modifier = Modifier
@@ -210,7 +240,13 @@ fun MySecretView(
                             if (isOldVersion) {
                                 isPopUpOpened.value = !isPopUpOpened.value
                             } else {
-                                onClick(MySecretItems.DELETE)
+                                // check confirm msg
+                                if (showConfirmDeleteMsg.value == false) {
+                                    showConfirmDeleteMsg.value = true
+                                } else if (hasUserConfirmedTerms.value == true) {
+                                    // delete secret
+                                    onClick(MySecretItems.DELETE)
+                                }
                             }
                         },
                         text = R.string.deleteSecret,
