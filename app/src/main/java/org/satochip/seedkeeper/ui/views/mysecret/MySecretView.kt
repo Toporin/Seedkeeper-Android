@@ -48,7 +48,6 @@ fun MySecretView(
     type: String, // TODO: redundant with secret?
     isOldVersion: Boolean,
     onClick: (MySecretItems) -> Unit, // TODO: integrate directly?
-    getSeedQR: (String) -> String, // TODO: redundant with secret?
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
@@ -183,42 +182,19 @@ fun MySecretView(
                         title = R.string.label,
                         text = secret.value?.label ?: ""
                     )
-                    // TODO: refactor GetSpecificSecretInfoFields
+
                     GetSpecificSecretInfoFields(
                         type = type,
                         secret = secret
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
 
-                    // TODO: remove these 2 buttons
-                    SecretButtonsField(
-                        mySecretStatus = mySecretStatus,
-                        type = type,
-                        isSecretShown = isSecretShown,
-                        subType = secret.value?.subType ?: 1,
-                        onClick = {
-                            if (isSecretShown.value && seedQR.value.isEmpty()) {
-                                seedQR.value = getSeedQR(secretText.value)
-                            }
-                        }
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                when (mySecretStatus.value) {
-                    MySecretStatus.SEED -> {
-                        SecretTextField(
-                            curValue = secretText,
-                            minHeight = 250.dp
-                        )
-                    }
-                    MySecretStatus.SEED_QR -> {
-                        SecretImageField(
-                            minHeight = 250.dp,
-                            qrCodeString = seedQR
-                        )
-                    }
-                    MySecretStatus.X_PUB -> {//TODO: remove
-                    }
-                }
+
+                SecretTextField(
+                    curValue = secretText,
+                    minHeight = 250.dp
+                )
 
                 // Action buttons
                 Row(

@@ -740,14 +740,6 @@ fun Navigation(
                             Toast.makeText(context, encryptedText, Toast.LENGTH_SHORT).show()
                         }
                     }
-                },
-                getSeedQR = { mnemonic ->
-                    try {
-                        return@MySecretView viewModel.getSeedQr(mnemonic)
-                    } catch (e: Exception) {
-                        Toast.makeText(context, retrieveTheSecretFirstText, Toast.LENGTH_SHORT).show()
-                        return@MySecretView ""
-                    }
                 }
             )
         }

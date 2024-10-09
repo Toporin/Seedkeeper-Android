@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -44,9 +45,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.g0dkar.qrcode.QRCode
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.parsers.TAG
+import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.shared.DataAsQrCode
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.utils.satoClickEffect
+import org.satochip.seedkeeper.utils.getSeedQr
 
 @Composable
 fun SecretTextField(
@@ -66,6 +70,9 @@ fun SecretTextField(
     val isQRCodeSelected = remember {
         mutableStateOf(false)
     }
+    val isSeedQRCodeSelected = remember {
+        mutableStateOf(false)
+    }
     val copyText = stringResource(id = R.string.copiedToClipboard)
 
     Box(
@@ -81,19 +88,68 @@ fun SecretTextField(
         Row(
             modifier = Modifier
                 .padding(8.dp)
-                .width(if (isQRCodeEnabled) 96.dp else 64.dp)
+                .zIndex(1f)
+                .align(Alignment.TopStart)
+        ) {
+            if (isQRCodeEnabled) {
+                if (isSeedQRCodeSelected.value){
+                    Text(
+                        text = "SeedQR",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.ExtraLight,
+                            textAlign = TextAlign.Start
+                        )
+                    )
+                }
+                else if (isQRCodeSelected.value) {
+                    Text(
+                        text = "QRcode",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.ExtraLight,
+                            textAlign = TextAlign.Start
+                        )
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                //.width(if (isQRCodeEnabled) 96.dp else 64.dp)
                 .zIndex(1f)
                 .align(Alignment.TopEnd)
         ) {
-            // QR code image
             if (isQRCodeEnabled) {
+                // SeedQR code image
                 Image(
                     modifier = Modifier
                         .padding(8.dp)
                         .size(16.dp)
                         .satoClickEffect(
                             onClick = {
-                                isQRCodeSelected.value = !isQRCodeSelected.value
+                                isSeedQRCodeSelected.value = true //!isSeedQRCodeSelected.value
+                                isQRCodeSelected.value = false
+                            }
+                        ),
+                    painter = painterResource(id = R.drawable.pill),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    colorFilter = ColorFilter.tint(Color.White)
+                )
+                // QR code image
+                Image(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(16.dp)
+                        .satoClickEffect(
+                            onClick = {
+                                isSeedQRCodeSelected.value = false
+                                isQRCodeSelected.value = true // !isQRCodeSelected.value
                             }
                         ),
                     painter = painterResource(id = R.drawable.seedqr_icon),
@@ -125,6 +181,8 @@ fun SecretTextField(
                     .size(16.dp)
                     .satoClickEffect(
                         onClick = {
+                            isQRCodeSelected.value = false
+                            isSeedQRCodeSelected.value = false
                             passwordVisibility.value = !passwordVisibility.value
                         }
                     ),
@@ -140,6 +198,36 @@ fun SecretTextField(
             DataAsQrCode(
                 qrCodeBytes = qrCodeBytes
             )
+        } else if (isSeedQRCodeSelected.value) {
+            var qrCodeString: String? = null
+            try {
+                qrCodeString = getSeedQr(curValue.value)
+            } catch (e: Exception) {
+                SatoLog.e(TAG, "Failed to generate SeedQR: ${e}")
+            }
+            qrCodeString?.also { qrCodeString ->
+               val qrCodeBytes = QRCode(qrCodeString).render().getBytes()
+                DataAsQrCode(
+                    qrCodeBytes = qrCodeBytes
+                )
+            } ?: run {
+                Text(
+                    text = "Failed to generate SeedQR",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .padding(vertical = 24.dp, horizontal = 16.dp)
+                        .zIndex(0.5f),
+                    style = TextStyle(
+                        color = Color.Red,
+                        fontSize = 18.sp,
+                        lineHeight = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
+
         } else {
             TextField(
                 modifier = Modifier
