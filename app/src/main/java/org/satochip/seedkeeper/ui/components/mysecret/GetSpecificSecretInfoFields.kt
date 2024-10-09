@@ -13,37 +13,56 @@ fun GetSpecificSecretInfoFields(
 ) {
     val secretType = SeedkeeperSecretType.valueOf(type)
     when (secretType) {
+
+        // Mnemonic
         SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
             if (secret.value?.subType != 0 || secretType != SeedkeeperSecretType.MASTERSEED) {
-                SecretInfoField(
-                    title = R.string.mnemonicSize,
-                    text = (secret.value?.size ?: "").toString()
-                )
-                SecretInfoField(
-                    title = R.string.passphrase,
-                    optional = R.string.optional,
-                    text = secret.value?.password ?: ""
-                )
-                SecretInfoField(
-                    title = R.string.walletDescriptorOptional,
-                    optional = R.string.optional,
-                    text = secret.value?.descriptor ?: ""
-                )
+
+                secret.value?.size?.also { size ->
+                    SecretInfoField(
+                        title = R.string.mnemonicSize,
+                        text = (size).toString()
+                    )
+                }
+                secret.value?.password?.also { passphrase ->
+                    SecretInfoField(
+                        title = R.string.passphrase,
+                        optional = R.string.optional,
+                        text = passphrase
+                    )
+                }
+                secret.value?.descriptor?.also { descriptor ->
+                    SecretInfoField(
+                        title = R.string.walletDescriptorOptional,
+                        optional = R.string.optional,
+                        text = descriptor
+                    )
+                }
+
             }
         }
-        SeedkeeperSecretType.PASSWORD -> {
-            SecretInfoField(
-                title = R.string.login,
-                optional = R.string.optional,
-                text = secret.value?.login ?: ""
-            )
 
-            SecretInfoField(
-                title = R.string.url,
-                optional = R.string.optional,
-                text = secret.value?.url ?: ""
-            )
+        // Password
+        SeedkeeperSecretType.PASSWORD -> {
+            secret.value?.login?.also{ login ->
+                SecretInfoField(
+                    title = R.string.login,
+                    optional = R.string.optional,
+                    text = login
+                )
+            }
+
+            secret.value?.url?.also{url ->
+                SecretInfoField(
+                    title = R.string.url,
+                    optional = R.string.optional,
+                    text = url
+                )
+            }
+
         }
+
+        // currently no other optional field supported
         else -> {}
     }
 }

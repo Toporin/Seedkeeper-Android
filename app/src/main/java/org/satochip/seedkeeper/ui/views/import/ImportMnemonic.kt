@@ -112,10 +112,9 @@ fun ImportMnemonic(
                             SecretData(
                                 size = passwordOptions.value.passwordLength,
                                 type = SeedkeeperSecretType.MASTERSEED,
-                                password = curValuePassphrase.value,
+                                subType = 0x01,
+                                passphrase = curValuePassphrase.value,
                                 label = curValueLabel.value,
-                                login = "",
-                                url = "",
                                 mnemonic = secret.value,
                                 descriptor = curValueWalletDescriptor.value
                             )

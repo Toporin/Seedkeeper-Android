@@ -87,11 +87,8 @@ fun ImportFreeField(
                         onImportSecret(
                             SecretData(
                                 type = SeedkeeperSecretType.DATA,
-                                password = "",
                                 label = curValueLabel.value,
-                                login = "",
-                                url = "",
-                                descriptor = secret.value
+                                data = secret.value
                             )
                         )
                     }

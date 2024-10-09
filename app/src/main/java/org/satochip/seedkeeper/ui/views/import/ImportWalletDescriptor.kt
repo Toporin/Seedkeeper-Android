@@ -87,10 +87,7 @@ fun ImportWalletDescriptor(
                         onImportSecret(
                             SecretData(
                                 type = SeedkeeperSecretType.WALLET_DESCRIPTOR,
-                                password = "",
                                 label = curValueLabel.value,
-                                login = "",
-                                url = "",
                                 descriptor = secret.value
                             )
                         )

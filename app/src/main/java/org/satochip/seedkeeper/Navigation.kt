@@ -689,9 +689,6 @@ fun Navigation(
             }
             LaunchedEffect(Unit) {
                 data.value = SecretData(
-                    password = "",
-                    login = "",
-                    url = "",
                     label = args.label,
                     type = SeedkeeperSecretType.valueOf(args.type),
                     exportRights = args.exportRights,

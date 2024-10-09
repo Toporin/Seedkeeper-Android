@@ -14,21 +14,27 @@ class SecretDataParser {
 
     fun parseByType(seedkeeperSecretType: SeedkeeperSecretType, secretObject: SeedkeeperSecretObject): SecretData? {
         return when (seedkeeperSecretType) {
+            SeedkeeperSecretType.PASSWORD -> {
+                parsePasswordCardData(secretObject.secretBytes)
+            }
             SeedkeeperSecretType.MASTERSEED -> {
                 if (secretObject.secretHeader.subtype == 0x00.toByte()) {
-                    parseGeneralData(secretObject.secretBytes)
+                    parseMasterseed(secretObject.secretBytes)
                 } else {
                     parseMasterseedMnemonicCardData(secretObject.secretBytes)
                 }
             }
             SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
-                parseMnemonicCardData(secretObject.secretBytes)
+                parseMnemonicCardData(secretObject.secretBytes, seedkeeperSecretType)
             }
-            SeedkeeperSecretType.PASSWORD -> {
-                parsePasswordCardData(secretObject.secretBytes)
-            }
-            SeedkeeperSecretType.DATA, SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
+            SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
                  parseWalletDescriptorData(secretObject.secretBytes)
+            }
+            SeedkeeperSecretType.DATA -> {
+                parseFreeData(secretObject.secretBytes)
+            }
+            SeedkeeperSecretType.PUBKEY -> {
+                parsePubkey(secretObject.secretBytes)
             }
             else -> {
                 parseGeneralData(secretObject.secretBytes)
@@ -91,16 +97,17 @@ class SecretDataParser {
 
 
         return SecretData(
-            password = passphrase ?: "",
+            passphrase = passphrase,
             mnemonic = mnemonic,
             size = mnemonic.countWords(),
             label = "",
             type = SeedkeeperSecretType.MASTERSEED,
+            subType = 0x01,
             descriptor = descriptor
         )
     }
 
-    private fun parseMnemonicCardData(bytes: ByteArray): SecretData? {
+    private fun parseMnemonicCardData(bytes: ByteArray, type: SeedkeeperSecretType): SecretData? {
         var index = 0
 
         if (bytes.isEmpty()) {
@@ -133,30 +140,11 @@ class SecretDataParser {
         }
 
         return SecretData(
-            password = passphrase ?: "",
+            password = passphrase,
             mnemonic = mnemonic,
             size = mnemonic.countWords(),
             label = "",
-            type = SeedkeeperSecretType.BIP39_MNEMONIC
-        )
-    }
-
-    private fun parseGeneralData(bytes: ByteArray): SecretData? {
-        val pubkeySize = bytes[0].toInt()
-        if (1 + pubkeySize > bytes.size) {
-            SatoLog.e(TAG, "Invalid pubkey size")
-            return null
-        }
-        val pubkeyBytes = bytes.copyOfRange(1, 1 + pubkeySize)
-        val hexString = pubkeyBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
-
-        return SecretData(
-            password = hexString,
-            login = "",
-            url = "",
-            label = "",
-            type = SeedkeeperSecretType.PUBKEY,
-            size = 0,
+            type = type
         )
     }
 
@@ -171,19 +159,40 @@ class SecretDataParser {
             return null
         }
         val descriptorBytes = bytes.copyOfRange(index, index + descriptorSize)
-        val descriptor = String(descriptorBytes, Charsets.UTF_8)
+        var descriptor = String(descriptorBytes, Charsets.UTF_8)
         if (descriptor.isEmpty()) {
             SatoLog.e(TAG, "Descriptor bytes conversion to string failed")
-            return null
+            descriptor = "Descriptor bytes conversion to string failed"
         }
         return SecretData(
-            password = "",
-            login = "",
-            url = "",
+            label = "",
+            type = SeedkeeperSecretType.WALLET_DESCRIPTOR,
+            size = 0,
+            data = descriptor
+        )
+    }
+
+    private fun parseFreeData(bytes: ByteArray): SecretData? {
+        var index = 0
+
+        val dataSizeArray = bytes.sliceArray(0..1)
+        val dataSize = ByteBuffer.wrap(dataSizeArray).short
+        index += 2
+        if (index + dataSize > bytes.size) {
+            SatoLog.e(TAG, "Invalid data size")
+            return null
+        }
+        val dataBytes = bytes.copyOfRange(index, index + dataSize)
+        var data = String(dataBytes, Charsets.UTF_8)
+        if (data.isEmpty()) {
+            SatoLog.e(TAG, "Descriptor bytes conversion to string failed")
+            data = "Descriptor bytes conversion to string failed" //TODO: return hex value
+        }
+        return SecretData(
             label = "",
             type = SeedkeeperSecretType.DATA,
             size = 0,
-            descriptor = descriptor
+            data = data
         )
     }
 
@@ -228,11 +237,63 @@ class SecretDataParser {
 
         return SecretData(
             password = password,
-            login = login ?: "",
-            url = url ?: "",
+            login = login,
+            url = url,
             label = "",
             type = SeedkeeperSecretType.PASSWORD,
             size = 0
+        )
+    }
+
+    private fun parseMasterseed(bytes: ByteArray): SecretData? {
+        val masterseedSize = bytes[0].toInt()
+        if (1 + masterseedSize > bytes.size) {
+            SatoLog.e(TAG, "Invalid masterseed size")
+            return null
+        }
+        val masterseedBytes = bytes.copyOfRange(1, 1 + masterseedSize)
+        val masterseedHex = masterseedBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+        return SecretData(
+            password = masterseedHex, // todo
+            label = "",
+            type = SeedkeeperSecretType.MASTERSEED,
+            size = 0,
+        )
+    }
+
+    private fun parsePubkey(bytes: ByteArray): SecretData? {
+        val pubkeySize = bytes[0].toInt()
+        if (1 + pubkeySize > bytes.size) {
+            SatoLog.e(TAG, "Invalid pubkey size")
+            return null
+        }
+        val pubkeyBytes = bytes.copyOfRange(1, 1 + pubkeySize)
+        val pubkeyHex = pubkeyBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+        return SecretData(
+            password = pubkeyHex,
+            label = "",
+            type = SeedkeeperSecretType.PUBKEY,
+            size = 0,
+        )
+    }
+
+    // TODO: parse masterseed + pubkey
+    private fun parseGeneralData(bytes: ByteArray): SecretData? {
+        val secretSize = bytes[0].toInt()
+        if (1 + secretSize > bytes.size) {
+            SatoLog.e(TAG, "Invalid secret size")
+            return null
+        }
+        val secretBytes = bytes.copyOfRange(1, 1 + secretSize)
+        val secretHex = secretBytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
+
+        return SecretData(
+            password = secretHex,
+            label = "",
+            type = SeedkeeperSecretType.DEFAULT_TYPE,
+            size = 0,
         )
     }
 }
