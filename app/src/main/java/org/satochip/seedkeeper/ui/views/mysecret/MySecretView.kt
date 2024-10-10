@@ -1,5 +1,7 @@
 package org.satochip.seedkeeper.ui.views.mysecret
 
+import android.app.Activity
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,31 +29,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AppErrorMsg
-import org.satochip.seedkeeper.data.MySecretItems
+import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
+import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog
 import org.satochip.seedkeeper.ui.components.mysecret.SecretInfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
+import org.satochip.seedkeeper.utils.webviewActivityIntent
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
+
 
 @Composable
 fun MySecretView(
+    context: Context,
+    viewModel: SharedViewModel,
+    navController: NavHostController,
     secret: MutableState<SecretData?>,
     type: String, // TODO: redundant with secret?
     isOldVersion: Boolean,
-    onClick: (MySecretItems) -> Unit, // TODO: integrate directly?
+    //onClick: (MySecretItems) -> Unit, // TODO: integrate directly?
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
         mutableStateOf("")
     }
+    // NFC DIALOG
+    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
+    val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
+    if (showNfcDialog.value) {
+        NfcDialog(
+            openDialogCustom = showNfcDialog,
+            resultCodeLive = viewModel.resultCodeLive,
+            isConnected = viewModel.isCardConnected
+        )
+    }
+    // buy card popup
+    val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
     val isPopUpOpened = remember {
         mutableStateOf(false)
     }
@@ -60,16 +82,22 @@ fun MySecretView(
             isOpen = isPopUpOpened,
             title = R.string.buySeedkeeper,
             onClick = {
-                onClick(MySecretItems.BUY_SEEDKEEPER)
+                //onClick(MySecretItems.BUY_SEEDKEEPER)
+                webviewActivityIntent(
+                    url = buySeedkeeperUrl,
+                    context = context
+                )
             }
         )
     }
+    // delete secret
     val showConfirmDeleteMsg = remember {
         mutableStateOf(false)
     }
     val hasUserConfirmedTerms = remember {
         mutableStateOf(false)
     }
+    // error mgmt
     val showError = remember {
         mutableStateOf(false)
     }
@@ -124,7 +152,9 @@ fun MySecretView(
         else -> {}
     }
     BackHandler {
-        onClick(MySecretItems.BACK)
+        //onClick(MySecretItems.BACK)
+        viewModel.resetCurrentSecretObject()
+        navController.popBackStack()
     }
 
     Box(
@@ -139,7 +169,9 @@ fun MySecretView(
             HeaderAlternateRow(
                 titleText = R.string.mySecret,
                 onClick = {
-                    onClick(MySecretItems.BACK)
+                    //onClick(MySecretItems.BACK)
+                    viewModel.resetCurrentSecretObject()
+                    navController.popBackStack()
                 }
             )
             Column(
@@ -263,7 +295,12 @@ fun MySecretView(
                                     showConfirmDeleteMsg.value = true
                                 } else if (hasUserConfirmedTerms.value == true) {
                                     // delete secret
-                                    onClick(MySecretItems.DELETE)
+                                    //onClick(MySecretItems.DELETE)
+                                    showNfcDialog.value = true // NfcDialog
+                                    viewModel.scanCardForAction(
+                                        activity = context as Activity,
+                                        nfcActionType = NfcActionType.DELETE_SECRET
+                                    )
                                 }
                             }
                         },
@@ -280,7 +317,12 @@ fun MySecretView(
                                 appError.value = AppErrorMsg.PLAINTEXT_EXPORT_NOT_ALLOWED
                                 showError.value = true
                             } else {
-                                onClick(MySecretItems.SHOW)
+                                //onClick(MySecretItems.SHOW)
+                                showNfcDialog.value = true // NfcDialog
+                                viewModel.scanCardForAction(
+                                    activity = context as Activity,
+                                    nfcActionType = NfcActionType.GET_SECRET
+                                )
                             }
                         },
                         text = R.string.showSecret,
@@ -292,4 +334,3 @@ fun MySecretView(
         }
     }
 }
-

@@ -707,40 +707,12 @@ fun Navigation(
             }
 
             MySecretView(
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
                 secret = data,
                 type = args.type,
                 isOldVersion = viewModel.getSeedkeeperStatus() == null,
-                onClick = { item ->
-                    when (item) {
-                        MySecretItems.SHOW -> {
-                            showNfcDialog.value = true // NfcDialog
-                            viewModel.scanCardForAction(
-                                activity = context as Activity,
-                                nfcActionType = NfcActionType.GET_SECRET
-                            )
-                        }
-                        MySecretItems.DELETE -> {
-                            showNfcDialog.value = true // NfcDialog
-                            viewModel.scanCardForAction(
-                                activity = context as Activity,
-                                nfcActionType = NfcActionType.DELETE_SECRET
-                            )
-                        }
-                        MySecretItems.BACK -> {
-                            viewModel.resetCurrentSecretObject()
-                            navController.popBackStack()
-                        }
-                        MySecretItems.BUY_SEEDKEEPER -> {
-                            webviewActivityIntent(
-                                url = buySeedkeeperUrl,
-                                context = context
-                            )
-                        }
-                        MySecretItems.ENCRYPTED_EXPORT -> { // TODO remove?
-                            Toast.makeText(context, encryptedText, Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
             )
         }
         composable<GenerateView> {
@@ -862,6 +834,7 @@ fun Navigation(
                     val isMasterSeed = passwordData.type == SeedkeeperSecretType.MASTERSEED
                     val mnemonic = passwordData.mnemonic
 
+                    // TODO: validate mnemonic before!!
                     if (isMasterSeed && mnemonic != null) {
                         if (viewModel.isMnemonicValid(mnemonic)) {
                             showNfcDialog.value = true
