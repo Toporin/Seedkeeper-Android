@@ -11,24 +11,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AddSecretItems
-import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateStatus
-import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.NfcResultCode
-import org.satochip.seedkeeper.data.PasswordOptions
-import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
-import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
@@ -64,22 +57,8 @@ fun ImportSecretView(
         }
 
         // TODO: remove these state and add them below
-        val secret = remember {
-            mutableStateOf("")
-        }
         val curValueLabel = remember {
             mutableStateOf("")
-        }
-        val curValuePassphrase = remember {
-            mutableStateOf("")
-        }
-        val curValueWalletDescriptor = remember {
-            mutableStateOf("")
-        }
-        val passwordOptions = remember {
-            mutableStateOf(
-                PasswordOptions()
-            )
         }
 
         if (isImportDone.value) {
@@ -94,7 +73,6 @@ fun ImportSecretView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    //onClick(ImportViewItems.BACK, null)
                     navController.popBackStack()
                 },
                 titleText = R.string.blankTextField
@@ -140,8 +118,6 @@ fun ImportSecretView(
                             context = context,
                             navController = navController,
                             viewModel = viewModel,
-                            curValueLabel = curValueLabel,
-                            secret = secret,
                         )
                     }
                     GenerateStatus.FREE_FIELD -> {
@@ -150,8 +126,6 @@ fun ImportSecretView(
                             context = context,
                             navController = navController,
                             viewModel = viewModel,
-                            curValueLabel = curValueLabel,
-                            secret = secret,
                         )
                     }
                     GenerateStatus.HOME -> {
@@ -159,7 +133,7 @@ fun ImportSecretView(
                             context = context,
                             navController = navController,
                             viewModel = viewModel,
-                            curValueLabel = curValueLabel,
+                            curValueLabel = curValueLabel, // TODO!
                         )
                     }
                 }

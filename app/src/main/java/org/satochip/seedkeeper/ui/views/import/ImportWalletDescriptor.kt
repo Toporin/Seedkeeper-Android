@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,9 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.SecretData
-import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.NfcActionType
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
@@ -43,10 +41,6 @@ fun ImportWalletDescriptor(
     context: Context,
     navController: NavHostController,
     viewModel: SharedViewModel,
-    curValueLabel: MutableState<String>,
-    secret: MutableState<String>,
-    //onClick: (ImportViewItems, String?) -> Unit,
-    //onImportSecret: (SecretData) -> Unit,
 ) {
     // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
@@ -56,6 +50,13 @@ fun ImportWalletDescriptor(
             resultCodeLive = viewModel.resultCodeLive,
             isConnected = viewModel.isCardConnected
         )
+    }
+
+    val curValueLabel = remember {
+        mutableStateOf("")
+    }
+    val secret = remember {
+        mutableStateOf("")
     }
 
     Column(
