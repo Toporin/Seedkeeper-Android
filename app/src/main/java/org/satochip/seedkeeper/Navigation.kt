@@ -794,65 +794,13 @@ fun Navigation(
             )
         }
         composable<ImportSecretView> {
-            val isImportDone = remember {
-                mutableStateOf(false)
-            }
-            val isImportInitiated = remember {
-                mutableStateOf(false)
-            }
-            val mnemonicValidText = stringResource(id = R.string.mnemonicValidText)
-            LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
-                    isImportDone.value = true
-                } else {
-                    isImportDone.value = false
-                }
-            }
-            ImportSecretView(
-                settings = settings,
-                isImportDone = isImportDone,
-                onClick = { item, text ->
-                    when (item) {
-                        ImportViewItems.COPY_TO_CLIPBOARD -> {
-                            text?.let {
-                                clipboardManager.setText(AnnotatedString(text))
-                                Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        ImportViewItems.HOME -> {
-                            navController.popBackStack()
-                            navController.popBackStack()
-                        }
-                        ImportViewItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                    }
-                },
-                onImportSecret = { passwordData ->
-                    isImportInitiated.value = true
-                    viewModel.setPasswordData(passwordData)
-                    val isMasterSeed = passwordData.type == SeedkeeperSecretType.MASTERSEED
-                    val mnemonic = passwordData.mnemonic
 
-                    // TODO: validate mnemonic before!!
-                    if (isMasterSeed && mnemonic != null) {
-                        if (viewModel.isMnemonicValid(mnemonic)) {
-                            showNfcDialog.value = true
-                            viewModel.scanCardForAction(
-                                activity = context as Activity,
-                                nfcActionType = NfcActionType.GENERATE_A_SECRET
-                            )
-                        } else {
-                            Toast.makeText(context, mnemonicValidText, Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        showNfcDialog.value = true
-                        viewModel.scanCardForAction(
-                            activity = context as Activity,
-                            nfcActionType = NfcActionType.GENERATE_A_SECRET
-                        )
-                    }
-                }
+            ImportSecretView(
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
+                settings = settings,
+                //isImportDone = isImportDone,
             )
         }
         composable<ShowCardLogs> {

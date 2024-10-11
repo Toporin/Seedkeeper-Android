@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.import
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,29 +10,51 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
+import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun ImportSecretView(
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
     settings: SharedPreferences,
-    isImportDone: MutableState<Boolean>,
-    onClick: (ImportViewItems, String?) -> Unit,
-    onImportSecret: (SecretData) -> Unit
+    //isImportDone: MutableState<Boolean>,
+    //onClick: (ImportViewItems, String?) -> Unit, //TODO: integrate directly
+    //onImportSecret: (SecretData) -> Unit //TODO: integrate directly
 ) {
     val scrollState = rememberScrollState()
+
+    val isImportDone = remember {
+        mutableStateOf(false)
+    }
+    val isImportInitiated = remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(viewModel.resultCodeLive) {
+        if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
+            isImportDone.value = true
+        } else {
+            isImportDone.value = false
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -111,7 +134,8 @@ fun ImportSecretView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(ImportViewItems.BACK, null)
+                    //onClick(ImportViewItems.BACK, null)
+                    navController.popBackStack()
                 },
                 titleText = R.string.blankTextField
             )
@@ -132,21 +156,22 @@ fun ImportSecretView(
                     }
                     GenerateStatus.MNEMONIC_PHRASE -> {
                         ImportMnemonic(
+                            context = context,
+                            navController = navController,
+                            viewModel = viewModel,
                             curValueLabel = curValueLabel,
                             curValuePassphrase = curValuePassphrase,
                             curValueWalletDescriptor = curValueWalletDescriptor,
                             secret = secret,
                             passwordOptions = passwordOptions,
-                            onClick = { importItems, text ->
-                                onClick(importItems,text)
-                            },
-                            onImportSecret = { passwordData ->
-                                onImportSecret(passwordData)
-                            }
                         )
                     }
                     GenerateStatus.LOGIN_PASSWORD -> {
+                        isImportInitiated.value = true
                         ImportPassword(
+                            context = context,
+                            navController = navController,
+                            viewModel = viewModel,
                             settings = settings,
                             curValueLabel = curValueLabel,
                             secret = secret,
@@ -155,44 +180,32 @@ fun ImportSecretView(
                             curValueUrl = curValueUrl,
                             isPopUpOpened = isPopUpOpened,
                             retrievedSet = retrievedSet,
-                            onClick = { importItems, text ->
-                                onClick(importItems,text)
-                            },
-                            onImportSecret = { passwordData ->
-                                onImportSecret(passwordData)
-                            }
                         )
                     }
                     GenerateStatus.WALLET_DESCRIPTOR -> {
                         ImportWalletDescriptor(
+                            context = context,
+                            navController = navController,
+                            viewModel = viewModel,
                             curValueLabel = curValueLabel,
                             secret = secret,
-                            onClick = { importItems, text ->
-                                onClick(importItems,text)
-                            },
-                            onImportSecret = { passwordData ->
-                                onImportSecret(passwordData)
-                            }
                         )
                     }
                     GenerateStatus.FREE_FIELD -> {
                         ImportFreeField(
+                            context = context,
+                            navController = navController,
+                            viewModel = viewModel,
                             curValueLabel = curValueLabel,
                             secret = secret,
-                            onClick = { importItems, text ->
-                                onClick(importItems,text)
-                            },
-                            onImportSecret = { passwordData ->
-                                onImportSecret(passwordData)
-                            }
                         )
                     }
                     GenerateStatus.HOME -> {
                         ImportHome(
+                            context = context,
+                            navController = navController,
+                            viewModel = viewModel,
                             curValueLabel = curValueLabel,
-                            onClick = { importItems, text ->
-                                onClick(importItems,text)
-                            },
                         )
                     }
                 }

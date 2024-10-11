@@ -62,9 +62,8 @@ fun MySecretView(
     val secretText = remember {
         mutableStateOf("")
     }
-    // NFC DIALOG
+    // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
-    val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
     if (showNfcDialog.value) {
         NfcDialog(
             openDialogCustom = showNfcDialog,

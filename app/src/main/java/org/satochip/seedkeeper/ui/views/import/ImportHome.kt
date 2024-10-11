@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.import
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.ui.components.generate.InputField
@@ -21,11 +23,15 @@ import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoPurple
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun ImportHome(
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
     curValueLabel: MutableState<String>,
-    onClick: (ImportViewItems, String?) -> Unit,
+    //onClick: (ImportViewItems, String?) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -63,7 +69,9 @@ fun ImportHome(
             //Home
             SatoButton(
                 onClick = {
-                    onClick(ImportViewItems.HOME, null)
+                    //onClick(ImportViewItems.HOME, null)
+                    navController.popBackStack()
+                    navController.popBackStack()
                 },
                 text = R.string.home
             )
