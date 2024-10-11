@@ -397,46 +397,9 @@ fun Navigation(
         }
         composable<CardInformation> {
             CardInformation(
-                authenticityStatus = viewModel.authenticityStatus,
-                cardLabel = viewModel.cardLabel,
-                cardAppletVersion = viewModel.getAppletVersion(),
-                cardStatus = viewModel.getSeedkeeperStatus(),
-                cardAuthentikey = viewModel.getCardAuthentikey(),
-                onClick = { item, cardLabel ->
-                    when (item) {
-                        CardInformationItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                        CardInformationItems.CARD_AUTHENTICITY -> {
-                            navController.navigate(CardAuthenticity)
-                        }
-                        CardInformationItems.EDIT_PIN_CODE -> {
-                            navController.navigate(
-                                EditPinCodeView(
-                                    pinCodeStatus = PinCodeStatus.CURRENT_PIN_CODE.name
-                                )
-                            )
-                        }
-                        CardInformationItems.EDIT_CARD_LABEL -> {
-                            if (cardLabel != null) {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setupNewCardLabel(cardLabel)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.EDIT_CARD_LABEL
-                                )
-                            }
-                        }
-                        CardInformationItems.SHOW_CARD_LOGS -> {
-                            navController.navigate(ShowCardLogs)
-                        }
-                        else -> {}
-                    }
-                },
-                copyToClipboard = { text ->
-                    clipboardManager.setText(AnnotatedString(text))
-                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<CardAuthenticity> {
