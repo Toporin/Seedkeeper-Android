@@ -660,10 +660,6 @@ fun Navigation(
             val data = remember {
                 mutableStateOf<SecretData?>(null)
             }
-//            val encryptedText = stringResource(id = R.string.encryptedOnlySecretText)
-//            val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
-//            val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
-
             LaunchedEffect(viewModel.currentSecretId) {
                 if (viewModel.currentSecretId == null) {
                     navController.navigate(HomeView) {
@@ -699,84 +695,6 @@ fun Navigation(
                 isOldVersion = viewModel.getSeedkeeperStatus() == null,
             )
         }
-        composable<GenerateView> {
-            val selectMoreSets = stringResource(id = R.string.selectMoreSets)
-            val isImportDone = remember {
-                mutableStateOf(false)
-            }
-            val isImportInitiated = remember {
-                mutableStateOf(false)
-            }
-            LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY && isImportInitiated.value) {
-                    isImportDone.value = true
-                } else {
-                    isImportDone.value = false
-                }
-            }
-            GenerateView(
-                settings = settings,
-                isImportDone = isImportDone,
-                onClick = { item, text, passwordOptions ->
-                    when (item) {
-                        GenerateViewItems.COPY_TO_CLIPBOARD -> {
-                            text?.let {
-                                clipboardManager.setText(AnnotatedString(text))
-                                Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
-                            }
-                            return@GenerateView ""
-                        }
-                        GenerateViewItems.BACK -> {
-                            navController.popBackStack()
-                            return@GenerateView ""
-                        }
-                        GenerateViewItems.GENERATE_MNEMONIC_PHRASE -> {
-
-                            return@GenerateView passwordOptions?.let { options ->
-                                try {
-                                    viewModel.generateMnemonic(passwordOptions.passwordLength)
-                                } catch (e: IllegalArgumentException) {
-                                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-                                    ""
-                                }
-                            } ?: run {
-                                ""
-                            }
-                        }
-                        GenerateViewItems.GENERATE_A_PASSWORD -> {
-                            return@GenerateView passwordOptions?.let { options ->
-                                if (options.isMemorableSelected) {
-                                    viewModel.generateMemorablePassword(options, context)
-                                } else {
-                                    val password = viewModel.generatePassword(options)
-                                    password ?: run {
-                                        Toast.makeText(context, selectMoreSets, Toast.LENGTH_SHORT)
-                                            .show()
-                                        ""
-                                    }
-                                }
-                            } ?: run {
-                                ""
-                            }
-                        }
-                        GenerateViewItems.HOME -> {
-                            navController.popBackStack()
-                            navController.popBackStack()
-                            return@GenerateView ""
-                        }
-                    }
-                },
-                onImportSecret = { passwordData ->
-                    isImportInitiated.value = true
-                    viewModel.setPasswordData(passwordData)
-                    showNfcDialog.value = true // NfcDialog
-                    viewModel.scanCardForAction(
-                        activity = context as Activity,
-                        nfcActionType = NfcActionType.GENERATE_A_SECRET
-                    )
-                }
-            )
-        }
         composable<ImportSecretView> {
             val args = it.toRoute<ImportSecretView>()
             ImportSecretView(
@@ -785,7 +703,6 @@ fun Navigation(
                 viewModel = viewModel,
                 settings = settings,
                 importMode = AddSecretItems.valueOf(args.importMode),
-                //isImportDone = isImportDone,
             )
         }
         composable<ShowCardLogs> {
@@ -834,8 +751,6 @@ object CardInformation
 object CardAuthenticity
 @Serializable
 object BackupView
-@Serializable
-object GenerateView
 @Serializable
 data class ImportSecretView(
     val importMode: String,

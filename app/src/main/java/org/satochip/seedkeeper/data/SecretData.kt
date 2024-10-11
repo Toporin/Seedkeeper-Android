@@ -31,7 +31,7 @@ data class SecretData(
         when (this.type) {
             SeedkeeperSecretType.MASTERSEED -> {
                 this.mnemonic?.let { mnemonic ->
-                    val masterseedBytes = MnemonicCode.toSeed(mnemonic.toMnemonicList(), this.password)
+                    val masterseedBytes = MnemonicCode.toSeed(mnemonic.toMnemonicList(), this.passphrase ?: "")
                     val masterseedSize = masterseedBytes.size.toByte()
                     val entropyBytes = MnemonicCode.INSTANCE.toEntropy(mnemonic.toMnemonicList())
                     val entropySize = entropyBytes.size.toByte()

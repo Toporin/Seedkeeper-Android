@@ -116,15 +116,12 @@ fun ImportSecretView(
                         )
                     }
                     GenerateStatus.MNEMONIC_PHRASE -> {
+                        isImportInitiated.value = true
                         ImportMnemonic(
                             context = context,
                             navController = navController,
                             viewModel = viewModel,
-                            curValueLabel = curValueLabel,
-                            curValuePassphrase = curValuePassphrase,
-                            curValueWalletDescriptor = curValueWalletDescriptor,
-                            secret = secret,
-                            passwordOptions = passwordOptions,
+                            importMode = importMode,
                         )
                     }
                     GenerateStatus.LOGIN_PASSWORD -> {
@@ -138,6 +135,7 @@ fun ImportSecretView(
                         )
                     }
                     GenerateStatus.WALLET_DESCRIPTOR -> {
+                        isImportInitiated.value = true
                         ImportWalletDescriptor(
                             context = context,
                             navController = navController,
@@ -147,6 +145,7 @@ fun ImportSecretView(
                         )
                     }
                     GenerateStatus.FREE_FIELD -> {
+                        isImportInitiated.value = true
                         ImportFreeField(
                             context = context,
                             navController = navController,

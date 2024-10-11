@@ -2,6 +2,7 @@ package org.satochip.seedkeeper.ui.views.import
 
 import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,12 +26,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.PasswordOptions
+import org.satochip.seedkeeper.data.SelectFieldItem
 import org.satochip.seedkeeper.ui.components.generate.InputField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
+import org.satochip.seedkeeper.ui.components.generate.SelectField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.import.MnemonicImportField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
@@ -45,11 +49,12 @@ fun ImportMnemonic(
     context: Context,
     navController: NavHostController,
     viewModel: SharedViewModel,
-    curValueLabel: MutableState<String>,
-    curValuePassphrase: MutableState<String>,
-    curValueWalletDescriptor: MutableState<String>,
-    secret: MutableState<String>,
-    passwordOptions: MutableState<PasswordOptions>,
+    importMode: AddSecretItems,
+//    curValueLabel: MutableState<String>,
+//    curValuePassphrase: MutableState<String>,
+//    curValueWalletDescriptor: MutableState<String>,
+//    secret: MutableState<String>,
+//    passwordOptions: MutableState<PasswordOptions>,
 ) {
     // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
@@ -61,25 +66,70 @@ fun ImportMnemonic(
         )
     }
 
+    // secret fields
+    val secret = remember {
+        mutableStateOf("")
+    }
+    val curValueLabel = remember {
+        mutableStateOf("")
+    }
+    val curValuePassphrase = remember {
+        mutableStateOf("")
+    }
+    val curValueWalletDescriptor = remember {
+        mutableStateOf("")
+    }
+    val passwordOptions = remember {
+        mutableStateOf(
+            PasswordOptions()
+        )
+    }
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TitleTextField(
-            title = R.string.importAMnemonicPhrase,
-            text = R.string.importAMnemonicPhraseMessage
-        )
+        if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+            TitleTextField(
+                title = R.string.importAMnemonicPhrase,
+                text = R.string.importAMnemonicPhraseMessage
+            )
+        } else {
+            TitleTextField(
+                title = R.string.generateAMnemonicPhrase,
+                text = R.string.generateExplanation
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
+
+        // Label
         InputField(
             curValue = curValueLabel,
             placeHolder = R.string.label,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(20.dp))
-        MnemonicImportField(
-            text = R.string.mnemonicType,
-            type = R.string.bip,
-        )
+
+        if (importMode == AddSecretItems.GENERATE_A_SECRET){
+            SelectField(
+                selectList = listOf(
+                    SelectFieldItem(prefix = null, text = R.string.mnemonicSize),
+                    SelectFieldItem(prefix = 12, text = R.string.mnemonicWords),
+                    SelectFieldItem(prefix = 18, text = R.string.mnemonicWords),
+                    SelectFieldItem(prefix = 24, text = R.string.mnemonicWords),
+                ),
+                onClick = { length ->
+                    passwordOptions.value.passwordLength = length
+                }
+            )
+        } else {
+            MnemonicImportField(
+                text = R.string.mnemonicType,
+                type = R.string.bip,
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
+
+        // Passphrase
         InputField(
             curValue = curValuePassphrase,
             placeHolder = R.string.passphrase,
@@ -87,6 +137,8 @@ fun ImportMnemonic(
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(20.dp))
+
+        // Wallet descriptor
         InputField(
             curValue = curValueWalletDescriptor,
             placeHolder = R.string.walletDescriptorOptional,
@@ -122,6 +174,25 @@ fun ImportMnemonic(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center
         ) {
+            // generate button
+            if (importMode == AddSecretItems.GENERATE_A_SECRET) {
+                SatoButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    onClick = {
+                        // TODO check passwordOptions
+                        try {
+                            secret.value = viewModel.generateMnemonic(passwordOptions.value.passwordLength)
+                        } catch (e: IllegalArgumentException) {
+                            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show() // todo error msg instead
+                            secret.value = ""
+                        }
+                    },
+                    text = if (secret.value.isNotEmpty()) R.string.regenerate else R.string.generate,
+                    horizontalPadding = 1.dp
+                )
+            }
+
             //Import
             SatoButton(
                 modifier = Modifier,
