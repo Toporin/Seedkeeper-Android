@@ -241,7 +241,7 @@ fun ImportPassword(
                     modifier = Modifier
                         .weight(1f),
                     onClick = {
-                        // TODO check passwordOptions
+                        // check passwordOptions
                         if (!passwordOptions.value.isMemorableSelected  &&
                             !passwordOptions.value.isLowercaseSelected &&
                             !passwordOptions.value.isUppercaseSelected &&
@@ -251,6 +251,8 @@ fun ImportPassword(
                             appError.value = AppErrorMsg.NO_CHAR_SELECTED
                             showError.value = true
                             return@SatoButton
+                        } else {
+                            showError.value = false
                         }
 
                         secret.value =

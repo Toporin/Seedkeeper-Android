@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -171,6 +172,22 @@ fun ImportMnemonic(
                 minHeight = 250.dp
             )
         }
+
+        // error msg
+        if (showError.value) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = stringResource(appError.value.msg),
+                style = TextStyle(
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center
@@ -198,26 +215,71 @@ fun ImportMnemonic(
             SatoButton(
                 modifier = Modifier,
                 onClick = {
-                    // TODO: check input +validate mnemonic
-                    if (isClickable(secret, curValueLabel)) {
-                        val secretData = SecretData(
-                            size = passwordOptions.value.passwordLength,
-                            type = SeedkeeperSecretType.MASTERSEED,
-                            subType = 0x01,
-                            passphrase = curValuePassphrase.value,
-                            label = curValueLabel.value,
-                            mnemonic = secret.value,
-                            descriptor = curValueWalletDescriptor.value
-                        )
-                        //isImportInitiated.value = true
-                        viewModel.setPasswordData(secretData)
-                        showNfcDialog.value = true
-                        viewModel.scanCardForAction(
-                            activity = context as Activity,
-                            nfcActionType = NfcActionType.GENERATE_A_SECRET
-                        )
 
+                    //check inputs
+                    if (curValueLabel.value.isEmpty()){
+                        appError.value = AppErrorMsg.LABEL_EMPTY
+                        showError.value = true
+                        return@SatoButton
                     }
+                    if (curValueLabel.value.toByteArray(Charsets.UTF_8).size > 127){
+                        appError.value = AppErrorMsg.LABEL_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (secret.value.isEmpty()){
+                        appError.value = AppErrorMsg.MNEMONIC_EMPTY
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (secret.value.toByteArray(Charsets.UTF_8).size > 255){
+                        appError.value = AppErrorMsg.MNEMONIC_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (!viewModel.isMnemonicValid(mnemonic = secret.value)){
+                        appError.value = AppErrorMsg.MNEMONIC_WRONG_FORMAT
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (curValuePassphrase.value.toByteArray(Charsets.UTF_8).size > 255){
+                        appError.value = AppErrorMsg.PASSPHRASE_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (curValueWalletDescriptor.value.toByteArray(Charsets.UTF_8).size > 65535){
+                        appError.value = AppErrorMsg.DESCRIPTOR_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+
+                    val secretData = SecretData(
+                        size = passwordOptions.value.passwordLength,
+                        type = SeedkeeperSecretType.MASTERSEED,
+                        subType = 0x01,
+                        passphrase = curValuePassphrase.value,
+                        label = curValueLabel.value,
+                        mnemonic = secret.value,
+                        descriptor = curValueWalletDescriptor.value
+                    )
+
+                    if (viewModel.getAppletVersionInt() == 1){
+                        val payloadBytes = secretData.getSecretBytes()
+                        if (payloadBytes.size > 255){
+                            appError.value = AppErrorMsg.SECRET_TOO_LONG_FOR_V1
+                            showError.value = true
+                            return@SatoButton
+                        }
+                    }
+
+                    viewModel.setPasswordData(secretData)
+                    showNfcDialog.value = true
+                    viewModel.scanCardForAction(
+                        activity = context as Activity,
+                        nfcActionType = NfcActionType.GENERATE_A_SECRET
+                    )
+
+
                 },
                 text = R.string.importButton,
                 buttonColor = if (
