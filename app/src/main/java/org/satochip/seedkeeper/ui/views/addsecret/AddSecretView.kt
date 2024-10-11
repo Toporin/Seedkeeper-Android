@@ -51,7 +51,6 @@ fun AddSecretView(
             HeaderAlternateRow(
                 titleText = R.string.blankTextField,
                 onClick = {
-                    //onClick(AddSecretItems.BACK)
                     navController.popBackStack()
                 }
             )

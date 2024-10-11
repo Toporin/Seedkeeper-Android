@@ -1,4 +1,4 @@
-package org.satochip.seedkeeper.ui.components.generate
+package org.satochip.seedkeeper.ui.components.import
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

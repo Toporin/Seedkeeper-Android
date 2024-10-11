@@ -24,16 +24,13 @@ import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.data.FactoryResetStatus
-import org.satochip.seedkeeper.data.SecretData
-import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.HomeItems
-import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.MenuItems
-import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeStatus
 import org.satochip.seedkeeper.data.PinViewItems
+import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
 import org.satochip.seedkeeper.parsers.SecretDataParser
@@ -47,7 +44,6 @@ import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
 import org.satochip.seedkeeper.ui.views.editpincode.EditPinCodeView
 import org.satochip.seedkeeper.ui.views.factoryreset.FactoryResetView
-import org.satochip.seedkeeper.ui.views.generate.GenerateView
 import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.import.ImportSecretView
 import org.satochip.seedkeeper.ui.views.menu.MenuView

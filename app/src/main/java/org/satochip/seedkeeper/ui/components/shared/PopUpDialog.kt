@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.ui.components.generate.InputField
+import org.satochip.seedkeeper.ui.components.import.InputField
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 import org.satochip.seedkeeper.utils.satoClickEffect
 

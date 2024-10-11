@@ -36,7 +36,7 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.SecretData
-import org.satochip.seedkeeper.ui.components.generate.SecretTextField
+import org.satochip.seedkeeper.ui.components.import.SecretTextField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
 import org.satochip.seedkeeper.ui.components.mysecret.NewSeedkeeperPopUpDialog

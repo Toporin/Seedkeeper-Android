@@ -1,4 +1,4 @@
-package org.satochip.seedkeeper.ui.components.generate
+package org.satochip.seedkeeper.ui.components.import
 
 import android.app.Activity
 import android.widget.Toast
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions

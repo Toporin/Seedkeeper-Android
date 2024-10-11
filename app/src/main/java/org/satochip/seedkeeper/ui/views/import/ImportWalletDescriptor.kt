@@ -27,8 +27,8 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.SecretData
-import org.satochip.seedkeeper.ui.components.generate.InputField
-import org.satochip.seedkeeper.ui.components.generate.SecretTextField
+import org.satochip.seedkeeper.ui.components.import.InputField
+import org.satochip.seedkeeper.ui.components.import.SecretTextField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField

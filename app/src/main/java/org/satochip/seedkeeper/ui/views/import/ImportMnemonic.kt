@@ -28,13 +28,12 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.SecretData
-import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SelectFieldItem
-import org.satochip.seedkeeper.ui.components.generate.InputField
-import org.satochip.seedkeeper.ui.components.generate.SecretTextField
-import org.satochip.seedkeeper.ui.components.generate.SelectField
+import org.satochip.seedkeeper.ui.components.import.InputField
+import org.satochip.seedkeeper.ui.components.import.SecretTextField
+import org.satochip.seedkeeper.ui.components.import.SelectField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.import.MnemonicImportField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton

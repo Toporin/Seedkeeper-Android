@@ -1,11 +1,9 @@
-package org.satochip.seedkeeper.ui.components.generate
+package org.satochip.seedkeeper.ui.components.import
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Switch
@@ -19,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.ui.theme.SatoChecked
 import org.satochip.seedkeeper.ui.theme.SatoChecker
-import org.satochip.seedkeeper.ui.theme.SatoToggled
 
 @Composable
 fun ToggleOption(

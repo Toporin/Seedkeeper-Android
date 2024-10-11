@@ -17,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.ImportViewItems
-import org.satochip.seedkeeper.ui.components.generate.InputField
+import org.satochip.seedkeeper.ui.components.import.InputField
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
