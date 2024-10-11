@@ -778,12 +778,13 @@ fun Navigation(
             )
         }
         composable<ImportSecretView> {
-
+            val args = it.toRoute<ImportSecretView>()
             ImportSecretView(
                 context = context,
                 navController = navController,
                 viewModel = viewModel,
                 settings = settings,
+                importMode = AddSecretItems.valueOf(args.importMode),
                 //isImportDone = isImportDone,
             )
         }
@@ -837,7 +838,7 @@ object BackupView
 object GenerateView
 @Serializable
 data class ImportSecretView(
-    val addSecretItems: AddSecretItems,
+    val importMode: String,
 )
 @Serializable
 object AddSecretView

@@ -102,7 +102,12 @@ fun AddSecretView(
                         drawableId = R.drawable.generate_icon,
                         onClick = {
                             //onClick(AddSecretItems.GENERATE_A_SECRET)
-                            navController.navigate(GenerateView)
+                            //navController.navigate(GenerateView)
+                            navController.navigate(
+                                ImportSecretView(
+                                    importMode = AddSecretItems.GENERATE_A_SECRET.name
+                                )
+                            )
                         }
                     )
                     Spacer(modifier = Modifier.height(32.dp))
@@ -120,7 +125,7 @@ fun AddSecretView(
                             //onClick(AddSecretItems.IMPORT_A_SECRET)
                             navController.navigate(
                                 ImportSecretView(
-                                    addSecretItems = AddSecretItems.IMPORT_A_SECRET
+                                    importMode = AddSecretItems.IMPORT_A_SECRET.name
                                 )
                             )
                         }

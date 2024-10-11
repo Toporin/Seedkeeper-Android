@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.ImportViewItems
@@ -36,9 +37,7 @@ fun ImportSecretView(
     navController: NavHostController,
     viewModel: SharedViewModel,
     settings: SharedPreferences,
-    //isImportDone: MutableState<Boolean>,
-    //onClick: (ImportViewItems, String?) -> Unit, //TODO: integrate directly
-    //onImportSecret: (SecretData) -> Unit //TODO: integrate directly
+    importMode: AddSecretItems,
 ) {
     val scrollState = rememberScrollState()
 
@@ -63,6 +62,8 @@ fun ImportSecretView(
         val generateStatus = remember {
             mutableStateOf(GenerateStatus.DEFAULT)
         }
+
+        // TODO: remove these state and add them below
         val secret = remember {
             mutableStateOf("")
         }
@@ -75,57 +76,16 @@ fun ImportSecretView(
         val curValueWalletDescriptor = remember {
             mutableStateOf("")
         }
-        val curValueLogin = remember {
-            mutableStateOf("")
-        }
-        val curValueUrl = remember {
-            mutableStateOf("")
-        }
         val passwordOptions = remember {
             mutableStateOf(
                 PasswordOptions()
             )
         }
-        val isPopUpOpened = remember {
-            mutableStateOf(false)
-        }
-        val retrievedSet = remember {
-            mutableStateOf<Set<String>>(emptySet())
-        }
-        retrievedSet.value = settings.getStringSet(
-            SeedkeeperPreferences.USED_LOGINS.name,
-            emptySet()
-        ) ?: emptySet()
 
         if (isImportDone.value) {
             generateStatus.value = GenerateStatus.HOME
         }
 
-        if (isPopUpOpened.value) {
-            PopUpDialog(
-                isOpen = isPopUpOpened,
-                curValueLogin = curValueLogin,
-                title = R.string.emailListTitle,
-                list = retrievedSet.value.toList(),
-                onClick = { email ->
-                    val currentSet =
-                        settings.getStringSet(SeedkeeperPreferences.USED_LOGINS.name, emptySet())
-                            ?.toMutableSet() ?: mutableSetOf()
-                    if (currentSet.remove(email)) {
-                        settings.edit()
-                            .putStringSet(SeedkeeperPreferences.USED_LOGINS.name, currentSet)
-                            .apply()
-                    }
-                    retrievedSet.value = settings.getStringSet(
-                        SeedkeeperPreferences.USED_LOGINS.name,
-                        emptySet()
-                    ) ?: emptySet()
-                    if (retrievedSet.value.isEmpty()) {
-                        isPopUpOpened.value = false
-                    }
-                }
-            )
-        }
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -151,6 +111,7 @@ fun ImportSecretView(
                 when (generateStatus.value) {
                     GenerateStatus.DEFAULT -> {
                         ImportDefault(
+                            importMode = importMode,
                             generateStatus = generateStatus
                         )
                     }
@@ -173,13 +134,7 @@ fun ImportSecretView(
                             navController = navController,
                             viewModel = viewModel,
                             settings = settings,
-                            curValueLabel = curValueLabel,
-                            secret = secret,
-                            passwordOptions = passwordOptions,
-                            curValueLogin = curValueLogin,
-                            curValueUrl = curValueUrl,
-                            isPopUpOpened = isPopUpOpened,
-                            retrievedSet = retrievedSet,
+                            importMode =  importMode,
                         )
                     }
                     GenerateStatus.WALLET_DESCRIPTOR -> {

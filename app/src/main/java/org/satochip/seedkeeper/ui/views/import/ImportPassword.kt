@@ -27,6 +27,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.GenerateStatus
+import org.satochip.seedkeeper.data.GenerateViewItems
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.ImportViewItems
 import org.satochip.seedkeeper.data.NfcActionType
@@ -34,8 +37,10 @@ import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.secrets.PasswordPayload
 import org.satochip.seedkeeper.ui.components.generate.InputField
+import org.satochip.seedkeeper.ui.components.generate.PasswordLengthField
 import org.satochip.seedkeeper.ui.components.generate.SecretTextField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
+import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
@@ -49,13 +54,7 @@ fun ImportPassword(
     navController: NavHostController,
     viewModel: SharedViewModel,
     settings: SharedPreferences,
-    curValueLabel: MutableState<String>,
-    secret: MutableState<String>,
-    passwordOptions: MutableState<PasswordOptions>,
-    curValueLogin: MutableState<String>,
-    curValueUrl: MutableState<String>,
-    isPopUpOpened: MutableState<Boolean>,
-    retrievedSet: MutableState<Set<String>>,
+    importMode: AddSecretItems,
 ) {
     // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
@@ -67,20 +66,90 @@ fun ImportPassword(
         )
     }
 
+    // secret fields
+    val secret = remember {
+        mutableStateOf("")
+    }
+    val curValueLabel = remember {
+        mutableStateOf("")
+    }
+    val curValueLogin = remember {
+        mutableStateOf("")
+    }
+    val curValueUrl = remember {
+        mutableStateOf("")
+    }
+    val passwordOptions = remember {
+        mutableStateOf(
+            PasswordOptions()
+        )
+    }
+
+    // Saved login popup
+    val isPopUpOpened = remember {
+        mutableStateOf(false)
+    }
+    val retrievedSet = remember {
+        mutableStateOf<Set<String>>(emptySet())
+    }
+    retrievedSet.value = settings.getStringSet(
+        SeedkeeperPreferences.USED_LOGINS.name,
+        emptySet()
+    ) ?: emptySet()
+
+    if (isPopUpOpened.value) {
+        PopUpDialog(
+            isOpen = isPopUpOpened,
+            curValueLogin = curValueLogin,
+            title = R.string.emailListTitle,
+            list = retrievedSet.value.toList(),
+            onClick = { email ->
+                val currentSet =
+                    settings.getStringSet(SeedkeeperPreferences.USED_LOGINS.name, emptySet())
+                        ?.toMutableSet() ?: mutableSetOf()
+                if (currentSet.remove(email)) {
+                    settings.edit()
+                        .putStringSet(SeedkeeperPreferences.USED_LOGINS.name, currentSet)
+                        .apply()
+                }
+                retrievedSet.value = settings.getStringSet(
+                    SeedkeeperPreferences.USED_LOGINS.name,
+                    emptySet()
+                ) ?: emptySet()
+                if (retrievedSet.value.isEmpty()) {
+                    isPopUpOpened.value = false
+                }
+            }
+        )
+    }
+
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TitleTextField(
-            title = R.string.importAPassword,
-            text = R.string.importAPasswordMessage
-        )
+
+        // TITLE
+        if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+            TitleTextField(
+                title = R.string.importAPassword,
+                text = R.string.importAPasswordMessage
+            )
+        } else {
+            TitleTextField(
+                title = R.string.generateAPassword,
+                text = R.string.generateExplanation
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
+
+        // LABEL
         InputField(
             curValue = curValueLabel,
             placeHolder = R.string.label,
             containerColor = SatoPurple.copy(alpha = 0.5f)
         )
         Spacer(modifier = Modifier.height(12.dp))
+
+        // LOGIN
         InputField(
             isEditable = retrievedSet.value.isEmpty(),
             curValue = curValueLogin,
@@ -95,6 +164,8 @@ fun ImportPassword(
             }
         )
         Spacer(modifier = Modifier.height(12.dp))
+
+        // URL
         InputField(
             curValue = curValueUrl,
             placeHolder = R.string.urlOptional,
@@ -119,6 +190,16 @@ fun ImportPassword(
                 )
             )
             Spacer(modifier = Modifier.height(12.dp))
+
+            // Password options
+            if (importMode == AddSecretItems.GENERATE_A_SECRET) {
+                PasswordLengthField(
+                    passwordOptions = passwordOptions
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
+
+            // PASSWORD
             SecretTextField(
                 curValue = secret,
                 isEditable = true,
@@ -130,18 +211,37 @@ fun ImportPassword(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center
         ) {
+
+            // generate button
+            if (importMode == AddSecretItems.GENERATE_A_SECRET) {
+                val selectMoreSets = stringResource(id = R.string.selectMoreSets)
+
+                SatoButton(
+                    modifier = Modifier
+                        .weight(1f),
+                    onClick = {
+                        // TODO check passwordOptions
+                        secret.value =
+                            if (passwordOptions.value.isMemorableSelected) {
+                                viewModel.generateMemorablePassword(passwordOptions.value, context)
+                            } else {
+                                val password = viewModel.generatePassword(passwordOptions.value)
+                                password ?: run {
+                                    Toast.makeText(context, selectMoreSets, Toast.LENGTH_SHORT).show()
+                                    ""
+                                } // TODO: clean
+                            }
+                    },
+                    text = if (secret.value.isNotEmpty()) R.string.regenerate else R.string.generate,
+                    horizontalPadding = 1.dp
+                )
+            }
+
             //Import
             SatoButton(
                 modifier = Modifier,
                 onClick = {
                     // TODO: add checks
-                    val passwordPayload = PasswordPayload(label = curValueLabel.value,
-                                                            type = SeedkeeperSecretType.PASSWORD,
-                                                            subtype = 0u,
-                                                            password = secret.value,
-                                                            login =  curValueLogin.value,
-                                                            url = curValueUrl.value,)
-
                     if (isClickable(secret, curValueLabel)) {
                         val secretData = SecretData(
                             size = passwordOptions.value.passwordLength,
@@ -178,7 +278,7 @@ fun ImportPassword(
                         curValueLabel
                     )
                 ) SatoButtonPurple else SatoButtonPurple.copy(alpha = 0.6f),
-            )
-        }
+            ) // import button
+        } // Row
     }
 }

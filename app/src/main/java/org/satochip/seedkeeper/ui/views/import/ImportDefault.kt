@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
@@ -20,15 +21,24 @@ import org.satochip.seedkeeper.ui.views.menu.MenuCard
 
 @Composable
 fun ImportDefault(
+    importMode: AddSecretItems,
     generateStatus: MutableState<GenerateStatus>
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TitleTextField(
-            title = R.string.importASecret,
-            text = R.string.importASecretMessage
-        )
+        if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+            TitleTextField(
+                title = R.string.importASecret,
+                text = R.string.importASecretMessage
+            )
+        } else {
+            TitleTextField(
+                title = R.string.generateASecret,
+                text = R.string.generateExplanation
+            )
+        }
+
         Spacer(modifier = Modifier.height(8.dp))
         Column {
             MenuCard(
@@ -36,7 +46,7 @@ fun ImportDefault(
                     .fillMaxWidth()
                     .heightIn(min = 110.dp),
                 text = stringResource(id = R.string.password),
-                textMessage = stringResource(R.string.importAPasswordMessage),
+                textMessage = if (importMode == AddSecretItems.IMPORT_A_SECRET) stringResource(R.string.importAPasswordMessage) else stringResource(R.string.generateAPasswordExplanation),
                 textAlign = Alignment.TopStart,
                 color = SatoDarkPurple,
                 drawableId = R.drawable.password_icon,
@@ -51,7 +61,7 @@ fun ImportDefault(
                     .fillMaxWidth()
                     .heightIn(min = 110.dp),
                 text = stringResource(id = R.string.mnemonic),
-                textMessage = stringResource(R.string.importAMnemonicPhraseMessage),
+                textMessage = if (importMode == AddSecretItems.IMPORT_A_SECRET) stringResource(R.string.importAMnemonicPhraseMessage) else stringResource(R.string.generateAMnemonicPhraseExplanation),
                 textAlign = Alignment.TopStart,
                 color = SatoLightPurple,
                 drawableId = R.drawable.mnemonic,
@@ -61,35 +71,39 @@ fun ImportDefault(
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
-            MenuCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 110.dp),
-                text = stringResource(id = R.string.descriptor),
-                textMessage = stringResource(R.string.importAWalletDescriptorMessage),
-                textAlign = Alignment.TopStart,
-                color = SatoDarkPurple,
-                drawableId = R.drawable.wallet,
-                onClick = {
-                    generateStatus.value =
-                        GenerateStatus.WALLET_DESCRIPTOR
-                }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            MenuCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 110.dp),
-                text = stringResource(id = R.string.data),
-                textMessage = stringResource(R.string.importFreeFieldMessage),
-                textAlign = Alignment.TopStart,
-                color = SatoLightPurple,
-                drawableId = R.drawable.free_data,
-                onClick = {
-                    generateStatus.value =
-                        GenerateStatus.FREE_FIELD
-                }
-            )
+
+            // these secrets can only be imported, not randomly generated
+            if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+                MenuCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 110.dp),
+                    text = stringResource(id = R.string.descriptor),
+                    textMessage = stringResource(R.string.importAWalletDescriptorMessage),
+                    textAlign = Alignment.TopStart,
+                    color = SatoDarkPurple,
+                    drawableId = R.drawable.wallet,
+                    onClick = {
+                        generateStatus.value =
+                            GenerateStatus.WALLET_DESCRIPTOR
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                MenuCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 110.dp),
+                    text = stringResource(id = R.string.data),
+                    textMessage = stringResource(R.string.importFreeFieldMessage),
+                    textAlign = Alignment.TopStart,
+                    color = SatoLightPurple,
+                    drawableId = R.drawable.free_data,
+                    onClick = {
+                        generateStatus.value =
+                            GenerateStatus.FREE_FIELD
+                    }
+                )
+            } // if importMode
         }
     }
 }
