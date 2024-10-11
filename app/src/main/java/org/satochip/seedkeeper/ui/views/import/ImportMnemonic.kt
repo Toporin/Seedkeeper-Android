@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -61,15 +62,23 @@ fun ImportMnemonic(
         )
     }
 
+    // error mgmt
+    val showError = remember {
+        mutableStateOf(false)
+    }
+    val appError = remember {
+        mutableStateOf(AppErrorMsg.OK)
+    }
+
     // secret fields
     val secret = remember {
         mutableStateOf("")
     }
     val curValuePassphrase = remember {
-        mutableStateOf("")
+        mutableStateOf("") //TODO: could be null
     }
     val curValueWalletDescriptor = remember {
-        mutableStateOf("")
+        mutableStateOf("") //TODO: could be null
     }
     val passwordOptions = remember {
         mutableStateOf(

@@ -38,6 +38,7 @@ import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 
+// TODO rename to PasswordOptionsBox
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordLengthField(
@@ -68,8 +69,8 @@ fun PasswordLengthField(
         ) {
             val sliderState = remember {
                 SliderState(
-                    value = 4f,
-                    valueRange = 4f..16f,
+                    value = if(passwordOptions.value.isMemorableSelected) 6f else 12f,
+                    valueRange = if(passwordOptions.value.isMemorableSelected) 4f..16f else 8f..16f,
                     onValueChangeFinished = {
                         passwordOptions.value =
                             passwordOptions.value.copy(passwordLength = sliderPosition.toInt())

@@ -263,7 +263,23 @@
     <string name="moreInfoUrl">https://www.youtube.com/watch?v=ToSah4y16Jc</string>
 
     <!-- AppErrorMsg -->
-    <string name="errorPlaintextExportNotAllowed">This secret policy does not allow export in plaintext!</string>
-
+    <string name="errorLabelEmpty">Le champs label est requis!</string>
+    <string name="errorPasswordEmpty">Le champ mot-de-passe est requis!</string>
+    <string name="errorMnemonicEmpty">Le champ mnémonique est requis!</string>
+    <string name="errorDescriptorEmpty">Le champ descriptor est requis!</string>
+    <string name="errorDataEmpty">Le champ data est requis!</string>
+    <string name="errorCardLabelTooLong">L\'étiquette de la carte est trop longue (max 64 bytes)</string>
+    <string name="errorLabelTooLong">l\'étiquette est trop longue (max 127 bytes)!</string>
+    <string name="errorPasswordTooLong">Le mot de passe est trop long (max 255 bytes)!</string>
+    <string name="errorMnemonicTooLong">La phrase mnémonique est trop longue (max 255 bytes)!</string>
+    <string name="errorDescriptorTooLong">Le descriptor est trop long (max 65535 bytes)!</string>
+    <string name="errorDataTooLong">Le champ data est trop long (max 65536 bytes)!</string>
+    <string name="errorLoginTooLong">Le login est trop long (max 255 bytes)!</string>
+    <string name="errorUrlTooLong">L\'URL est trop longue (max 255 bytes)!</string>
+    <string name="errorPassphraseTooLong">La passphrase est trop longue (max 255 bytes)!</string>
+    <string name="errorMnemonicWrongFormat">Le format de la mnémonique est incorrect!</string>
+    <string name="errorSecretTooLongForV1">Le secret est trop long for Seedkeeper v1 (max 255 bytes)!</string>
+    <string name="errorNoCharSelected">Sélectionnez au moins un set de charactères pour la génération aléatoire</string>
+    <string name="errorPlaintextExportNotAllowed">Les paramètres de ce secret ne permettent pas l\'export en clair!</string>
 
 </resources>

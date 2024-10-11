@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.ui.components.import.InputField
@@ -52,6 +53,14 @@ fun ImportFreeField(
             resultCodeLive = viewModel.resultCodeLive,
             isConnected = viewModel.isCardConnected
         )
+    }
+
+    // error mgmt
+    val showError = remember {
+        mutableStateOf(false)
+    }
+    val appError = remember {
+        mutableStateOf(AppErrorMsg.OK)
     }
 
     // secret fields

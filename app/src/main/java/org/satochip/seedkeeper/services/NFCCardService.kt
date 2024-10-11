@@ -49,6 +49,7 @@ object NFCCardService {
     var authenticityStatus = MutableLiveData(AuthenticityStatus.UNKNOWN)
     var certificateList: MutableList<String> = mutableListOf()
     var cardAppletVersion: String = "undefined"
+    var cardAppletVersionInt: Int = 0
     lateinit var cardStatus: ApplicationStatus
     var authentikey: ByteArray?  = null
 
@@ -255,6 +256,7 @@ object NFCCardService {
         val versionString =
             "$protocolMajorVersion.$protocolMinorVersion-$appletMajorVersion.$appletMinorVersion"
         cardAppletVersion = "Seedkeeper v${versionString}"
+        cardAppletVersionInt = 256*protocolMajorVersion.toInt() + protocolMinorVersion.toInt()
     }
 
     /**

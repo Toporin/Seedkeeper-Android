@@ -263,6 +263,23 @@
     <string name="moreInfoUrl">https://www.youtube.com/watch?v=lVrKgzak2Bc</string>
 
     <!-- AppErrorMsg -->
-    <string name="errorPlaintextExportNotAllowed">Les paramètres de ce secret ne permettent pas l\'export en clair!</string>
+    <string name="errorLabelEmpty">Label field is required!</string>
+    <string name="errorPasswordEmpty">Password field is required!</string>
+    <string name="errorMnemonicEmpty">Mnemonic field is required!</string>
+    <string name="errorDescriptorEmpty">Descriptor field is required!</string>
+    <string name="errorDataEmpty">Data field is required!</string>
+    <string name="errorCardLabelTooLong">Card label is too long (max 64 bytes)</string>
+    <string name="errorLabelTooLong">Label is too long (max 127 bytes)!</string>
+    <string name="errorPasswordTooLong">Password is too long (max 255 bytes)!</string>
+    <string name="errorMnemonicTooLong">Mnemonic is too long (max 255 bytes)!</string>
+    <string name="errorDescriptorTooLong">Descriptor is too long (max 65535 bytes)!</string>
+    <string name="errorDataTooLong">Data is too long (max 65536 bytes)!</string>
+    <string name="errorLoginTooLong">Login is too long (max 255 bytes)!</string>
+    <string name="errorUrlTooLong">URL is too long (max 255 bytes)!</string>
+    <string name="errorPassphraseTooLong">Passphrase is too long (max 255 bytes)!</string>
+    <string name="errorMnemonicWrongFormat">Mnemonic is in the wrong format!</string>
+    <string name="errorSecretTooLongForV1">Payload is too long for Seedkeeper v1 (max 255 bytes)!</string>
+    <string name="errorNoCharSelected">"Please select at least one character set"</string>
+    <string name="errorPlaintextExportNotAllowed">This secret policy does not allow export in plaintext!</string>
 
 </resources>

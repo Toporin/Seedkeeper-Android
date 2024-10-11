@@ -22,12 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -63,15 +65,24 @@ fun ImportPassword(
         )
     }
 
+    // error mgmt
+    val showError = remember {
+        mutableStateOf(false)
+    }
+    val appError = remember {
+        mutableStateOf(AppErrorMsg.OK)
+    }
+
     // secret fields
     val secret = remember {
         mutableStateOf("")
     }
     val curValueLogin = remember {
-        mutableStateOf("")
+        mutableStateOf("") //TODO: could be null
+        //mutableStateOf<String?>(null)
     }
     val curValueUrl = remember {
-        mutableStateOf("")
+        mutableStateOf("") //TODO: could be null
     }
     val passwordOptions = remember {
         mutableStateOf(
@@ -175,23 +186,23 @@ fun ImportPassword(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = stringResource(R.string.enterYourPassword),
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraLight,
-                )
-            )
-            Spacer(modifier = Modifier.height(12.dp))
 
             // Password options
             if (importMode == AddSecretItems.GENERATE_A_SECRET) {
                 PasswordLengthField(
                     passwordOptions = passwordOptions
                 )
-                Spacer(modifier = Modifier.height(12.dp))
+            } else {
+                Text(
+                    text = stringResource(R.string.enterYourPassword),
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                    )
+                )
             }
+            Spacer(modifier = Modifier.height(12.dp))
 
             // PASSWORD
             SecretTextField(
@@ -201,6 +212,22 @@ fun ImportPassword(
                 minHeight = 250.dp
             )
         }
+
+        // error msg
+        if (showError.value) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = stringResource(appError.value.msg),
+                style = TextStyle(
+                    color = Color.Red,
+                    fontSize = 16.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
+
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center
@@ -215,6 +242,17 @@ fun ImportPassword(
                         .weight(1f),
                     onClick = {
                         // TODO check passwordOptions
+                        if (!passwordOptions.value.isMemorableSelected  &&
+                            !passwordOptions.value.isLowercaseSelected &&
+                            !passwordOptions.value.isUppercaseSelected &&
+                            !passwordOptions.value.isNumbersSelected &&
+                            !passwordOptions.value.isSymbolsSelected)
+                        {
+                            appError.value = AppErrorMsg.NO_CHAR_SELECTED
+                            showError.value = true
+                            return@SatoButton
+                        }
+
                         secret.value =
                             if (passwordOptions.value.isMemorableSelected) {
                                 viewModel.generateMemorablePassword(passwordOptions.value, context)
@@ -235,26 +273,63 @@ fun ImportPassword(
             SatoButton(
                 modifier = Modifier,
                 onClick = {
-                    // TODO: add checks
-                    if (isClickable(secret, curValueLabel)) {
-                        val secretData = SecretData(
-                            size = passwordOptions.value.passwordLength,
-                            type = SeedkeeperSecretType.PASSWORD,
-                            password = secret.value,
-                            label = curValueLabel.value,
-                            login = curValueLogin.value,
-                            url = curValueUrl.value,
-                        )
-
-                        //isImportInitiated.value = true
-                        viewModel.setPasswordData(secretData)
-                        showNfcDialog.value = true
-                        viewModel.scanCardForAction(
-                            activity = context as Activity,
-                            nfcActionType = NfcActionType.GENERATE_A_SECRET
-                        )
-
+                    //check inputs
+                    if (curValueLabel.value.isEmpty()){
+                        appError.value = AppErrorMsg.LABEL_EMPTY
+                        showError.value = true
+                        return@SatoButton
                     }
+                    if (curValueLabel.value.toByteArray(Charsets.UTF_8).size > 127){
+                        appError.value = AppErrorMsg.LABEL_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (secret.value.isEmpty()){
+                        appError.value = AppErrorMsg.PASSWORD_EMPTY
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (secret.value.toByteArray(Charsets.UTF_8).size > 255){
+                        appError.value = AppErrorMsg.PASSWORD_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (curValueLogin.value.toByteArray(Charsets.UTF_8).size > 255){
+                        appError.value = AppErrorMsg.LOGIN_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+                    if (curValueUrl.value.toByteArray(Charsets.UTF_8).size > 255){
+                        appError.value = AppErrorMsg.URL_TOO_LONG
+                        showError.value = true
+                        return@SatoButton
+                    }
+
+                    val secretData = SecretData(
+                        size = passwordOptions.value.passwordLength,
+                        type = SeedkeeperSecretType.PASSWORD,
+                        password = secret.value,
+                        label = curValueLabel.value,
+                        login = curValueLogin.value,
+                        url = curValueUrl.value,
+                    )
+
+                    if (viewModel.getAppletVersionInt() == 1){
+                        val payloadBytes = secretData.getSecretBytes()
+                        if (payloadBytes.size > 255){
+                            appError.value = AppErrorMsg.SECRET_TOO_LONG_FOR_V1
+                            showError.value = true
+                            return@SatoButton
+                        }
+                    }
+
+                    viewModel.setPasswordData(secretData)
+                    showNfcDialog.value = true
+                    viewModel.scanCardForAction(
+                        activity = context as Activity,
+                        nfcActionType = NfcActionType.GENERATE_A_SECRET
+                    )
+
                     // save login in preferences
                     if (curValueLogin.value.isNotEmpty()) {
                         val stringSet = listOf(curValueLogin.value).toSet()

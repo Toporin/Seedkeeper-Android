@@ -127,7 +127,7 @@ class SharedViewModel : ViewModel() {
         NFCCardService.cardLabel.postValue(cardLabel)
     }
 
-    fun setPasswordData(passwordData: SecretData) {
+    fun setPasswordData(passwordData: SecretData) {// TODO rename to secretData/secretPayload
         NFCCardService.passwordData = passwordData
     }
 
@@ -145,6 +145,9 @@ class SharedViewModel : ViewModel() {
 
     fun getAppletVersion(): String {
        return NFCCardService.cardAppletVersion
+    }
+    fun getAppletVersionInt(): Int {
+        return NFCCardService.cardAppletVersionInt
     }
 
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {
