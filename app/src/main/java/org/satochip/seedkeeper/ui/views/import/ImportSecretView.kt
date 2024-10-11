@@ -56,7 +56,7 @@ fun ImportSecretView(
             mutableStateOf(GenerateStatus.DEFAULT)
         }
 
-        // TODO: remove these state and add them below
+        // label
         val curValueLabel = remember {
             mutableStateOf("")
         }
@@ -100,6 +100,7 @@ fun ImportSecretView(
                             navController = navController,
                             viewModel = viewModel,
                             importMode = importMode,
+                            curValueLabel = curValueLabel,
                         )
                     }
                     GenerateStatus.LOGIN_PASSWORD -> {
@@ -110,6 +111,7 @@ fun ImportSecretView(
                             viewModel = viewModel,
                             settings = settings,
                             importMode =  importMode,
+                            curValueLabel = curValueLabel,
                         )
                     }
                     GenerateStatus.WALLET_DESCRIPTOR -> {
@@ -118,6 +120,7 @@ fun ImportSecretView(
                             context = context,
                             navController = navController,
                             viewModel = viewModel,
+                            curValueLabel = curValueLabel,
                         )
                     }
                     GenerateStatus.FREE_FIELD -> {
@@ -126,6 +129,7 @@ fun ImportSecretView(
                             context = context,
                             navController = navController,
                             viewModel = viewModel,
+                            curValueLabel = curValueLabel,
                         )
                     }
                     GenerateStatus.HOME -> {
@@ -133,7 +137,7 @@ fun ImportSecretView(
                             context = context,
                             navController = navController,
                             viewModel = viewModel,
-                            curValueLabel = curValueLabel, // TODO!
+                            curValueLabel = curValueLabel,
                         )
                     }
                 }

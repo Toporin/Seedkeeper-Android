@@ -50,6 +50,7 @@ fun ImportMnemonic(
     navController: NavHostController,
     viewModel: SharedViewModel,
     importMode: AddSecretItems,
+    curValueLabel: MutableState<String>,
 ) {
     // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
@@ -63,9 +64,6 @@ fun ImportMnemonic(
 
     // secret fields
     val secret = remember {
-        mutableStateOf("")
-    }
-    val curValueLabel = remember {
         mutableStateOf("")
     }
     val curValuePassphrase = remember {

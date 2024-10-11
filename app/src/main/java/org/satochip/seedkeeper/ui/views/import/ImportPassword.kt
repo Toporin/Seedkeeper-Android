@@ -55,6 +55,7 @@ fun ImportPassword(
     viewModel: SharedViewModel,
     settings: SharedPreferences,
     importMode: AddSecretItems,
+    curValueLabel: MutableState<String>,
 ) {
     // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
@@ -68,9 +69,6 @@ fun ImportPassword(
 
     // secret fields
     val secret = remember {
-        mutableStateOf("")
-    }
-    val curValueLabel = remember {
         mutableStateOf("")
     }
     val curValueLogin = remember {

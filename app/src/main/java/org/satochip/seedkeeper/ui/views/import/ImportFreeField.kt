@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,6 +42,7 @@ fun ImportFreeField(
     context: Context,
     navController: NavHostController,
     viewModel: SharedViewModel,
+    curValueLabel: MutableState<String>,
 ) {
     // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
@@ -52,9 +54,7 @@ fun ImportFreeField(
         )
     }
 
-    val curValueLabel = remember {
-        mutableStateOf("")
-    }
+    // secret fields
     val secret = remember {
         mutableStateOf("")
     }
