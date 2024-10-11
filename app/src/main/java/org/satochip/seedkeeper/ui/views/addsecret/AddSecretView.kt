@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.addsecret
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,17 +20,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import org.satochip.seedkeeper.GenerateView
+import org.satochip.seedkeeper.ImportSecretView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AddSecretItems
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
 import org.satochip.seedkeeper.ui.views.menu.MenuCard
+import org.satochip.seedkeeper.utils.webviewActivityIntent
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun AddSecretView(
-    onClick: (AddSecretItems) -> Unit,
-    webViewAction: (String) -> Unit
+    context: Context,
+    viewModel: SharedViewModel,
+    navController: NavHostController,
+    //onClick: (AddSecretItems) -> Unit,
+    //webViewAction: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -43,7 +52,8 @@ fun AddSecretView(
             HeaderAlternateRow(
                 titleText = R.string.blankTextField,
                 onClick = {
-                    onClick(AddSecretItems.BACK)
+                    //onClick(AddSecretItems.BACK)
+                    navController.popBackStack()
                 }
             )
             Column(
@@ -91,7 +101,8 @@ fun AddSecretView(
                         color = SatoDarkPurple,
                         drawableId = R.drawable.generate_icon,
                         onClick = {
-                            onClick(AddSecretItems.GENERATE_A_SECRET)
+                            //onClick(AddSecretItems.GENERATE_A_SECRET)
+                            navController.navigate(GenerateView)
                         }
                     )
                     Spacer(modifier = Modifier.height(32.dp))
@@ -106,7 +117,12 @@ fun AddSecretView(
                         color = SatoLightPurple,
                         drawableId = R.drawable.import_icon,
                         onClick = {
-                            onClick(AddSecretItems.IMPORT_A_SECRET)
+                            //onClick(AddSecretItems.IMPORT_A_SECRET)
+                            navController.navigate(
+                                ImportSecretView(
+                                    addSecretItems = AddSecretItems.IMPORT_A_SECRET
+                                )
+                            )
                         }
                     )
                 }
@@ -122,7 +138,11 @@ fun AddSecretView(
                     color = SatoLightPurple,
                     drawableId = R.drawable.how_to
                 ) {
-                    webViewAction(howToUseSeedkeeperUri)
+                    //webViewAction(howToUseSeedkeeperUri)
+                    webviewActivityIntent(
+                        url = howToUseSeedkeeperUri,
+                        context = context
+                    )
                 }
                 Spacer(modifier = Modifier)
             }

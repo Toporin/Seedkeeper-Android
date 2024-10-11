@@ -650,25 +650,9 @@ fun Navigation(
         }
         composable<AddSecretView> {
             AddSecretView(
-                onClick = { item ->
-                    when (item) {
-                        AddSecretItems.GENERATE_A_SECRET -> {
-                            navController.navigate(GenerateView)
-                        }
-                        AddSecretItems.IMPORT_A_SECRET -> {
-                            navController.navigate(ImportSecretView)
-                        }
-                        AddSecretItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                    }
-                },
-                webViewAction = { link ->
-                    webviewActivityIntent(
-                        url = link,
-                        context = context
-                    )
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<MySecretView> {
@@ -676,9 +660,9 @@ fun Navigation(
             val data = remember {
                 mutableStateOf<SecretData?>(null)
             }
-            val encryptedText = stringResource(id = R.string.encryptedOnlySecretText)
-            val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
-            val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
+//            val encryptedText = stringResource(id = R.string.encryptedOnlySecretText)
+//            val retrieveTheSecretFirstText = stringResource(id = R.string.retrieveTheSecretFirst)
+//            val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
 
             LaunchedEffect(viewModel.currentSecretId) {
                 if (viewModel.currentSecretId == null) {
@@ -852,7 +836,9 @@ object BackupView
 @Serializable
 object GenerateView
 @Serializable
-object ImportSecretView
+data class ImportSecretView(
+    val addSecretItems: AddSecretItems,
+)
 @Serializable
 object AddSecretView
 @Serializable
@@ -865,7 +851,7 @@ object FactoryResetView
 @Serializable
 data class MySecretView (
     val sid: Int,
-    val type: String,
+    val type: String,// TODO: SeedKeeperSecretType
     val label: String,
     val exportRights: Int,
     val subType: Int
