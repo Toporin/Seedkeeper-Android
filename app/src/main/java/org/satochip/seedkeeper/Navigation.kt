@@ -609,7 +609,7 @@ fun Navigation(
                 viewModel = viewModel,
                 secret = data,
                 type = args.type,
-                isOldVersion = viewModel.getSeedkeeperStatus() == null,
+                isOldVersion = viewModel.getSeedkeeperStatus() == null, // TODO: use version
             )
         }
         composable<ImportSecretView> {
@@ -636,13 +636,9 @@ fun Navigation(
         }
         composable<ShowLogsView> {
             ShowLogsView(
-                onClick = {
-                    navController.navigateUp()
-                },
-                copyToClipboard = { logsText ->
-                    clipboardManager.setText(AnnotatedString(logsText))
-                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
     }

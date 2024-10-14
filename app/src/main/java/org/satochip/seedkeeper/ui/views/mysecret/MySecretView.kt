@@ -56,7 +56,6 @@ fun MySecretView(
     secret: MutableState<SecretData?>,
     type: String, // TODO: redundant with secret?
     isOldVersion: Boolean,
-    //onClick: (MySecretItems) -> Unit, // TODO: integrate directly?
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
@@ -151,7 +150,6 @@ fun MySecretView(
         else -> {}
     }
     BackHandler {
-        //onClick(MySecretItems.BACK)
         viewModel.resetCurrentSecretObject()
         navController.popBackStack()
     }
@@ -294,7 +292,6 @@ fun MySecretView(
                                     showConfirmDeleteMsg.value = true
                                 } else if (hasUserConfirmedTerms.value == true) {
                                     // delete secret
-                                    //onClick(MySecretItems.DELETE)
                                     showNfcDialog.value = true // NfcDialog
                                     viewModel.scanCardForAction(
                                         activity = context as Activity,
