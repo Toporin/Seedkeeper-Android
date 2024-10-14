@@ -204,79 +204,16 @@ fun Navigation(
         }
         composable<MenuView> {
             MenuView(
-                onClick = { item ->
-                    when (item) {
-                        MenuItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                        MenuItems.CARD_INFORMATION -> {
-                            if (viewModel.isCardDataAvailable) {
-                                navController.navigate(CardInformation)
-                            } else {
-                                showInfoDialog.value = !showInfoDialog.value
-                            }
-                        }
-                        MenuItems.MAKE_A_BACKUP -> {
-                            if (viewModel.isCardDataAvailable) {
-                                navController.navigate(BackupView)
-                            } else {
-                                showInfoDialog.value = !showInfoDialog.value
-                            }
-                        }
-                        MenuItems.SETTINGS -> {
-                            navController.navigate(SettingsView)
-                        }
-                    }
-                },
-                webViewAction = { link ->
-                    webviewActivityIntent(
-                        url = link,
-                        context = context
-                    )
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<SettingsView> {
-            val starterIntro = remember {
-                mutableStateOf(
-                    settings.getBoolean(
-                        SeedkeeperPreferences.FIRST_TIME_LAUNCH.name,
-                        true
-                    )
-                )
-            }
-            val logsDisabledText = stringResource(id = R.string.logsDisabledText)
             SettingsView(
-                starterIntro = starterIntro,
-                debugMode = debugMode,
-                onClick = { item ->
-                    when (item) {
-                        SettingsItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                        SettingsItems.STARTER_INFO -> {
-                            settings.edit().putBoolean(
-                                SeedkeeperPreferences.FIRST_TIME_LAUNCH.name,
-                                starterIntro.value
-                            ).apply()
-                        }
-                        SettingsItems.DEBUG_MODE -> {
-                            settings.edit().putBoolean(
-                                SeedkeeperPreferences.DEBUG_MODE.name,
-                                debugMode.value
-                            ).apply()
-                        }
-                        SettingsItems.SHOW_LOGS -> {
-                            navController.navigate(ShowLogsView)
-                        }
-                        SettingsItems.SHOW_TOAST -> {
-                            Toast.makeText(context, logsDisabledText, Toast.LENGTH_SHORT).show()
-                        }
-                        SettingsItems.RESET_CARD -> {
-                            navController.navigate(FactoryResetView)
-                        }
-                    }
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<FactoryResetView> {

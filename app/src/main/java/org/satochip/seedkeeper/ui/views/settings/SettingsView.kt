@@ -1,5 +1,7 @@
 package org.satochip.seedkeeper.ui.views.settings
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,6 +15,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,21 +24,36 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import org.satochip.seedkeeper.FactoryResetView
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ShowLogsView
+import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.data.SettingsItems
 import org.satochip.seedkeeper.ui.components.settings.*
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun SettingsView(
-    starterIntro: MutableState<Boolean>,
-    debugMode: MutableState<Boolean>,
-    onClick: (SettingsItems) -> Unit,
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
 ) {
     val scrollState = rememberScrollState()
+    val settings = context.getSharedPreferences("seedkeeper", Context.MODE_PRIVATE)
+    val starterIntro = remember {
+        mutableStateOf(
+            settings.getBoolean(SeedkeeperPreferences.FIRST_TIME_LAUNCH.name, true)
+        )
+    }
+    val debugMode = remember {
+        mutableStateOf(settings.getBoolean(SeedkeeperPreferences.DEBUG_MODE.name, false))
+    }
+    val logsDisabledText = stringResource(id = R.string.logsDisabledText)
 
     Box(
         modifier = Modifier
@@ -47,7 +66,7 @@ fun SettingsView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeaderAlternateRow(
-                onClick = { onClick(SettingsItems.BACK) },
+                onClick = { navController.popBackStack() },
                 titleText = R.string.settings
             )
             Image(
@@ -68,7 +87,10 @@ fun SettingsView(
                 text = R.string.starterIntro,
                 isChecked = starterIntro,
                 onClick = {
-                    onClick(SettingsItems.STARTER_INFO)
+                    settings.edit().putBoolean(
+                        SeedkeeperPreferences.FIRST_TIME_LAUNCH.name,
+                        starterIntro.value
+                    ).apply()
                 }
             )
             Spacer(modifier = Modifier.height(35.dp))
@@ -81,7 +103,10 @@ fun SettingsView(
                 text = R.string.debugMode,
                 isChecked = debugMode,
                 onClick = {
-                    onClick(SettingsItems.DEBUG_MODE)
+                    settings.edit().putBoolean(
+                        SeedkeeperPreferences.DEBUG_MODE.name,
+                        debugMode.value
+                    ).apply()
                 }
             )
             Spacer(modifier = Modifier.height(35.dp))
@@ -92,9 +117,9 @@ fun SettingsView(
                     ),
                 onClick = {
                     if (debugMode.value) {
-                        onClick(SettingsItems.SHOW_LOGS)
+                        navController.navigate(ShowLogsView)
                     } else {
-                        onClick(SettingsItems.SHOW_TOAST)
+                        Toast.makeText(context, logsDisabledText, Toast.LENGTH_SHORT).show()
                     }
                 },
                 text = R.string.showLogs,
@@ -116,7 +141,7 @@ fun SettingsView(
                 title = R.string.factoryResetWarning,
                 text = stringResource(id = R.string.resetMyCard),
                 onClick = {
-                    onClick(SettingsItems.RESET_CARD)
+                    navController.navigate(FactoryResetView)
                 },
                 containerColor = Color.Red,
                 titleColor = Color.Red
