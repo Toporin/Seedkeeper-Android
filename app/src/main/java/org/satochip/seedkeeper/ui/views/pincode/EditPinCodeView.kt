@@ -1,4 +1,4 @@
-package org.satochip.seedkeeper.ui.views.editpincode
+package org.satochip.seedkeeper.ui.views.pincode
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
