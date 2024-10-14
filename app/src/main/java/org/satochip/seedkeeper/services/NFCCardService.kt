@@ -42,6 +42,7 @@ object NFCCardService {
     var secretHeaders = MutableLiveData<List<SeedkeeperSecretHeader>>()
     var currentSecretObject = MutableLiveData<SeedkeeperSecretObject?>()
     var currentSecretId = MutableLiveData<Int?>()
+    var currentSecretHeader = MutableLiveData<SeedkeeperSecretHeader?>() // TODO currentSecretHeader
     var pinString: String? = null
     var oldPinString: String? = null
     var seedkeeperStatus: SeedkeeperStatus? = null
@@ -50,8 +51,7 @@ object NFCCardService {
     var certificateList: MutableList<String> = mutableListOf()
     var cardAppletVersion: String = "undefined"
     var cardAppletVersionInt: Int = 0
-    //lateinit var cardStatus: ApplicationStatus // TODO: nullable
-    var cardStatus: ApplicationStatus? = null // TODO: nullable
+    var cardStatus: ApplicationStatus? = null
     var authentikey: ByteArray?  = null
 
     //V1 SEEDKEEPER

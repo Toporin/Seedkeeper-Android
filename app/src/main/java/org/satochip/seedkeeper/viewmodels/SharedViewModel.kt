@@ -135,7 +135,9 @@ class SharedViewModel : ViewModel() {
         NFCCardService.passwordData = passwordData
     }
 
-    fun setCurrentSecret(sid: Int) {
+    // TODO setCurrentSecretHeader()
+
+    fun setCurrentSecret(sid: Int) {// TODO rename to setCurrentSecretSid
         NFCCardService.currentSecretId.postValue(sid)
     }
 

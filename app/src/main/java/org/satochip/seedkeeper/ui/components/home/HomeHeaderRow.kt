@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.components.home
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,21 +30,38 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import org.satochip.seedkeeper.CardAuthenticity
+import org.satochip.seedkeeper.MenuView
+import org.satochip.seedkeeper.PinCodeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.HomeItems
+import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.theme.SatoGreen
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun HomeHeaderRow(
-    isCardDataAvailable: Boolean,
-    authenticityStatus: AuthenticityStatus,
-    onClick: (HomeItems) -> Unit,
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
 ) {
+    // INFO DIALOG
+    val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
+    if (showInfoDialog.value) {
+        InfoPopUpDialog(
+            isOpen = showInfoDialog,
+            title = R.string.cardNeedToBeScannedTitle,
+            message = R.string.cardNeedToBeScannedMessage
+        )
+    }
+
+    // Logo
     val logoColor = remember {
         mutableStateOf(Color.Black)
     }
-    logoColor.value = when (authenticityStatus) {
+    logoColor.value = when (viewModel.authenticityStatus) {
         AuthenticityStatus.AUTHENTIC -> {
             SatoGreen
         }
@@ -54,6 +72,7 @@ fun HomeHeaderRow(
             Color.Black
         }
     }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +83,11 @@ fun HomeHeaderRow(
         IconButton(
             modifier = Modifier.align(Alignment.CenterStart),
             onClick = {
-                onClick(HomeItems.CARD_INFO)
+                if (viewModel.isCardDataAvailable) {
+                    navController.navigate(CardAuthenticity)
+                } else {
+                    showInfoDialog.value = !showInfoDialog.value
+                }
             },
         ) {
             Image(
@@ -90,11 +113,19 @@ fun HomeHeaderRow(
         Row(
             modifier = Modifier.align(Alignment.CenterEnd),
         ) {
-            if (isCardDataAvailable) {
+            if (viewModel.isCardDataAvailable) {
                 // RESCAN BUTTON
                 IconButton(
                     onClick = {
-                        onClick(HomeItems.REFRESH)
+                        viewModel.setIsReadyForPinCode()
+                        navController.navigate(
+                            PinCodeView(
+                                title = R.string.pinCode,
+                                messageTitle = R.string.pinCode,
+                                message = R.string.enterPinCodeText,
+                                placeholderText = R.string.enterPinCode,
+                            )
+                        )
                     },
                 ) {
                     Image(
@@ -109,7 +140,7 @@ fun HomeHeaderRow(
             }
             // MENU BUTTON
             IconButton(onClick = {
-                onClick(HomeItems.MENU)
+                navController.navigate(MenuView)
             }) {
                 Icon(Icons.Default.MoreVert, "", tint = Color.Black)
             }

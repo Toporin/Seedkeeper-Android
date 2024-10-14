@@ -197,76 +197,9 @@ fun Navigation(
         }
         composable<HomeView> {
             HomeView(
-                isCardDataAvailable = viewModel.isCardDataAvailable,
-                cardLabel = viewModel.cardLabel,
-                secretHeaders = viewModel.secretHeaders,
-                authenticityStatus = viewModel.authenticityStatus,
-                onClick = { item, secret ->
-                    when (item) {
-                        HomeItems.CARD_INFO -> {
-                            if (viewModel.isCardDataAvailable) {
-                                navController.navigate(CardAuthenticity)
-                            } else {
-                                showInfoDialog.value = !showInfoDialog.value
-                            }
-                        }
-                        HomeItems.REFRESH -> {
-                            viewModel.setIsReadyForPinCode()
-                            navController.navigate(
-                                PinCodeView(
-                                    title = R.string.pinCode,
-                                    messageTitle = R.string.pinCode,
-                                    message = R.string.enterPinCodeText,
-                                    placeholderText = R.string.enterPinCode,
-                                )
-                            )
-                        }
-                        HomeItems.MENU -> {
-                            navController.navigate(MenuView)
-                        }
-                        HomeItems.SCAN_CARD -> {
-                            navController.navigate(
-                                PinCodeView(
-                                    title = R.string.pinCode,
-                                    messageTitle = R.string.pinCode,
-                                    message = R.string.enterPinCodeText,
-                                    placeholderText = R.string.enterPinCode,
-                                )
-                            )
-                        }
-                        HomeItems.ADD_NEW_SECRET -> {
-                            navController.navigate(AddSecretView)
-                        }
-                        HomeItems.OPEN_SECRET -> {
-                            secret?.sid?.let {
-                                viewModel.setCurrentSecret(secret.sid)
-                                navController.navigate(
-                                    MySecretView(
-                                        sid = secret.sid,
-                                        type = secret.type.name,
-                                        label = secret.label,
-                                        exportRights = secret.exportRights.value.toInt(),
-                                        subType = secret.subtype.toInt()
-                                    )
-                                )
-                            }
-                        }
-                    }
-                },
-                onEditCardLabel = { cardLabel ->
-                    showNfcDialog.value = true // NfcDialog
-                    viewModel.setupNewCardLabel(cardLabel)
-                    viewModel.scanCardForAction(
-                        activity = context as Activity,
-                        nfcActionType = NfcActionType.EDIT_CARD_LABEL
-                    )
-                },
-                webViewAction = { link ->
-                    webviewActivityIntent(
-                        url = link,
-                        context = context
-                    )
-                },
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<MenuView> {
@@ -675,7 +608,7 @@ object FactoryResetView
 @Serializable
 data class MySecretView (
     val sid: Int,
-    val type: String,// TODO: SeedKeeperSecretType
+    val type: String,
     val label: String,
     val exportRights: Int,
     val subType: Int

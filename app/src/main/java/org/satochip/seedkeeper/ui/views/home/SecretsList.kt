@@ -48,7 +48,6 @@ fun SecretsList(
     secretHeaders: SnapshotStateList<SeedkeeperSecretHeader?>,
     addNewSecret: () -> Unit,
     onSecretClick: (SeedkeeperSecretHeader) -> Unit,
-    onEditCardLabel: (String) -> Unit,
 ) {
     val curValue = remember {
         mutableStateOf("")

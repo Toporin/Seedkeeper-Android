@@ -313,7 +313,6 @@ fun MySecretView(
                                 appError.value = AppErrorMsg.PLAINTEXT_EXPORT_NOT_ALLOWED
                                 showError.value = true
                             } else {
-                                //onClick(MySecretItems.SHOW)
                                 showNfcDialog.value = true // NfcDialog
                                 viewModel.scanCardForAction(
                                     activity = context as Activity,
