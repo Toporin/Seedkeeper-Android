@@ -432,43 +432,10 @@ fun Navigation(
             )
         }
         composable<MySecretView> {
-            val args = it.toRoute<MySecretView>()
-            val data = remember {
-                mutableStateOf<SecretData?>(null)
-            }
-            LaunchedEffect(viewModel.currentSecretId) {
-                if (viewModel.currentSecretId == null) {
-                    navController.navigate(HomeView) {
-                        popUpTo(0)
-                    }
-                }
-            }
-            LaunchedEffect(Unit) {
-                data.value = SecretData(
-                    label = args.label,
-                    type = SeedkeeperSecretType.valueOf(args.type),
-                    exportRights = args.exportRights,
-                    subType = args.subType
-                )
-            }
-            LaunchedEffect(viewModel.currentSecretObject) {
-                viewModel.currentSecretObject?.let { secretObject ->
-                    data.value = SecretDataParser().parseByType(
-                        seedkeeperSecretType = SeedkeeperSecretType.valueOf(args.type),
-                        secretObject = secretObject
-                    )
-                    data.value?.label = secretObject.secretHeader.label
-                    data.value?.subType = secretObject.secretHeader.subtype.toInt()
-                }
-            }
-
             MySecretView(
                 context = context,
                 navController = navController,
                 viewModel = viewModel,
-                secret = data,
-                type = args.type,
-                isOldVersion = viewModel.getSeedkeeperStatus() == null, // TODO: use version
             )
         }
         composable<ImportSecretView> {
@@ -530,15 +497,8 @@ object ShowLogsView
 object ShowCardLogs
 @Serializable
 object FactoryResetView
-
 @Serializable
-data class MySecretView (
-    val sid: Int,
-    val type: String,
-    val label: String,
-    val exportRights: Int,
-    val subType: Int
-)
+object MySecretView
 
 @Serializable
 data class EditPinCodeView (

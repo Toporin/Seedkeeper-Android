@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +33,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
+import org.satochip.seedkeeper.HomeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.SecretData
+import org.satochip.seedkeeper.parsers.SecretDataParser
 import org.satochip.seedkeeper.ui.components.import.SecretTextField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.mysecret.GetSpecificSecretInfoFields
@@ -53,9 +56,6 @@ fun MySecretView(
     context: Context,
     viewModel: SharedViewModel,
     navController: NavHostController,
-    secret: MutableState<SecretData?>,
-    type: String, // TODO: redundant with secret?
-    isOldVersion: Boolean,
 ) {
     val scrollState = rememberScrollState()
     val secretText = remember {
@@ -80,7 +80,6 @@ fun MySecretView(
             isOpen = isPopUpOpened,
             title = R.string.buySeedkeeper,
             onClick = {
-                //onClick(MySecretItems.BUY_SEEDKEEPER)
                 webviewActivityIntent(
                     url = buySeedkeeperUrl,
                     context = context
@@ -103,19 +102,49 @@ fun MySecretView(
         mutableStateOf(AppErrorMsg.OK)
     }
 
+    // Secret data
+    val secret = remember {
+        mutableStateOf<SecretData?>(null)
+    }
+    LaunchedEffect(viewModel.currentSecretHeader) { // TODO use Unit?
+        viewModel.currentSecretHeader?.let { currentSecretHeader ->
+            secret.value = SecretData(
+                    label = currentSecretHeader.label,
+                    type = currentSecretHeader.type,
+                    exportRights = currentSecretHeader.exportRights.value.toInt(),
+                    subType = currentSecretHeader.subtype.toInt(),
+                )
+        } ?: run {
+            navController.navigate(HomeView) {
+                popUpTo(0)
+            }
+        }
+    }
+
+    LaunchedEffect(viewModel.currentSecretObject) {
+        viewModel.currentSecretObject?.let { secretObject ->
+            secret.value = SecretDataParser().parseByType(
+                seedkeeperSecretType = secretObject.secretHeader.type,
+                secretObject = secretObject
+            )
+            secret.value?.label = secretObject.secretHeader.label
+            secret.value?.subType = secretObject.secretHeader.subtype.toInt()
+        }
+    }
+
     val stringResourceMap = mapOf(
-        SeedkeeperSecretType.MASTERSEED.name to stringResource(id = R.string.masterseed),
-        SeedkeeperSecretType.BIP39_MNEMONIC.name to stringResource(id = R.string.masterseed),
-        SeedkeeperSecretType.ELECTRUM_MNEMONIC.name to stringResource(id = R.string.masterseed),
-        SeedkeeperSecretType.PUBKEY.name to stringResource(id = R.string.pubkey),
-        SeedkeeperSecretType.PASSWORD.name to stringResource(id = R.string.password),
-        SeedkeeperSecretType.MASTER_PASSWORD.name to stringResource(id = R.string.password),
-        SeedkeeperSecretType.DATA.name to stringResource(id = R.string.data),
-        SeedkeeperSecretType.WALLET_DESCRIPTOR.name to stringResource(id = R.string.walletDescriptor),
-        SeedkeeperSecretType.SECRET_2FA.name to stringResource(id = R.string.secret2FA),
+        SeedkeeperSecretType.MASTERSEED to stringResource(id = R.string.masterseed),
+        SeedkeeperSecretType.BIP39_MNEMONIC to stringResource(id = R.string.masterseed),
+        SeedkeeperSecretType.ELECTRUM_MNEMONIC to stringResource(id = R.string.masterseed),
+        SeedkeeperSecretType.PUBKEY to stringResource(id = R.string.pubkey),
+        SeedkeeperSecretType.PASSWORD to stringResource(id = R.string.password),
+        SeedkeeperSecretType.MASTER_PASSWORD to stringResource(id = R.string.password),
+        SeedkeeperSecretType.DATA to stringResource(id = R.string.data),
+        SeedkeeperSecretType.WALLET_DESCRIPTOR to stringResource(id = R.string.walletDescriptor),
+        SeedkeeperSecretType.SECRET_2FA to stringResource(id = R.string.secret2FA),
     )
 
-    when (SeedkeeperSecretType.valueOf(type)) {
+    when (secret.value?.type) {
         SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
             if (secret.value?.subType != 0) {
                 secret.value?.mnemonic?.let { mnemonic ->
@@ -166,7 +195,6 @@ fun MySecretView(
             HeaderAlternateRow(
                 titleText = R.string.mySecret,
                 onClick = {
-                    //onClick(MySecretItems.BACK)
                     viewModel.resetCurrentSecretObject()
                     navController.popBackStack()
                 }
@@ -185,7 +213,7 @@ fun MySecretView(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResourceMap[type] ?: "",
+                        text = stringResourceMap[secret.value?.type] ?: "",
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 24.sp,
@@ -212,10 +240,12 @@ fun MySecretView(
                         text = secret.value?.label ?: ""
                     )
 
-                    GetSpecificSecretInfoFields(
-                        type = type,
-                        secret = secret
-                    )
+                    secret.value?.type?.let { type ->
+                        GetSpecificSecretInfoFields(
+                            type = type.name, // todo: use type instead of type.name
+                            secret = secret
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -284,7 +314,7 @@ fun MySecretView(
                     SatoButton(
                         modifier = Modifier.weight(1f),
                         onClick = {
-                            if (isOldVersion) {
+                            if (viewModel.getAppletVersionInt() == 1) {
                                 isPopUpOpened.value = !isPopUpOpened.value
                             } else {
                                 // check confirm msg
@@ -302,7 +332,7 @@ fun MySecretView(
                         },
                         text = R.string.deleteSecret,
                         image = R.drawable.delete_icon,
-                        buttonColor = if (isOldVersion) SatoButtonPurple.copy(alpha = 0.6f) else SatoButtonPurple,
+                        buttonColor = if (viewModel.getAppletVersionInt() == 1) SatoButtonPurple.copy(alpha = 0.6f) else SatoButtonPurple,
                         horizontalPadding = 1.dp
                     )
                     // Reveal button

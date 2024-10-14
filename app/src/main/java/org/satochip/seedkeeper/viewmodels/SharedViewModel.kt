@@ -40,7 +40,7 @@ class SharedViewModel : ViewModel() {
     var isCardDataAvailable by mutableStateOf(false)
     var currentSecretObject by mutableStateOf<SeedkeeperSecretObject?>(null)
     var authenticityStatus by mutableStateOf(AuthenticityStatus.UNKNOWN)
-    var currentSecretId by mutableStateOf<Int?>(null)
+    var currentSecretHeader by mutableStateOf<SeedkeeperSecretHeader?>(null)
     var resultCodeLive by mutableStateOf(NfcResultCode.BUSY)
     var backupStatusState by mutableStateOf(BackupStatus.DEFAULT)
     var cardLabel by mutableStateOf("")
@@ -71,8 +71,8 @@ class SharedViewModel : ViewModel() {
         NFCCardService.currentSecretObject.observeForever {
             currentSecretObject = it
         }
-        NFCCardService.currentSecretId.observeForever {
-            currentSecretId = it
+        NFCCardService.currentSecretHeader.observeForever {
+            currentSecretHeader = it
         }
         NFCCardService.cardLabel.observeForever {
             cardLabel = it
@@ -135,10 +135,8 @@ class SharedViewModel : ViewModel() {
         NFCCardService.passwordData = passwordData
     }
 
-    // TODO setCurrentSecretHeader()
-
-    fun setCurrentSecret(sid: Int) {// TODO rename to setCurrentSecretSid
-        NFCCardService.currentSecretId.postValue(sid)
+    fun updateCurrentSecretHeader(secretHeader: SeedkeeperSecretHeader){
+        NFCCardService.currentSecretHeader.postValue(secretHeader)
     }
 
     fun resetCurrentSecretObject() {

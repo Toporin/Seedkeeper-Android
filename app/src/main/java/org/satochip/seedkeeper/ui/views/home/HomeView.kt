@@ -51,23 +51,12 @@ fun HomeView(
                     cardLabel = viewModel.cardLabel,
                     secretHeaders = viewModel.secretHeaders,
                     addNewSecret = {
-                        //onClick(HomeItems.ADD_NEW_SECRET, null)
                         navController.navigate(AddSecretView)
                     },
-                    onSecretClick = { secret ->
-                        //onClick(HomeItems.OPEN_SECRET, item)
-                        // TODO: use secretHeader instead of sid
-                        secret.sid.let {
-                            viewModel.setCurrentSecret(secret.sid)
-                            navController.navigate(
-                                MySecretView(
-                                    sid = secret.sid,
-                                    type = secret.type.name,
-                                    label = secret.label,
-                                    exportRights = secret.exportRights.value.toInt(),
-                                    subType = secret.subtype.toInt()
-                                )
-                            )
+                    onSecretClick = { secretHeader ->
+                        secretHeader.let {
+                            viewModel.updateCurrentSecretHeader(secretHeader)
+                            navController.navigate(MySecretView)
                         }
                     },
                 )

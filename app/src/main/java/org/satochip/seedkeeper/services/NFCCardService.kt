@@ -41,8 +41,7 @@ object NFCCardService {
     var isCardDataAvailable = MutableLiveData(false)
     var secretHeaders = MutableLiveData<List<SeedkeeperSecretHeader>>()
     var currentSecretObject = MutableLiveData<SeedkeeperSecretObject?>()
-    var currentSecretId = MutableLiveData<Int?>()
-    var currentSecretHeader = MutableLiveData<SeedkeeperSecretHeader?>() // TODO currentSecretHeader
+    var currentSecretHeader = MutableLiveData<SeedkeeperSecretHeader?>()
     var pinString: String? = null
     var oldPinString: String? = null
     var seedkeeperStatus: SeedkeeperStatus? = null
@@ -121,13 +120,13 @@ object NFCCardService {
                 cardSetup()
             }
             NfcActionType.GET_SECRET -> {
-                currentSecretId.value?.let { sid ->
-                    currentSecretObject.postValue(getSecret(sid))
+                currentSecretHeader.value?.let{ secretHeader ->
+                    currentSecretObject.postValue(getSecret(secretHeader.sid))
                 }
             }
             NfcActionType.DELETE_SECRET -> {
-                currentSecretId.value?.let { sid ->
-                    deleteSecret(sid)
+                currentSecretHeader.value?.let{ secretHeader ->
+                    deleteSecret(secretHeader.sid)
                 }
             }
             NfcActionType.EDIT_CARD_LABEL -> {
@@ -771,7 +770,7 @@ object NFCCardService {
             secretsList.removeAll { it.sid == sid }
             secretHeaders.postValue(secretsList)
             currentSecretObject.postValue(null)
-            currentSecretId.postValue(null)
+            currentSecretHeader.postValue(null)
             resultCodeLive.postValue(NfcResultCode.SECRET_DELETED)
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
@@ -816,19 +815,6 @@ object NFCCardService {
         }
     }
 
-    fun getXpub(path: String, xtype: Long = 0x0488b21e) {
-        // default xtype used: standard
-        try {
-            SatoLog.d(TAG, "getXpub start")
-            currentSecretId.value?.let { sid ->
-                val xpubString = cmdSet.cardBip32GetXpub(path, xtype, sid)
-            }
-            resultCodeLive.postValue(NfcResultCode.OK)
-        } catch (e: Exception) {
-            SatoLog.e(TAG, "getXpub exception: $e")
-            SatoLog.e(TAG, Log.getStackTraceString(e))
-        }
-    }
 
     /**
      * Imports new secrets into the backup NFC card and updates the backup status.

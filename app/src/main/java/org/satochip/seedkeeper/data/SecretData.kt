@@ -19,8 +19,8 @@ data class SecretData(
     var login: String? = null,
     var url: String? = null,
     var mnemonic: String? = null,
-    var exportRights: Int = SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED.value.toInt(),
-    var subType: Int? = 0x00,
+    var exportRights: Int = SeedkeeperExportRights.EXPORT_PLAINTEXT_ALLOWED.value.toInt(), // TODO: use SeedkeeperExportRights
+    var subType: Int? = 0x00, // TODO rename subtype with Byte value
     var descriptor: String? = null,
     var data: String? = null,
     var genericSecret: String? = null // TODO: add pubkey, masterseed fields...
