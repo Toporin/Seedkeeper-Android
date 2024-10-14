@@ -1,5 +1,7 @@
 package org.satochip.seedkeeper.ui.views.factoryreset
 
+import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,8 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,17 +24,37 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.FactoryResetStatus
+import org.satochip.seedkeeper.data.NfcActionType
+import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.settings.CardResetButton
 import org.satochip.seedkeeper.ui.components.settings.ResetCardTextField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun FactoryResetDefault(
-    isChecked: MutableState<Boolean>,
-    onClick: () -> Unit,
-    onBackClick: () -> Unit
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
+    factoryResetStatus: MutableState<FactoryResetStatus>,
 ) {
+    // NFC dialog
+    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
+    if (showNfcDialog.value) {
+        NfcDialog(
+            openDialogCustom = showNfcDialog,
+            resultCodeLive = viewModel.resultCodeLive,
+            isConnected = viewModel.isCardConnected
+        )
+    }
+
+    val isChecked = remember {
+        mutableStateOf(false)
+    }
+
     ResetCardTextField(
         text = R.string.factoryResetWarningText,
         warning = R.string.allDataErasedWarning,
@@ -68,7 +92,7 @@ fun FactoryResetDefault(
             text = stringResource(id = R.string.resetMyCard),
             onClick = {
                 if (isChecked.value) {
-                    onClick()
+                    factoryResetStatus.value = FactoryResetStatus.RESET_READY
                 }
             },
             containerColor = if (isChecked.value) Color.Red else Color.Red.copy(0.6f),
@@ -80,7 +104,7 @@ fun FactoryResetDefault(
                     horizontal = 6.dp
                 ),
             onClick = {
-                onBackClick()
+                factoryResetStatus.value = FactoryResetStatus.RESET_CANCELLED
             },
             text = R.string.cancel,
         )

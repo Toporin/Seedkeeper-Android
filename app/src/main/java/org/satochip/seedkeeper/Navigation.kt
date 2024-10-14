@@ -347,52 +347,10 @@ fun Navigation(
             )
         }
         composable<FactoryResetView> {
-            val factoryResetStatus = remember {
-                mutableStateOf(FactoryResetStatus.DEFAULT)
-            }
-            val steps = remember {
-                mutableStateOf(1)
-            }
-            LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.CARD_READY_FOR_RESET) {
-                    if (viewModel.getCardStatus().protocolVersion == 1) {
-                        steps.value = 5
-                    }
-                    factoryResetStatus.value = FactoryResetStatus.RESET_READY
-                }
-                if (viewModel.resultCodeLive == NfcResultCode.CARD_RESET &&
-                    factoryResetStatus.value == FactoryResetStatus.RESET_READY) {
-                    steps.value--
-                    if (steps.value == 0) {
-                        factoryResetStatus.value = FactoryResetStatus.RESET_SUCCESSFUL
-                    }
-                }
-            }
             FactoryResetView(
-                factoryResetStatus = factoryResetStatus,
-                steps = steps,
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onCardGetStatusClick = {
-                    showNfcDialog.value = true // NfcDialog
-                    viewModel.scanCardForAction(
-                        activity = context as Activity,
-                        nfcActionType = NfcActionType.GET_STATUS
-                    )
-                },
-                onCardResetClick = {
-                    showNfcDialog.value = true // NfcDialog
-                    viewModel.scanCardForAction(
-                        activity = context as Activity,
-                        nfcActionType = NfcActionType.RESET_CARD
-                    )
-                },
-                onHomeClick = {
-                    navController.navigate(HomeView) {
-                        popUpTo(0)
-                    }
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<CardInformation> {

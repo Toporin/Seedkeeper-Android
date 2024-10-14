@@ -50,7 +50,8 @@ object NFCCardService {
     var certificateList: MutableList<String> = mutableListOf()
     var cardAppletVersion: String = "undefined"
     var cardAppletVersionInt: Int = 0
-    lateinit var cardStatus: ApplicationStatus
+    //lateinit var cardStatus: ApplicationStatus // TODO: nullable
+    var cardStatus: ApplicationStatus? = null // TODO: nullable
     var authentikey: ByteArray?  = null
 
     //V1 SEEDKEEPER
@@ -160,11 +161,6 @@ object NFCCardService {
             }
             NfcActionType.RESET_CARD -> {
                 requestFactoryReset()
-            }
-            NfcActionType.GET_STATUS -> {
-                getCardStatusInfo()?.let { status ->
-                    cardStatus = status
-                }
             }
         }
     }
@@ -288,20 +284,21 @@ object NFCCardService {
             isCardDataAvailable.postValue(false)
             cmdSet.cardSelect("seedkeeper").checkOK()
             val rapduStatus = cmdSet.cardGetStatus()
-            cardStatus = cmdSet.applicationStatus ?: return false
-            cardStatus = ApplicationStatus(rapduStatus)
-            getCardVersionString(rapduStatus)
+            //cardStatus = cmdSet.applicationStatus ?: return false // todo: remove?
+            val cardStatusLocal = ApplicationStatus(rapduStatus)
+            cardStatus = cardStatusLocal
+            getCardVersionString(rapduStatus) // TODO: use cardStatus instead!
             seedkeeperStatus = null
-            SatoLog.d(TAG, "card status: $cardStatus")
-            SatoLog.d(TAG, "is setup done: ${cardStatus.isSetupDone}")
+            SatoLog.d(TAG, "card status: $cardStatusLocal")
+            SatoLog.d(TAG, "is setup done: ${cardStatusLocal.isSetupDone}")
 
-            if (!cardStatus.isSetupDone) {
-                SatoLog.d(TAG, "CardVersionInt: ${cardStatus.getCardVersionInt()}, setup not done")
+            if (!cardStatusLocal.isSetupDone) {
+                SatoLog.d(TAG, "CardVersionInt: ${cardStatusLocal.getCardVersionInt()}, setup not done")
                 isSetupNeeded.postValue(true)
                 resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
                 return false
             } else {
-                if (cardStatus.protocolVersion == 2) {
+                if (cardStatusLocal.protocolVersion == 2) {
                     authentikey = cmdSet.cardGetAuthentikey()
                 } else {
                     authentikeyList.clear()
@@ -370,10 +367,12 @@ object NFCCardService {
         SatoLog.d(TAG, "cardSetup start")
         try {
             cmdSet.cardSelect("seedkeeper").checkOK()
-            val rapduStatus = cmdSet.cardGetStatus()
 
-            cardStatus = cmdSet.applicationStatus ?: return
-            cardStatus = ApplicationStatus(rapduStatus)
+            val cardStatus = cardStatus ?: return
+
+            //cardStatus = cmdSet.applicationStatus ?: return // TODO remove?
+            //val cardStatusLocal = ApplicationStatus(rapduStatus)
+            //cardStatus = cardStatusLocal
 
             val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
 
@@ -389,7 +388,7 @@ object NFCCardService {
                 authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
             }
             checkAuthentikey()
-            verifyAndFetchCardData(false)
+            verifyAndFetchCardData(false) // TODO: refactor!!
             isSetupNeeded.postValue(false)
             resultCodeLive.postValue(NfcResultCode.CARD_SETUP_SUCCESSFUL)
         } catch (e: CardMismatchException) {
@@ -481,8 +480,8 @@ object NFCCardService {
                 getSecretHeaderList(false)
                 getCardAuthenticty()
                 getCardLogs() // TODO: do that elsewhere
-                if (cardStatus.protocolVersion == 2) {
-                    seedkeeperStatus = cmdSet.seedkeeperGetStatus()
+                if (cardStatus?.protocolVersion == 2) {
+                    seedkeeperStatus = cmdSet.seedkeeperGetStatus() // TODO: elsewhere
                 }
             }
             cardLabel.postValue(cmdSet.cardLabel)
@@ -512,8 +511,9 @@ object NFCCardService {
      */
     private fun checkAuthentikey() {
         cmdSet.cardSelect("seedkeeper").checkOK()
-        cmdSet.cardGetStatus()
-        cardStatus = cmdSet.applicationStatus ?: return
+        //cmdSet.cardGetStatus()
+        //cardStatus = cmdSet.applicationStatus ?: return
+        val cardStatus = cardStatus ?: return
         if (cardStatus.protocolVersion == 2) {
             if (!authentikey.contentEquals(cmdSet.cardGetAuthentikey())) {
                 SatoLog.d(TAG, "verifyPin card mismatch")
@@ -1031,8 +1031,10 @@ object NFCCardService {
             SatoLog.d(TAG, "backupProcessCardScan start")
             isCardDataAvailable.postValue(false)
             cmdSet.cardSelect("seedkeeper").checkOK()
-            cmdSet.cardGetStatus()
-            cardStatus = cmdSet.applicationStatus ?: return
+            val statusApdu = cmdSet.cardGetStatus()
+            cardStatus = ApplicationStatus(statusApdu) // TODO: use backupCardStauts & MasterCardStatus
+            val cardStatus = cardStatus ?: return
+
             SatoLog.d(TAG, "card status: $cardStatus")
             SatoLog.d(TAG, "is setup done: ${cardStatus.isSetupDone}")
 
@@ -1152,78 +1154,73 @@ object NFCCardService {
         }
     }
 
-    /**
-     * Retrieves the current status of the NFC card.
-     *
-     * This method performs the following steps:
-     * 1. Selects the "seedkeeper" application on the NFC card and ensures the selection is successful.
-     * 2. Retrieves the current status of the card using the cardGetStatus method.
-     * 3. Posts a result code indicating that the card is ready for a reset.
-     * 4. Returns the application status of the card.
-     *
-     * If any step fails, an error is logged, and the appropriate result code is posted.
-     *
-     * @return ApplicationStatus? The current status of the card, or null if an error occurred.
-     */
-    private fun getCardStatusInfo(): ApplicationStatus? {
-        try {
-            SatoLog.d(TAG, "getCardStatus start")
-            cmdSet.cardSelect("seedkeeper").checkOK()
-            cmdSet.cardGetStatus()
-            if (cmdSet.applicationStatus.isSetupDone) {
-                resultCodeLive.postValue(NfcResultCode.CARD_READY_FOR_RESET)
-            } else {
-                resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
-            }
-            return cmdSet.applicationStatus
-        }  catch (e: Exception) {
-            resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "getCardStatus exception: $e")
-            SatoLog.e(TAG, Log.getStackTraceString(e))
-        }
-        return null
-    }
-
     private fun requestFactoryReset() {
         try {
             SatoLog.d(TAG, "requestFactoryReset start")
             isCardDataAvailable.postValue(false)
-            cmdSet.cardSelect("seedkeeper").checkOK()
+            val selectApdu = cmdSet.cardSelect("seedkeeper").checkOK()
+            if (selectApdu.data.size >= 4){
+                // in Seedkeeper v2, status data is already provided during cardSelect()
+                cardStatus = ApplicationStatus(selectApdu)
+            }
+
+            if (cardStatus == null){
+                // that's for v1 only, sice v2 and higheer get the status in select response
+                val statusApdu = cmdSet.cardGetStatus()
+                cardStatus = ApplicationStatus(statusApdu)
+            }
+            val cardStatus = cardStatus ?: return
+
             if (!cardStatus.isSetupDone) {
+                resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
                 return
             }
+
             if (cardStatus.protocolVersion >= 2) {
-                val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
-                val randomString = (1..5)
+                val allowedChars = ('0'..'9')
+                val randomString = (1..6)
                     .map { allowedChars.random() }
                     .joinToString("")
 
-                if (cardStatus.pin0RemainingCounter > 0) {
-                    SatoLog.d(TAG, "requestFactoryReset block pin")
-                    val pinBytes = randomString.toByteArray(Charsets.UTF_8)
-
-                    cmdSet.cardSelect("seedkeeper").checkOK()
-                    cmdSet.setPin0(pinBytes)
-                    repeat(5) {
-                        cmdSet.cardVerifyPIN()
-                    }
+                SatoLog.d(TAG, "requestFactoryReset block pin")
+                val pinBytes = randomString.toByteArray(Charsets.UTF_8)
+                cmdSet.setPin0(pinBytes)
+                val rapduReset = cmdSet.cardVerifyPIN()
+                if (rapduReset.sw == 0x63C0 ||  rapduReset.sw == 0x9C0C){
+                    // PIN blocked, now block puk
+                    do {
+                        val rapdu = cmdSet.cardUnblockPin(pinBytes)
+                    } while (rapdu.sw != 0xFF00) // y is visible here!
+                    resultCodeLive.postValue(NfcResultCode.CARD_RESET)
+                } else if ((rapduReset.sw and 0x63C0) == 0x63C0 ){
+                    val lastDigit = (rapduReset.sw and 0x000F)
+                    val nfcCode = NfcResultCode.CARD_RESET_SENT
+                    nfcCode.triesLeft = lastDigit
+                    resultCodeLive.postValue(nfcCode)
+                } else {
+                    SatoLog.e(TAG, "requestFactoryReset unexpected response to reset command: ${rapduReset.sw}")
+                    resultCodeLive.postValue(NfcResultCode.CARD_RESET_SENT)
                 }
-                if (cardStatus.puk0RemainingCounter > 0) {
-                    SatoLog.d(TAG, "requestFactoryReset block puk")
-                    val pukBytes = randomString.toByteArray(Charsets.UTF_8)
-                    repeat(5) {
-                        cmdSet.cardUnblockPin(pukBytes)
-                    }
-                }
+                return
             } else {
-                cmdSet.cardSendResetCommand()
+                // factory reset V1
+                val rapduReset = cmdSet.cardSendResetCommand()
+                if (rapduReset.sw == 0xFF00){
+                    resultCodeLive.postValue(NfcResultCode.CARD_RESET)
+                } else if (rapduReset.sw == 0xFFFF){
+                    resultCodeLive.postValue(NfcResultCode.CARD_RESET_CANCELLED)
+                } else if ((rapduReset.sw and 0xFF00) == 0xFF00) {
+                    val lastDigit = (rapduReset.sw and 0x00FF)
+                    val nfcCode = NfcResultCode.CARD_RESET_SENT
+                    nfcCode.triesLeft = lastDigit
+                    resultCodeLive.postValue(nfcCode)
+                } else {
+                    SatoLog.e(TAG, "requestFactoryReset-v1 unexpected response to reset command: ${rapduReset.sw}")
+                    resultCodeLive.postValue(NfcResultCode.CARD_RESET_SENT)
+                }
+                return
             }
-            cardLogs.clear()
-            certificateList.clear()
-            secretsList.clear()
-            authenticityStatus.postValue(AuthenticityStatus.UNKNOWN)
-            resultCodeLive.postValue(NfcResultCode.CARD_RESET)
-            SatoLog.d(TAG, "requestFactoryReset finished")
+
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "requestFactoryReset exception: $e")

@@ -34,7 +34,7 @@ fun CardStatusField(
     title: Int,
     cardAppletVersion: String,
     cardAuthentikey: String,
-    cardStatus: SeedkeeperStatus? = null
+    cardStatus: SeedkeeperStatus? = null // TODO rename to seedkeeperStatus
 ) {
     Column(
         modifier = Modifier

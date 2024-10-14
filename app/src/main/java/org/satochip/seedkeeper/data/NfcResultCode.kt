@@ -8,6 +8,8 @@ enum class  NfcResultCode(val resTitle : Int, val resMsg : Int, val resImage : I
     PIN_CHANGED(R.string.nfcTitleSuccess, R.string.nfcOk, R.drawable.icon_check_gif, null),
     CARD_READY_FOR_RESET(R.string.nfcTitleSuccess, R.string.cardReadyToReset, R.drawable.icon_check_gif, null),
     CARD_RESET(R.string.nfcTitleSuccess, R.string.cardResetSuccess, R.drawable.icon_check_gif, null),
+    CARD_RESET_CANCELLED(R.string.nfcTitleSuccess, R.string.cardResetCancel, R.drawable.icon_check_gif, null),
+    CARD_RESET_SENT(R.string.nfcTitleSuccess, R.string.cardResetSent, R.drawable.icon_check_gif, 0),
     PIN_VERIFIED(R.string.nfcTitleSuccess, R.string.pinVerified, R.drawable.icon_check_gif, null),
     SECRET_HEADER_LIST_SET(R.string.nfcTitleSuccess, R.string.secretHeaderListSet, R.drawable.icon_check_gif, null),
     SECRET_IMPORTED_SUCCESSFULLY(R.string.nfcTitleSuccess, R.string.secretImportedSuccessfully, R.drawable.icon_check_gif, null),

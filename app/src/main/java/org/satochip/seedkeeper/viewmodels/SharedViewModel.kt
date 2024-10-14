@@ -18,6 +18,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.BackupStatus
+import org.satochip.seedkeeper.data.FactoryResetStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -44,6 +45,9 @@ class SharedViewModel : ViewModel() {
     var backupStatusState by mutableStateOf(BackupStatus.DEFAULT)
     var cardLabel by mutableStateOf("")
     private var updateSecretsJob: Job? = null
+
+    // Factory reset
+    var factoryResetStatus by mutableStateOf(FactoryResetStatus.DEFAULT)
 
     init {
         NFCCardService.isSetupNeeded.observeForever {
@@ -102,7 +106,7 @@ class SharedViewModel : ViewModel() {
         return NFCCardService.seedkeeperStatus
     }
 
-    fun getCardStatus(): ApplicationStatus {
+    fun getCardStatus(): ApplicationStatus? {
         return NFCCardService.cardStatus
     }
 
@@ -159,6 +163,7 @@ class SharedViewModel : ViewModel() {
         }
     }
 
+    // TODO: move to Utils?
     fun generatePassword(options: PasswordOptions): String? {
         var characterSet = ""
         val password = StringBuilder()
@@ -186,6 +191,7 @@ class SharedViewModel : ViewModel() {
         return password.toString()
     }
 
+    // TODO: move to Utils?
     fun generateMemorablePassword(options: PasswordOptions, context: Context): String {
         val password = StringBuilder()
         val wordList = getWordList(context)
@@ -214,6 +220,7 @@ class SharedViewModel : ViewModel() {
         return password.toString()
     }
 
+    // TODO: move to Utils?
     fun isMnemonicValid(mnemonic: String): Boolean {
         val mnemonicList = mnemonic.split(" ")
 

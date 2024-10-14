@@ -55,6 +55,8 @@
     <string name="cardMismatch">Different card detected, please use right card!</string>
     <string name="cardReadyToReset">Card is ready to reset!</string>
     <string name="cardResetSuccess">Card reset was successful!</string>
+    <string name="cardResetSent">Reset command sent</string>
+    <string name="cardResetCancel">Factory reset cancelled.</string>
     <string name="cardNotInitialized">Card not initialized!</string>
 
     <!--Generate View-->
@@ -144,6 +146,8 @@
         <string name="orCancelToQuit">Or cancel to quit.</string>
         <string name="resetSuccessful">Your card has been factory reset.</string>
         <string name="stepsRemaining">Steps remaining: </string>
+        <string name="pinRemaining">Warning: PIN remaining: </string>
+        <string name="resetCancelled">Factory reset cancelled</string>
 
     <!--Card's Information View-->
     <string name="cardVersion">Card version</string>
