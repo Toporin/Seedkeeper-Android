@@ -1,5 +1,7 @@
 package org.satochip.seedkeeper.ui.views.showcardlogs
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,27 +21,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.utils.instructionsMap
 import org.satochip.seedkeeper.utils.satoClickEffect
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun ShowCardLogsView(
-    onClick: () -> Unit,
-    cardLogs: List<SeedkeeperLog>,
-    copyToClipboard: (String) -> Unit
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
 ) {
     val scrollState = rememberScrollState()
+    val clipboardManager = LocalClipboardManager.current
+    val copyText = stringResource(id = R.string.copiedToClipboard)
+    val cardLogs = viewModel.getCardLogs() // todo: fetch logs from card
     val filteredLogs = cardLogs.filter { log -> log.sw != 0 }
 
     Column(
@@ -50,7 +59,7 @@ fun ShowCardLogsView(
     ) {
         HeaderAlternateRow(
             onClick = {
-                onClick()
+                navController.navigateUp()
             },
             titleText = R.string.cardLogs
         )
@@ -95,7 +104,8 @@ fun ShowCardLogsView(
                                         "${instructionsMap[log.ins]}; ${log.sw.toHexString()}; ${log.sid1}; ${log.sid2} \n"
                                     logsText += logString
                                 }
-                                copyToClipboard(logsText)
+                                clipboardManager.setText(AnnotatedString(logsText))
+                                Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                             }
                         ),
                     colorFilter = ColorFilter.tint(Color.Black),

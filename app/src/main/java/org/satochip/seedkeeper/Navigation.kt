@@ -624,14 +624,9 @@ fun Navigation(
         }
         composable<ShowCardLogs> {
             ShowCardLogsView(
-                onClick = {
-                    navController.navigateUp()
-                },
-                cardLogs = viewModel.getCardLogs(),
-                copyToClipboard = { logsText ->
-                    clipboardManager.setText(AnnotatedString(logsText))
-                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<ShowLogsView> {
