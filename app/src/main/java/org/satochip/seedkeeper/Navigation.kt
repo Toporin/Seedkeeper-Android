@@ -232,20 +232,9 @@ fun Navigation(
         }
         composable<CardAuthenticity> {
             CardAuthenticity(
-                authenticityStatus = viewModel.authenticityStatus,
-                certificates = viewModel.getCertificates(),
-                onClick = { item ->
-                    when (item) {
-                        CardInformationItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                        else -> {}
-                    }
-                },
-                copyToClipboard = { text ->
-                    clipboardManager.setText(AnnotatedString(text))
-                    Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<NewPinCodeView> {
