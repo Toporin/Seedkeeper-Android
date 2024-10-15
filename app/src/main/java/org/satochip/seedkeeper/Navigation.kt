@@ -94,7 +94,7 @@ fun Navigation(
     }
 
     // FIRST TIME SETUP
-    if (viewModel.isSetupNeeded) {
+    if (viewModel.isSetupNeeded) { // TODO use resultCodeLive instead?
         SatoLog.d(TAG, "Navigation: Card needs to be setup!")
         navController.navigate(
             NewPinCodeView(
@@ -360,60 +360,9 @@ fun Navigation(
         }
         composable<BackupView> {
             BackupView(
-                backupStatusState = viewModel.backupStatusState,
-                onClick = { item ->
-                    when (item) {
-                        BackupStatus.DEFAULT -> {
-                            viewModel.setBackupStatus(BackupStatus.FIRST_STEP)
-                        }
-                        BackupStatus.FIRST_STEP -> {
-                            viewModel.setIsReadyForPinCode()
-                            navController.navigate(
-                                PinCodeView(
-                                    title = R.string.pinCode,
-                                    messageTitle = R.string.pinCode,
-                                    message = R.string.enterPinCodeText,
-                                    placeholderText = R.string.enterPinCode,
-                                    isBackupCardScan = true
-                                )
-                            )
-                        }
-                        BackupStatus.SECOND_STEP -> {
-                            showNfcDialog.value = true // NfcDialog
-                            viewModel.scanCardForAction(
-                                activity = context as Activity,
-                                nfcActionType = NfcActionType.SCAN_MASTER_CARD
-                            )
-                        }
-                        BackupStatus.THIRD_STEP -> {
-                            viewModel.setBackupStatus(BackupStatus.FOURTH_STEP)
-
-                        }
-                        BackupStatus.FOURTH_STEP -> {
-                            showNfcDialog.value = true // NfcDialog
-                            viewModel.scanCardForAction(
-                                activity = context as Activity,
-                                nfcActionType = NfcActionType.TRANSFER_TO_BACKUP
-                            )
-                        }
-                        BackupStatus.FIFTH_STEP -> {
-                            navController.navigate(HomeView) {
-                                popUpTo(0)
-                            }
-                            viewModel.setBackupStatus(BackupStatus.DEFAULT)
-                        }
-                    }
-                },
-                goBack = {
-                    when (viewModel.backupStatusState) {
-                        BackupStatus.FIRST_STEP -> {
-                            viewModel.setBackupStatus(BackupStatus.DEFAULT)
-                        }
-                        else -> {
-                            viewModel.setBackupStatus(BackupStatus.FIRST_STEP)
-                        }
-                    }
-                }
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
         }
         composable<AddSecretView> {
