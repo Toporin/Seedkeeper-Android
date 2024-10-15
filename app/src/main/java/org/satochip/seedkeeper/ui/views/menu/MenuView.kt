@@ -35,7 +35,6 @@ import org.satochip.seedkeeper.BackupView
 import org.satochip.seedkeeper.CardInformation
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.SettingsView
-import org.satochip.seedkeeper.data.MenuItems
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle

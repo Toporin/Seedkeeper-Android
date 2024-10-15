@@ -29,7 +29,6 @@ import org.satochip.seedkeeper.FactoryResetView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ShowLogsView
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
-import org.satochip.seedkeeper.data.SettingsItems
 import org.satochip.seedkeeper.ui.components.settings.*
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton

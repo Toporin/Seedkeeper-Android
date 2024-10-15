@@ -36,7 +36,6 @@ import org.satochip.seedkeeper.MenuView
 import org.satochip.seedkeeper.PinCodeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.theme.SatoGreen
 import org.satochip.seedkeeper.viewmodels.SharedViewModel

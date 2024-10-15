@@ -17,7 +17,6 @@ import org.satochip.seedkeeper.MySecretView
 import org.satochip.seedkeeper.PinCodeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.HomeItems
 import org.satochip.seedkeeper.ui.components.home.HomeHeaderRow
 import org.satochip.seedkeeper.ui.components.home.SatoGradientButton
 import org.satochip.seedkeeper.ui.components.home.SatoRoundButton

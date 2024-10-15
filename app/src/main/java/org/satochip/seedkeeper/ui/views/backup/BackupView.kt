@@ -23,7 +23,6 @@ import org.satochip.seedkeeper.HomeView
 import org.satochip.seedkeeper.PinCodeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.BackupStatus
-import org.satochip.seedkeeper.data.BackupViewItems
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.ui.components.backup.BackupText
 import org.satochip.seedkeeper.ui.components.backup.BackupTransferImages

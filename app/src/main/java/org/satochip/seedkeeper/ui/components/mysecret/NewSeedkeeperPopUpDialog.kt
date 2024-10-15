@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
