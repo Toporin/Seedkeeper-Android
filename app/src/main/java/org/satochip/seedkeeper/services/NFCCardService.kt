@@ -34,8 +34,8 @@ object NFCCardService {
     private lateinit var cmdSet: SatochipCommandSet
     private var parser: SatochipParser? = null
 
-    //CARD STATE
-    var isSetupNeeded = MutableLiveData(false)
+    // MASTER CARD STATE
+    //var isSetupNeeded = MutableLiveData(false)
     var cardLabel = MutableLiveData("")
     var isReadyForPinCode = MutableLiveData(false)
     var isCardDataAvailable = MutableLiveData(false)
@@ -57,20 +57,21 @@ object NFCCardService {
     var authentikeyList: MutableList<ByteArray> = mutableListOf()
     var isInBackupProcess: Boolean = false
 
-    //BACKUP
+    //BACKUP CARD STATE
+    var backupCardStatus: ApplicationStatus? = null
+    var backupAuthentikey: ByteArray?  = null
     private var backupPinString: String? = null
-    private var secretsList: MutableList<SeedkeeperSecretHeader> = mutableListOf()
+    private var secretsList: MutableList<SeedkeeperSecretHeader> = mutableListOf() // TODO rename
     private var masterSecretObjects: MutableList<SeedkeeperSecretObject> = mutableListOf()
     var backupStatus = MutableLiveData(BackupStatus.DEFAULT)
 
     //GENERATE SECRET
-    var passwordData: SecretData? = null
+    var passwordData: SecretData? = null // TODO rename
 
     // NFC
     var resultCodeLive = MutableLiveData(NfcResultCode.BUSY)
     var actionType: NfcActionType = NfcActionType.DO_NOTHING
-    val isConnected =
-        MutableLiveData(false) // the app is connected to a card, value updated in SeedkeeperCardListener
+    val isConnected = MutableLiveData(false) // the app is connected to a card, value updated in SeedkeeperCardListener
 
     /**
      * Initializes the NFC card service with the provided command set and performs the appropriate action based on `actionType`.
@@ -93,12 +94,12 @@ object NFCCardService {
         when (actionType) {
             NfcActionType.DO_NOTHING -> {}
             NfcActionType.SCAN_CARD -> {
-                val isCardInitialized = readCard()
-                if (isCardInitialized) {
-                    verifyAndFetchCardData()
-                }
+                val isCardInitialized = readCard(isMasterCard = true)
+//                if (isCardInitialized) {
+//                    verifyAndFetchCardData()
+//                }
             }
-            NfcActionType.VERIFY_PIN -> {
+            NfcActionType.VERIFY_PIN -> { // TODO: never used?
                 verifyAndFetchCardData()
                 if (isInBackupProcess) {
                     authentikey = cmdSet.cardGetAuthentikey()
@@ -108,7 +109,7 @@ object NFCCardService {
             NfcActionType.CHANGE_PIN -> {
                 changePin()
             }
-            NfcActionType.GET_SECRETS_LIST -> {
+            NfcActionType.GET_SECRETS_LIST -> { // TODO: never used?
                 getSecretHeaderList()
             }
             NfcActionType.GENERATE_A_SECRET -> {
@@ -226,35 +227,6 @@ object NFCCardService {
     }
 
     /**
-     * Extracts and formats the card version information from the given APDU response.
-     *
-     * This method performs the following steps:
-     * 1. Retrieves the version data from the `rapdu` (APDUResponse) object.
-     * 2. Extracts the major and minor version numbers for both the protocol and the applet:
-     *    - `protocolMajorVersion`: The major version number of the protocol.
-     *    - `protocolMinorVersion`: The minor version number of the protocol.
-     *    - `appletMajorVersion`: The major version number of the applet.
-     *    - `appletMinorVersion`: The minor version number of the applet.
-     * 3. Constructs a version string in the format "protocolMajorVersion.protocolMinorVersion-appletMajorVersion.appletMinorVersion".
-     * 4. Updates the `cardAppletVersion` field with a formatted version string prefixed by "Seedkeeper v".
-     *
-     * @param rapdu The APDU response object containing the version information.
-     */
-    private fun getCardVersionString(
-        rapdu: APDUResponse
-    ) {
-        val data = rapdu.data
-        val protocolMajorVersion = data[0]
-        val protocolMinorVersion = data[1]
-        val appletMajorVersion = data[2]
-        val appletMinorVersion = data[3]
-        val versionString =
-            "$protocolMajorVersion.$protocolMinorVersion-$appletMajorVersion.$appletMinorVersion"
-        cardAppletVersion = "Seedkeeper v${versionString}"
-        cardAppletVersionInt = 256*protocolMajorVersion.toInt() + protocolMinorVersion.toInt()
-    }
-
-    /**
      * Reads and processes the data from the NFC card to determine its setup status and version.
      *
      * This method performs the following steps:
@@ -277,35 +249,77 @@ object NFCCardService {
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
      */
-    private fun readCard(): Boolean {
+    private fun readCard(isMasterCard : Boolean = true): Boolean {//TODO rename to scanCard
         try {
             SatoLog.d(TAG, "readCard Start")
             isCardDataAvailable.postValue(false)
             cmdSet.cardSelect("seedkeeper").checkOK()
+
+            // Get status
             val rapduStatus = cmdSet.cardGetStatus()
-            //cardStatus = cmdSet.applicationStatus ?: return false // todo: remove?
             val cardStatusLocal = ApplicationStatus(rapduStatus)
-            cardStatus = cardStatusLocal
-            getCardVersionString(rapduStatus) // TODO: use cardStatus instead!
-            seedkeeperStatus = null
+            if (isMasterCard){
+                cardStatus = cardStatusLocal
+                cardAppletVersion = "Seedkeeper v${cardStatusLocal.cardVersionString}"
+                cardAppletVersionInt = cardStatusLocal.protocolVersion
+            } else {
+                backupCardStatus = cardStatusLocal
+            }
+            //getCardVersionString(rapduStatus) // TODO: use cardStatus instead!
+            //seedkeeperStatus = null
             SatoLog.d(TAG, "card status: $cardStatusLocal")
             SatoLog.d(TAG, "is setup done: ${cardStatusLocal.isSetupDone}")
 
+            // check setup
             if (!cardStatusLocal.isSetupDone) {
                 SatoLog.d(TAG, "CardVersionInt: ${cardStatusLocal.getCardVersionInt()}, setup not done")
-                isSetupNeeded.postValue(true)
-                resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
+                //isSetupNeeded.postValue(true) // TODO: use resultCodeLive instead?
+                resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP) // todo: deal backup or master card
                 return false
-            } else {
-                if (cardStatusLocal.protocolVersion == 2) {
-                    authentikey = cmdSet.cardGetAuthentikey()
-                } else {
-                    authentikeyList.clear()
-                    authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
-                    checkAuthentikey()
-                }
-                isReadyForPinCode.postValue(true)
             }
+//            else {
+//                if (cardStatusLocal.protocolVersion == 2) {
+//                    authentikey = cmdSet.cardGetAuthentikey()
+//                } else {
+//                    authentikeyList.clear()
+//                    authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
+//                    checkAuthentikey()
+//                }
+//                isReadyForPinCode.postValue(true)
+//            }
+
+            // verify PIN
+            val pinResult = verifyPin(isMasterCard)
+            // TODO check pin result?
+
+            // get authentikey
+            if (isMasterCard){
+                authentikey = cmdSet.cardGetAuthentikey()
+            }else {
+                backupAuthentikey = cmdSet.cardGetAuthentikey()
+            }
+
+            // get list of secretHeaders
+            getSecretHeaderList(false)
+            //getCardLogs() // TODO: do that elsewhere
+
+            // getCardLabel
+            if (isMasterCard) cardLabel.postValue(cmdSet.cardLabel)
+
+            // get Seedkeeper Status if available (master only)
+            if (isMasterCard && cardStatusLocal.protocolVersion == 2) {
+                seedkeeperStatus = cmdSet.seedkeeperGetStatus()
+            }
+
+            // check authenticity
+            getCardAuthenticty()
+
+            // TODO: for backup card, get list of secretHeaders to backup (diff between what's on master versus backup)
+
+            // update card status
+            isCardDataAvailable.postValue(true)
+            resultCodeLive.postValue(NfcResultCode.SECRET_HEADER_LIST_SET)
+
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "readCard exception: $e")
@@ -328,7 +342,7 @@ object NFCCardService {
      *
      * If any step fails, an error is logged and authenticityStatus is updated to AuthenticityStatus.UNKNOWN.
      */
-    private fun getCardAuthenticty() {
+    private fun getCardAuthenticty() {// todo rename ?
         try {
             SatoLog.d(TAG, "getCardAuthenticty start")
             val authResults = cmdSet.cardVerifyAuthenticity()
@@ -343,7 +357,7 @@ object NFCCardService {
                 certificateList.addAll(authResults)
             }
         } catch (e: Exception) {
-            resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
+            resultCodeLive.postValue(NfcResultCode.NFC_ERROR) // TODO necessary or remove?
             authenticityStatus.postValue(AuthenticityStatus.UNKNOWN)
             SatoLog.e(TAG, "Failed to authenticate card with error: $e")
         }
@@ -362,7 +376,7 @@ object NFCCardService {
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
      */
-    private fun cardSetup() {
+    private fun cardSetup() { // todo setup for backup card?
         SatoLog.d(TAG, "cardSetup start")
         try {
             cmdSet.cardSelect("seedkeeper").checkOK()
@@ -380,15 +394,19 @@ object NFCCardService {
             } catch (error: Exception) {
                 SatoLog.e(TAG, "cardSetup: Error: $error")
             }
-            if (cardStatus.protocolVersion == 2) {
-                authentikey = cmdSet.cardGetAuthentikey()
-            } else {
-                authentikeyList.clear()
-                authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
-            }
-            checkAuthentikey()
-            verifyAndFetchCardData(false) // TODO: refactor!!
-            isSetupNeeded.postValue(false)
+
+            // TODO check authentikey match?
+
+
+//            if (cardStatus.protocolVersion == 2) {
+//                authentikey = cmdSet.cardGetAuthentikey()
+//            } else {
+//                authentikeyList.clear()
+//                authentikeyList.addAll(cmdSet.cardInitiateSecureChannel())
+//            }
+//            checkAuthentikey()
+//            verifyAndFetchCardData(false) // TODO: refactor!!
+            //isSetupNeeded.postValue(false)
             resultCodeLive.postValue(NfcResultCode.CARD_SETUP_SUCCESSFUL)
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
@@ -396,10 +414,10 @@ object NFCCardService {
             SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
-            SatoLog.e(TAG, "verifyPin exception: $e")
+            SatoLog.e(TAG, "cardSetup exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
-        SatoLog.d(TAG, "Card setup successful")
+        SatoLog.d(TAG, "cardSetup successful")
     }
 
     /**
@@ -418,7 +436,7 @@ object NFCCardService {
      *
      * @return true if the PIN is successfully verified, false otherwise.
      */
-    private fun isPinVerified(): Boolean {
+    private fun isPinVerified(): Boolean { // TODO: rename to verifyPin(backupCard)
         try {
             SatoLog.d(TAG, "verifyPin start")
             val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
@@ -452,6 +470,48 @@ object NFCCardService {
         return false
     }
 
+    private fun verifyPin(isMasterCard : Boolean = true): Boolean { // todo return pinStatus?
+        try {
+            SatoLog.d(TAG, "verifyPin start")
+            val pinBytes = if (isMasterCard) pinString?.toByteArray(Charsets.UTF_8) else backupPinString?.toByteArray(Charsets.UTF_8)
+            cmdSet.setPin0(pinBytes)
+            val rapdu = cmdSet.cardVerifyPIN()
+            when (rapdu.sw) {
+                in 0x63C1..0x63CF -> {
+                    // reset cached pin
+                    if (isMasterCard) pinString = null else backupPinString = null
+                    // return code
+                    val lastDigit = rapdu.sw and 0x000F
+                    val nfcCode = NfcResultCode.WRONG_PIN
+                    nfcCode.triesLeft = lastDigit
+                    resultCodeLive.postValue(nfcCode)
+                    SatoLog.d(TAG, "verifyPin failed, ${lastDigit} tries remaining")
+                    return false
+                }
+                0x9C0C, 0x63C0  -> {
+                    // reset cached pin
+                    if (isMasterCard) pinString = null else backupPinString = null
+                    // return code
+                    resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
+                    SatoLog.d(TAG, "verifyPin failed, card blocked!")
+                    return false
+                }
+                else -> {
+                    isReadyForPinCode.postValue(false) // todo remove?
+                    SatoLog.d(TAG, "verifyPin successful")
+                    return true
+                }
+            }
+        } catch (e: Exception) {
+            resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
+            SatoLog.e(TAG, "verifyPin exception: $e")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        }
+        return false
+    }
+
+
+
     /**
      * Verifies pin and fetches various data from the card using NFC.
      *
@@ -470,7 +530,7 @@ object NFCCardService {
      *
      * @param shouldUpdateResultCodeLive Flag to determine whether to update the result code live data.
      */
-    private fun verifyAndFetchCardData(
+    private fun verifyAndFetchCardData( // todo separate pin verification from datafetch + remove
         shouldUpdateResultCodeLive: Boolean = true
     ) : Boolean {
         val isPinVerified = isPinVerified()
@@ -480,7 +540,7 @@ object NFCCardService {
                 getCardAuthenticty()
                 getCardLogs() // TODO: do that elsewhere
                 if (cardStatus?.protocolVersion == 2) {
-                    seedkeeperStatus = cmdSet.seedkeeperGetStatus() // TODO: elsewhere
+                    seedkeeperStatus = cmdSet.seedkeeperGetStatus() // TODO: elsewhere?
                 }
             }
             cardLabel.postValue(cmdSet.cardLabel)
@@ -1080,7 +1140,7 @@ object NFCCardService {
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
      */
-    private fun backupCardSetup() {
+    private fun backupCardSetup() { // TODO merge with cardSetup()
         try {
             SatoLog.d(TAG, "backupCardSetup start")
             cmdSet.cardSelect("seedkeeper").checkOK()

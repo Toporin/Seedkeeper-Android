@@ -56,10 +56,8 @@ fun Navigation(
     context: Context,
     viewModel: SharedViewModel,
 ) {
-    val clipboardManager = LocalClipboardManager.current
     val navController = rememberNavController()
     val settings = context.getSharedPreferences("seedkeeper", Context.MODE_PRIVATE)
-    val copyText = stringResource(id = R.string.copiedToClipboard)
     val debugMode = remember {
         mutableStateOf(settings.getBoolean(SeedkeeperPreferences.DEBUG_MODE.name, false))
     }
@@ -72,10 +70,10 @@ fun Navigation(
             HomeView
         }
 
-    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
-    val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
+    //val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
 
     // NFC DIALOG
+    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     if (showNfcDialog.value) {
         NfcDialog(
             openDialogCustom = showNfcDialog,
@@ -85,16 +83,24 @@ fun Navigation(
     }
 
     // INFO DIALOG
-    if (showInfoDialog.value) {
-        InfoPopUpDialog(
-            isOpen = showInfoDialog,
-            title = R.string.cardNeedToBeScannedTitle,
-            message = R.string.cardNeedToBeScannedMessage
-        )
-    }
+//    if (showInfoDialog.value) {
+//        InfoPopUpDialog(
+//            isOpen = showInfoDialog,
+//            title = R.string.cardNeedToBeScannedTitle,
+//            message = R.string.cardNeedToBeScannedMessage
+//        )
+//    }
 
     // FIRST TIME SETUP
-    if (viewModel.isSetupNeeded) { // TODO use resultCodeLive instead?
+//    if (viewModel.isSetupNeeded) { // TODO use resultCodeLive instead?
+//        SatoLog.d(TAG, "Navigation: Card needs to be setup!")
+//        navController.navigate(
+//            NewPinCodeView(
+//                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name
+//            )
+//        )
+//    }
+    if (viewModel.resultCodeLive == NfcResultCode.REQUIRE_SETUP) {
         SatoLog.d(TAG, "Navigation: Card needs to be setup!")
         navController.navigate(
             NewPinCodeView(

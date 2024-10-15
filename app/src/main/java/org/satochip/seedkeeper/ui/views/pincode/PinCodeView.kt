@@ -28,6 +28,7 @@ import org.satochip.seedkeeper.ui.components.shared.InputPinField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.rememberImeState
 
+// TODO merge with EditPinCodeView?
 @Composable
 fun PinCodeView(
     title: Int,

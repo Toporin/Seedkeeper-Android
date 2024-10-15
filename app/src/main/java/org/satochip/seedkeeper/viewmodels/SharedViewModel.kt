@@ -33,7 +33,7 @@ import java.io.InputStreamReader
 private const val TAG = "SharedViewModel"
 
 class SharedViewModel : ViewModel() {
-    var isSetupNeeded by mutableStateOf(false)
+    //var isSetupNeeded by mutableStateOf(false) // TOOD: use resultCodeLive instead?
     var isReadyForPinCode by mutableStateOf(false)
     var secretHeaders = mutableStateListOf<SeedkeeperSecretHeader?>()
     var isCardConnected by mutableStateOf(false)
@@ -46,13 +46,10 @@ class SharedViewModel : ViewModel() {
     var cardLabel by mutableStateOf("")
     private var updateSecretsJob: Job? = null
 
-    // Factory reset
-    var factoryResetStatus by mutableStateOf(FactoryResetStatus.DEFAULT)
-
     init {
-        NFCCardService.isSetupNeeded.observeForever {
-            isSetupNeeded = it
-        }
+        //NFCCardService.isSetupNeeded.observeForever {
+        //    isSetupNeeded = it
+        //}
         NFCCardService.isReadyForPinCode.observeForever {
             isReadyForPinCode = it
         }
