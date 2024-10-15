@@ -155,15 +155,17 @@ fun ImportMnemonic(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.enterYourMnemonic),
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraLight,
+            if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(R.string.enterYourMnemonic),
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                    )
                 )
-            )
+            }
             Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
                 curValue = secret,
