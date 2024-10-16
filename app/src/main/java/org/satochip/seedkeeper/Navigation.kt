@@ -24,7 +24,6 @@ import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeStatus
-import org.satochip.seedkeeper.data.PinViewItems
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
@@ -237,13 +236,6 @@ fun Navigation(
         }
         composable<NewPinCodeView> {
             val args = it.toRoute<NewPinCodeView>()
-//            LaunchedEffect(viewModel.isCardDataAvailable) {
-//                if (viewModel.isCardDataAvailable) {
-//                    navController.navigate(HomeView) {
-//                        popUpTo(0)
-//                    }
-//                }
-//            }
             LaunchedEffect(viewModel.resultCodeLive) {
                 if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_SUCCESSFUL) {
                     navController.navigate(HomeView) {
@@ -329,11 +321,6 @@ fun Navigation(
         }
         composable<PinCodeView> {
             val args = it.toRoute<PinCodeView>()
-//            LaunchedEffect(viewModel.isCardDataAvailable) {
-//                if (viewModel.isCardDataAvailable && !viewModel.isReadyForPinCode) { // todo: remove?
-//                    navController.popBackStack()
-//                }
-//            }
             PinCodeView (
                 context = context,
                 navController = navController,
@@ -445,5 +432,4 @@ data class PinCodeView (
     val message: Int, // todo integrate as always the same?
     val placeholderText: Int = R.string.enterCurrentPinCode, // todo integrate as always the same?
     val isBackupCardScan: Boolean = false,
-    //val isPinChange: Boolean = false // TODO remove unused
 )

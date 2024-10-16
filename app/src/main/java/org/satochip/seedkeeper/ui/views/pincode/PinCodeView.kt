@@ -29,7 +29,6 @@ import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
-import org.satochip.seedkeeper.data.PinViewItems
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.InputPinField

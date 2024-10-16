@@ -116,7 +116,6 @@ fun HomeHeaderRow(
                 // RESCAN BUTTON
                 IconButton(
                     onClick = {
-                        //viewModel.setIsReadyForPinCode()
                         viewModel.setResultCodeLiveTo()
                         navController.navigate(
                             PinCodeView(
