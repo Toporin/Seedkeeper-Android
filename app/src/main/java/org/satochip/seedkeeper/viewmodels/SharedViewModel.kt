@@ -91,7 +91,11 @@ class SharedViewModel : ViewModel() {
         NFCCardService.pinString = pinString
     }
 
-    fun setIsReadyForPinCode() {
+    fun setResultCodeLiveTo(nfcResultCode: NfcResultCode = NfcResultCode.NONE) {
+        NFCCardService.resultCodeLive.postValue(nfcResultCode)
+    }
+
+    fun setIsReadyForPinCode() { // todo remove?
         NFCCardService.isReadyForPinCode.postValue(true)
     }
 

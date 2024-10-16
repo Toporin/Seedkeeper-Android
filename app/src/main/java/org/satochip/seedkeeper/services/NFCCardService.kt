@@ -36,7 +36,7 @@ object NFCCardService {
     // MASTER CARD STATE
     //var isSetupNeeded = MutableLiveData(false)
     var cardLabel = MutableLiveData("")
-    var isReadyForPinCode = MutableLiveData(false)
+    var isReadyForPinCode = MutableLiveData(false) // todo clean & remove if unnecessary?
     var isCardDataAvailable = MutableLiveData(false)
     var secretHeaders = MutableLiveData<List<SeedkeeperSecretHeader>>()
     var currentSecretObject = MutableLiveData<SeedkeeperSecretObject?>()
@@ -485,7 +485,7 @@ object NFCCardService {
                     return false
                 }
                 else -> {
-                    isReadyForPinCode.postValue(false) // todo remove?
+                    //isReadyForPinCode.postValue(false) // todo remove?
                     SatoLog.d(TAG, "verifyPin successful")
                     return true
                 }

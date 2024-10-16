@@ -285,5 +285,6 @@
     <string name="errorSecretTooLongForV1">Le secret est trop long for Seedkeeper v1 (max 255 bytes)!</string>
     <string name="errorNoCharSelected">Sélectionnez au moins un set de charactères pour la génération aléatoire</string>
     <string name="errorPlaintextExportNotAllowed">Les paramètres de ce secret ne permettent pas l\'export en clair!</string>
+    <string name="errorPinWrongFormat">PIN doit être compris entre 4 et 16 charactères</string>
 
 </resources>

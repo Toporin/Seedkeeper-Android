@@ -237,11 +237,20 @@ fun Navigation(
         }
         composable<NewPinCodeView> {
             val args = it.toRoute<NewPinCodeView>()
-            LaunchedEffect(viewModel.isCardDataAvailable) {
-                if (viewModel.isCardDataAvailable) {
+//            LaunchedEffect(viewModel.isCardDataAvailable) {
+//                if (viewModel.isCardDataAvailable) {
+//                    navController.navigate(HomeView) {
+//                        popUpTo(0)
+//                    }
+//                }
+//            }
+            LaunchedEffect(viewModel.resultCodeLive) {
+                if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_SUCCESSFUL) {
                     navController.navigate(HomeView) {
                         popUpTo(0)
                     }
+                } else {
+                    print("NewPinCodeView TODO resultCodeLive: ${viewModel.resultCodeLive}") // TODO something?
                 }
             }
             EditPinCodeView(
@@ -320,48 +329,20 @@ fun Navigation(
         }
         composable<PinCodeView> {
             val args = it.toRoute<PinCodeView>()
-            LaunchedEffect(viewModel.isCardDataAvailable) {
-                if (viewModel.isCardDataAvailable && !viewModel.isReadyForPinCode) {
-                    navController.popBackStack()
-                }
-            }
+//            LaunchedEffect(viewModel.isCardDataAvailable) {
+//                if (viewModel.isCardDataAvailable && !viewModel.isReadyForPinCode) { // todo: remove?
+//                    navController.popBackStack()
+//                }
+//            }
             PinCodeView (
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
                 title = R.string.blankTextField,
                 messageTitle = args.messageTitle,
                 message = args.message,
                 placeholderText = args.placeholderText,
                 isBackupCardScan = args.isBackupCardScan,
-                onClick = { item, pinString ->
-                    when (item) {
-                        PinViewItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                        PinViewItems.CONFIRM -> {
-                            pinString?.let {
-                                if (pinString.length >= 4) {
-                                    showNfcDialog.value = true // NfcDialog
-                                    viewModel.setNewPinString(pinString)
-                                    viewModel.scanCardForAction(
-                                        activity = context as Activity,
-                                        nfcActionType = NfcActionType.SCAN_CARD
-                                    )
-                                }
-                            }
-                        }
-                        PinViewItems.BACKUP_CARD_SCAN -> {
-                            pinString?.let {
-                                if (pinString.length >= 4) {
-                                    showNfcDialog.value = true // NfcDialog
-                                    viewModel.setNewPinString(pinString)
-                                    viewModel.scanCardForAction(
-                                        activity = context as Activity,
-                                        nfcActionType = NfcActionType.SCAN_BACKUP_CARD
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
             )
         }
         composable<BackupView> {
@@ -459,10 +440,10 @@ data class NewPinCodeView (
 
 @Serializable
 data class PinCodeView (
-    val title: Int,
-    val messageTitle: Int,
-    val message: Int,
-    val placeholderText: Int = R.string.enterCurrentPinCode,
+    val title: Int, // todo integrate as always the same?
+    val messageTitle: Int, // todo integrate as always the same?
+    val message: Int, // todo integrate as always the same?
+    val placeholderText: Int = R.string.enterCurrentPinCode, // todo integrate as always the same?
     val isBackupCardScan: Boolean = false,
-    val isPinChange: Boolean = false
+    //val isPinChange: Boolean = false // TODO remove unused
 )

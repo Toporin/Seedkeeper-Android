@@ -22,4 +22,5 @@ enum class AppErrorMsg(val msg : Int) {
     SECRET_TOO_LONG_FOR_V1(R.string.errorSecretTooLongForV1),
     NO_CHAR_SELECTED(R.string.errorNoCharSelected),
     PLAINTEXT_EXPORT_NOT_ALLOWED(R.string.errorPlaintextExportNotAllowed),
+    PIN_WRONG_FORMAT(R.string.errorPinWrongFormat),
 }

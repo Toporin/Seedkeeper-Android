@@ -1,5 +1,7 @@
 package org.satochip.seedkeeper.ui.views.pincode
 
+import android.app.Activity
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,27 +24,63 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AppErrorMsg
+import org.satochip.seedkeeper.data.NfcActionType
+import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinViewItems
+import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.InputPinField
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.rememberImeState
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 // TODO merge with EditPinCodeView?
 @Composable
 fun PinCodeView(
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
     title: Int,
     messageTitle: Int,
     message: Int,
     placeholderText: Int,
     isBackupCardScan: Boolean,
-    onClick: (PinViewItems, String?) -> Unit
 ) {
+    LaunchedEffect(viewModel.resultCodeLive) {
+        // TODO: if isBackupCardScan?
+        if (viewModel.resultCodeLive == NfcResultCode.SECRET_HEADER_LIST_SET && viewModel.isCardDataAvailable) { // todo: remove?
+            navController.popBackStack()
+        } else {
+            // todo something in other cases?
+        }
+    }
+
+    // NFC DIALOG
+    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
+    if (showNfcDialog.value) {
+        NfcDialog(
+            openDialogCustom = showNfcDialog,
+            resultCodeLive = viewModel.resultCodeLive,
+            isConnected = viewModel.isCardConnected
+        )
+    }
+
+    // error mgmt
+    val showError = remember {
+        mutableStateOf(false)
+    }
+    val appError = remember {
+        mutableStateOf(AppErrorMsg.OK)
+    }
+
     val curValue = remember {
         mutableStateOf("")
     }
     val imeState = rememberImeState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +91,7 @@ fun PinCodeView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(PinViewItems.BACK, null)
+                    navController.popBackStack()
                 },
                 titleText = title
             )
@@ -96,15 +135,36 @@ fun PinCodeView(
                     curValue = curValue,
                     placeHolder = placeholderText
                 )
+                // error msg
+                if (showError.value) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(appError.value.msg),
+                        style = TextStyle(
+                            color = Color.Red,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
                 if (imeState.value) {
                     Spacer(modifier = Modifier.height(16.dp))
                     SatoButton(
                         modifier = Modifier,
                         onClick = {
-                            if (isBackupCardScan)
-                                onClick(PinViewItems.BACKUP_CARD_SCAN, curValue.value)
-                            else
-                                onClick(PinViewItems.CONFIRM, curValue.value)
+                            if (curValue.value.toByteArray(Charsets.UTF_8).size in 4..16) {
+                                showNfcDialog.value = true // NfcDialog
+                                viewModel.setNewPinString(curValue.value)
+                                viewModel.scanCardForAction(
+                                    activity = context as Activity,
+                                    nfcActionType = if (isBackupCardScan) NfcActionType.SCAN_BACKUP_CARD else NfcActionType.SCAN_CARD
+                                )
+                            } else {
+                                appError.value = AppErrorMsg.PIN_WRONG_FORMAT
+                                showError.value = true
+                            }
                         },
                         text = R.string.confirm
                     )
@@ -114,12 +174,19 @@ fun PinCodeView(
                 SatoButton(
                     modifier = Modifier,
                     onClick = {
-                        if (isBackupCardScan)
-                            onClick(PinViewItems.BACKUP_CARD_SCAN, curValue.value)
-                        else
-                            onClick(PinViewItems.CONFIRM, curValue.value)
-                        },
-                        text = R.string.confirm
+                        if (curValue.value.toByteArray(Charsets.UTF_8).size in 4..16) {
+                            showNfcDialog.value = true // NfcDialog
+                            viewModel.setNewPinString(curValue.value)
+                            viewModel.scanCardForAction(
+                                activity = context as Activity,
+                                nfcActionType = if (isBackupCardScan) NfcActionType.SCAN_BACKUP_CARD else NfcActionType.SCAN_CARD
+                            )
+                        } else {
+                            appError.value = AppErrorMsg.PIN_WRONG_FORMAT
+                            showError.value = true
+                        }
+                    },
+                    text = R.string.confirm
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }

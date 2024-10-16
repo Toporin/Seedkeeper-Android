@@ -285,5 +285,6 @@
     <string name="errorSecretTooLongForV1">Payload is too long for Seedkeeper v1 (max 255 bytes)!</string>
     <string name="errorNoCharSelected">"Please select at least one character set"</string>
     <string name="errorPlaintextExportNotAllowed">This secret policy does not allow export in plaintext!</string>
+    <string name="errorPinWrongFormat">PIN should be between 4 and 16 characters!</string>
 
 </resources>
