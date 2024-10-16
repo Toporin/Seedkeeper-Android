@@ -789,7 +789,6 @@ object NFCCardService {
             val secretBytes = data.getSecretBytes() // todo integrate into createSecretObject
             val secretObject = createSecretObject(secretBytes, data)
             val newSecretHeader = cmdSet.seedkeeperImportSecret(secretObject)
-            //backupSecretHeaders.add(0, newSecretHeader)
             val newSecretHeaders =(secretHeaders.value ?: emptyList()).plus(newSecretHeader)
             secretHeaders.postValue(newSecretHeaders)
             resultCodeLive.postValue(NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY)
@@ -831,8 +830,6 @@ object NFCCardService {
             // verify PIN
             verifyPin(isMasterCard = true)
 
-            //checkAuthentikey()
-            //isPinVerified()
             // export secret in clear
             val exportedSecret = cmdSet.seedkeeperExportSecret(sid, null)
 
@@ -877,16 +874,12 @@ object NFCCardService {
             // verify PIN
             verifyPin(isMasterCard = true)
 
-            //checkAuthentikey()
-            //isPinVerified()
             cmdSet.seedkeeperResetSecret(sid)
 
             // update list
-            //backupSecretHeaders.removeAll { it.sid == sid }
             var newSecretHeaders =(secretHeaders.value ?: emptyList()).toMutableList()
             newSecretHeaders.removeAll{ it.sid == sid }
             secretHeaders.postValue(newSecretHeaders)
-            //secretHeaders.postValue(backupSecretHeaders)
 
             // update object
             currentSecretObject.postValue(null)
@@ -926,9 +919,6 @@ object NFCCardService {
 
             // verify PIN
             verifyPin(isMasterCard = true)
-
-            //checkAuthentikey()
-            //isPinVerified()
 
             cmdSet.setCardLabel(cardLabel)
             resultCodeLive.postValue(NfcResultCode.CARD_LABEL_CHANGED_SUCCESSFULLY)

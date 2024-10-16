@@ -2,7 +2,6 @@ package org.satochip.seedkeeper.ui.views.cardinfo
 
 import android.app.Activity
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,16 +24,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.EditPinCodeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ShowCardLogs
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.PinCodeStatus
-import org.satochip.seedkeeper.ui.components.card.CardInformationField
 import org.satochip.seedkeeper.ui.components.card.CardStatusField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
@@ -42,7 +38,6 @@ import org.satochip.seedkeeper.ui.components.shared.EditableField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
-import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.ui.theme.SatoGreen
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
