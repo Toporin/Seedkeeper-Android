@@ -156,7 +156,6 @@ fun PinCodeView(
                         onClick = {
                             if (curValue.value.toByteArray(Charsets.UTF_8).size in 4..16) {
                                 showNfcDialog.value = true // NfcDialog
-                                //viewModel.setNewPinString(curValue.value) // TODO set pin according to isBackupCardScan!
                                 viewModel.setPinStringForCard(pinString = curValue.value, isBackupCard = isBackupCardScan)
                                 viewModel.scanCardForAction(
                                     activity = context as Activity,
