@@ -33,6 +33,7 @@ import org.satochip.seedkeeper.ui.components.shared.rememberImeState
 fun EditPinCodeView(
     placeholderText: Int,
     pinCode: PinCodeStatus,
+    isBackupCard: Boolean,
     onClick: (CardInformationItems, String?) -> PinCodeStatus
 ) {
     val curValue = remember {

@@ -18,7 +18,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -314,7 +313,7 @@ fun MySecretView(
                     SatoButton(
                         modifier = Modifier.weight(1f),
                         onClick = {
-                            if (viewModel.getAppletVersionInt() == 1) {
+                            if (viewModel.getProtocolVersionInt() == 1) {
                                 isPopUpOpened.value = !isPopUpOpened.value
                             } else {
                                 // check confirm msg
@@ -332,7 +331,7 @@ fun MySecretView(
                         },
                         text = R.string.deleteSecret,
                         image = R.drawable.delete_icon,
-                        buttonColor = if (viewModel.getAppletVersionInt() == 1) SatoButtonPurple.copy(alpha = 0.6f) else SatoButtonPurple,
+                        buttonColor = if (viewModel.getProtocolVersionInt() == 1) SatoButtonPurple.copy(alpha = 0.6f) else SatoButtonPurple,
                         horizontalPadding = 1.dp
                     )
                     // Reveal button

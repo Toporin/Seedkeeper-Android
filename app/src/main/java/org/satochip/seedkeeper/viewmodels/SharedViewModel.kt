@@ -18,7 +18,6 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.BackupStatus
-import org.satochip.seedkeeper.data.FactoryResetStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -42,7 +41,7 @@ class SharedViewModel : ViewModel() {
     var authenticityStatus by mutableStateOf(AuthenticityStatus.UNKNOWN)
     var currentSecretHeader by mutableStateOf<SeedkeeperSecretHeader?>(null)
     var resultCodeLive by mutableStateOf(NfcResultCode.BUSY)
-    var backupStatusState by mutableStateOf(BackupStatus.DEFAULT)
+//    var backupStatusState by mutableStateOf(BackupStatus.DEFAULT) //TODO remove?
     var cardLabel by mutableStateOf("")
     private var updateSecretsJob: Job? = null
 
@@ -59,9 +58,9 @@ class SharedViewModel : ViewModel() {
         NFCCardService.resultCodeLive.observeForever {
             resultCodeLive = it
         }
-        NFCCardService.backupStatus.observeForever {
-            backupStatusState = it
-        }
+//        NFCCardService.backupStatus.observeForever { //TODO remove?
+//            backupStatusState = it
+//        }
         NFCCardService.isCardDataAvailable.observeForever {
             isCardDataAvailable = it
         }
@@ -86,7 +85,15 @@ class SharedViewModel : ViewModel() {
         }
     }
 
-    fun setNewPinString(pinString: String) {
+    fun setPinStringForCard(pinString: String, isBackupCard: Boolean = false) {
+        if (isBackupCard){
+            NFCCardService.backupPinString = pinString
+        } else {
+            NFCCardService.pinString = pinString
+        }
+    }
+
+    fun setNewPinString(pinString: String) { // TODO improve PIN mgmt
         NFCCardService.oldPinString = NFCCardService.pinString
         NFCCardService.pinString = pinString
     }
@@ -144,15 +151,32 @@ class SharedViewModel : ViewModel() {
         NFCCardService.currentSecretObject.postValue(null)
     }
 
-    fun setBackupStatus(backupStatus: BackupStatus) {
-        NFCCardService.backupStatus.postValue(backupStatus)
-    }
+//    fun setBackupStatus(backupStatus: BackupStatus) {
+//        NFCCardService.backupStatus.postValue(backupStatus)
+//    }
 
-    fun getAppletVersion(): String {
-       return NFCCardService.cardAppletVersion
+    fun getAppletVersionString(): String {
+       //return NFCCardService.cardAppletVersion
+        NFCCardService.cardStatus?.let { status ->
+            return status.cardVersionString
+        } ?: run {
+            return "unknown"
+        }
     }
-    fun getAppletVersionInt(): Int {
-        return NFCCardService.cardAppletVersionInt
+    fun getProtocolVersionInt(isMasterCard: Boolean = true): Int {
+        if (isMasterCard) {
+            NFCCardService.cardStatus?.let { status ->
+                return status.protocolVersion
+            } ?: run {
+                return 0
+            }
+        } else {
+            NFCCardService.backupCardStatus?.let { status ->
+                return status.protocolVersion
+            } ?: run {
+                return 0
+            }
+        }
     }
 
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {

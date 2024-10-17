@@ -103,7 +103,16 @@ fun Navigation(
         SatoLog.d(TAG, "Navigation: Card needs to be setup!")
         navController.navigate(
             NewPinCodeView(
-                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name
+                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name,
+                isBackupCard = false,
+            )
+        )
+    } else if (viewModel.resultCodeLive == NfcResultCode.REQUIRE_SETUP_FOR_BACKUP) {
+        SatoLog.d(TAG, "Navigation: Card needs to be setup!")
+        navController.navigate(
+            NewPinCodeView(
+                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name,
+                isBackupCard = true,
             )
         )
     }
@@ -241,23 +250,26 @@ fun Navigation(
                     navController.navigate(HomeView) {
                         popUpTo(0)
                     }
+                } else if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL) {
+                    // TODO redirect to BackupView?
                 } else {
-                    print("NewPinCodeView TODO resultCodeLive: ${viewModel.resultCodeLive}") // TODO something?
+                        print("NewPinCodeView TODO resultCodeLive: ${viewModel.resultCodeLive}") // TODO something?
+                    }
                 }
-            }
             EditPinCodeView(
                 placeholderText = R.string.enterPinCode,
                 pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
+                isBackupCard = args.isBackupCard,
                 onClick = { item, pinString ->
                     when (item) {
                         CardInformationItems.CONFIRM -> {
                             pinString?.let {
-                                if (pinString.length >= 4) {
+                                if (pinString.length >= 4) {// todo check max length in bytes + error mgmt
                                     showNfcDialog.value = true // NfcDialog
                                     viewModel.setNewPinString(pinString)
                                     viewModel.scanCardForAction(
                                         activity = context as Activity,
-                                        nfcActionType = NfcActionType.SETUP_CARD
+                                        nfcActionType = if (args.isBackupCard) NfcActionType.SETUP_CARD_FOR_BACKUP else NfcActionType.SETUP_CARD
                                     )
                                 }
                             }
@@ -288,6 +300,7 @@ fun Navigation(
             EditPinCodeView(
                 placeholderText = R.string.enterPinCode,
                 pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
+                isBackupCard = false,
                 onClick = { item, pinString ->
                     when (item) {
                         CardInformationItems.EDIT_PIN_CODE -> {
@@ -422,7 +435,8 @@ data class EditPinCodeView (
 
 @Serializable
 data class NewPinCodeView (
-    val pinCodeStatus: String
+    val pinCodeStatus: String,
+    val isBackupCard: Boolean = false,
 )
 
 @Serializable

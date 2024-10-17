@@ -49,10 +49,11 @@ fun PinCodeView(
     isBackupCardScan: Boolean,
 ) {
     LaunchedEffect(viewModel.resultCodeLive) {
-        // TODO: if isBackupCardScan?
-        if (viewModel.resultCodeLive == NfcResultCode.SECRET_HEADER_LIST_SET && viewModel.isCardDataAvailable) { // todo: remove?
+        if (viewModel.resultCodeLive == NfcResultCode.SECRET_HEADER_LIST_SET && viewModel.isCardDataAvailable) {
             navController.popBackStack()
-        } else {
+        } else if (viewModel.resultCodeLive == NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY) {
+            navController.popBackStack()
+        }else {
             // todo something in other cases?
         }
     }
@@ -155,7 +156,8 @@ fun PinCodeView(
                         onClick = {
                             if (curValue.value.toByteArray(Charsets.UTF_8).size in 4..16) {
                                 showNfcDialog.value = true // NfcDialog
-                                viewModel.setNewPinString(curValue.value)
+                                //viewModel.setNewPinString(curValue.value) // TODO set pin according to isBackupCardScan!
+                                viewModel.setPinStringForCard(pinString = curValue.value, isBackupCard = isBackupCardScan)
                                 viewModel.scanCardForAction(
                                     activity = context as Activity,
                                     nfcActionType = if (isBackupCardScan) NfcActionType.SCAN_BACKUP_CARD else NfcActionType.SCAN_CARD
@@ -175,7 +177,8 @@ fun PinCodeView(
                     onClick = {
                         if (curValue.value.toByteArray(Charsets.UTF_8).size in 4..16) {
                             showNfcDialog.value = true // NfcDialog
-                            viewModel.setNewPinString(curValue.value)
+                            //viewModel.setNewPinString(curValue.value) // TODO set pin according to isBackupCardScan!
+                            viewModel.setPinStringForCard(pinString = curValue.value, isBackupCard = isBackupCardScan)
                             viewModel.scanCardForAction(
                                 activity = context as Activity,
                                 nfcActionType = if (isBackupCardScan) NfcActionType.SCAN_BACKUP_CARD else NfcActionType.SCAN_CARD

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,7 @@ import org.satochip.seedkeeper.PinCodeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.NfcActionType
+import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.ui.components.backup.BackupText
 import org.satochip.seedkeeper.ui.components.backup.BackupTransferImages
 import org.satochip.seedkeeper.ui.components.backup.MainBackupButton
@@ -48,13 +50,24 @@ fun BackupView(
         )
     }
 
+    // backup flow state
+    val backupStatus = remember { //rememberSaveable {
+        mutableStateOf(BackupStatus.DEFAULT)
+    }
+
+    LaunchedEffect(viewModel.resultCodeLive) {
+        if (viewModel.resultCodeLive == NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY) {
+            backupStatus.value = BackupStatus.SECOND_STEP
+        } else if (viewModel.resultCodeLive == NfcResultCode.SECRETS_EXPORTED_SUCCESSFULLY_FROM_MASTER){
+            backupStatus.value = BackupStatus.THIRD_STEP
+        } else if (viewModel.resultCodeLive == NfcResultCode.SECRETS_EXPORTED_SUCCESSFULLY_FROM_MASTER){
+            backupStatus.value = BackupStatus.THIRD_STEP
+        }
+    }
+
     val title = remember {
         mutableIntStateOf(R.string.backup)
     }
-    val backupStatus = rememberSaveable {
-        mutableStateOf(BackupStatus.DEFAULT)
-    }
-    backupStatus.value = viewModel.backupStatusState
     when (backupStatus.value) {
         BackupStatus.FIRST_STEP -> {
             title.intValue = R.string.pairing
@@ -79,7 +92,7 @@ fun BackupView(
                     navController.navigate(HomeView) {
                         popUpTo(0)
                     }
-                    viewModel.setBackupStatus(BackupStatus.DEFAULT)
+                    backupStatus.value = BackupStatus.DEFAULT
                 },
                 titleText = title.intValue
             )
@@ -110,15 +123,15 @@ fun BackupView(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (!(backupStatus.value == BackupStatus.DEFAULT || backupStatus.value == BackupStatus.FIFTH_STEP)) {
-                        SecondaryBackupButton(
+                        SecondaryBackupButton( // todo remove or improve?
                             backupStatus = backupStatus,
                             goBack = {
-                                when (viewModel.backupStatusState) {
+                                when (backupStatus.value) {
                                     BackupStatus.FIRST_STEP -> {
-                                        viewModel.setBackupStatus(BackupStatus.DEFAULT)
+                                        backupStatus.value = BackupStatus.DEFAULT
                                     }
                                     else -> {
-                                        viewModel.setBackupStatus(BackupStatus.FIRST_STEP)
+                                        backupStatus.value = BackupStatus.FIRST_STEP
                                     }
                                 }
                             }
@@ -129,10 +142,12 @@ fun BackupView(
                         onClick = {
                             when (backupStatus.value) {
                                 BackupStatus.DEFAULT -> {
-                                    viewModel.setBackupStatus(BackupStatus.FIRST_STEP)
+                                    // simple intro, no action
+                                    backupStatus.value = BackupStatus.FIRST_STEP
+                                    viewModel.setResultCodeLiveTo(NfcResultCode.NONE)// reset resultCodeLive
                                 }
                                 BackupStatus.FIRST_STEP -> {
-                                    viewModel.setIsReadyForPinCode()
+                                    // get backup PIN then scan backup card for secret headers
                                     navController.navigate(
                                         PinCodeView(
                                             title = R.string.pinCode,
@@ -144,6 +159,7 @@ fun BackupView(
                                     )
                                 }
                                 BackupStatus.SECOND_STEP -> {
+                                    // export secrets from master card
                                     showNfcDialog.value = true // NfcDialog
                                     viewModel.scanCardForAction(
                                         activity = context as Activity,
@@ -151,10 +167,11 @@ fun BackupView(
                                     )
                                 }
                                 BackupStatus.THIRD_STEP -> {
-                                    viewModel.setBackupStatus(BackupStatus.FOURTH_STEP)
-
+                                    // prompt user to switch to backup card again, no action
+                                    backupStatus.value = BackupStatus.FOURTH_STEP
                                 }
                                 BackupStatus.FOURTH_STEP -> {
+                                    // scan backup card to import secrets from master
                                     showNfcDialog.value = true // NfcDialog
                                     viewModel.scanCardForAction(
                                         activity = context as Activity,
@@ -162,10 +179,12 @@ fun BackupView(
                                     )
                                 }
                                 BackupStatus.FIFTH_STEP -> {
+                                    // finished, back to home screen
+                                    // TODO: success/fail screen??
                                     navController.navigate(HomeView) {
                                         popUpTo(0)
                                     }
-                                    viewModel.setBackupStatus(BackupStatus.DEFAULT)
+                                    backupStatus.value = BackupStatus.DEFAULT
                                 }
                             }
                         }

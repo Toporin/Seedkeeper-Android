@@ -265,7 +265,7 @@ fun ImportMnemonic(
                         descriptor = curValueWalletDescriptor.value
                     )
 
-                    if (viewModel.getAppletVersionInt() == 1){
+                    if (viewModel.getProtocolVersionInt() == 1){
                         val payloadBytes = secretData.getSecretBytes()
                         if (payloadBytes.size > 255){
                             appError.value = AppErrorMsg.SECRET_TOO_LONG_FOR_V1

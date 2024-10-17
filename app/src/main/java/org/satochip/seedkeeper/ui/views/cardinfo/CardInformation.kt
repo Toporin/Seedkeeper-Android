@@ -76,7 +76,7 @@ fun CardInformation(
 
     val authenticityStatus = viewModel.authenticityStatus
     val cardLabel = viewModel.cardLabel
-    val cardAppletVersion = viewModel.getAppletVersion()
+    val cardAppletVersion = viewModel.getAppletVersionString()
     val cardStatus = viewModel.getSeedkeeperStatus()
     val cardAuthentikey = viewModel.getCardAuthentikey()
 
