@@ -187,10 +187,12 @@
     <string name="editPinCodeEnterNewPin">Entrez maintenant le nouveau code PIN.</string>
     <string name="editPinCodeMessage">Modifiez le code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
     <string name="enterPinCodeTitle">Saisir code PIN</string>
-    <string name="enterCurrentPinCode">Saisissez le code PIN actuel</string>
-    <string name="enterPinCodeText">Si la carte n\'est pas encore configurée, il vous sera demandé de créer un code PIN au prochain écran.</string>
+    <string name="enterMasterPinCode">Saisissez le code PIN de votre carte</string>
+    <string name="enterBackupPinCode">Saisissez le code PIN de votre carte de backup</string>
+    <string name="enterPinCodeText">Si la carte n\'est pas encore configurée, il vous sera demandé de créer votre code PIN au prochain écran.</string>
     <string name="enterPinCode">Entrez votre code PIN (4–16 caractères)</string>
-    <string name="createPinCode">Créer un code PIN</string>
+    <string name="createPinCode">Créez un code PIN pour votre carte</string>
+    <string name="createBackupPinCode">Créez un code PIN pour votre carte de backup</string>
     <string name="createPinCodeMessage">Créez un code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
     <string name="wrongPinCode">Code PIN erroné! </string>
     <string name="wrongPinCodeMessage">Les codes PIN ne correspondent pas. Veuillez réessayer.</string>

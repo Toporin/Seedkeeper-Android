@@ -187,10 +187,12 @@
     <string name="editPinCodeEnterNewPin">Enter the new PIN code</string>
     <string name="editPinCodeMessage">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="enterPinCodeTitle">Enter PIN code</string>
-    <string name="enterCurrentPinCode">Enter the current PIN code</string>
+    <string name="enterMasterPinCode">Enter the PIN code of your card</string>
+    <string name="enterBackupPinCode">Enter the PIN code of your backup card</string>
     <string name="enterPinCodeText">If the card has not been setup yet, you will be asked to create a new PIN in the next screen.</string>-->
     <string name="enterPinCode">Enter your PIN code (4–16 char)</string>
-    <string name="createPinCode">Create a PIN code</string>
+    <string name="createPinCode">Create a PIN code for your card</string>
+    <string name="createBackupPinCode">Create a PIN code for your backup card</string>
     <string name="createPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="wrongPinCode">Wrong PIN code!</string>
     <string name="wrongPinCodeMessage">The PIN code value does not match! \n please try again</string>

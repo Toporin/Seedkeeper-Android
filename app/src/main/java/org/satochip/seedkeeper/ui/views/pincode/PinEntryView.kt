@@ -131,12 +131,13 @@ fun PinEntryView(
         return true
     }
 
+    // set label texts accoring to PinCodeAction & PinCodeStatus
     when (pinCodeAction){
         PinCodeAction.ENTER_PIN_CODE -> {
             title.value = R.string.enterPinCodeTitle
             when (pinCodeStatus.value){
                 PinCodeAction.ENTER_PIN_CODE -> {
-                    messageTitle.value = R.string.enterCurrentPinCode
+                    messageTitle.value = if (isBackupCard) R.string.enterBackupPinCode else R.string.enterMasterPinCode
                     message.value = R.string.enterPinCodeText
                     buttonText.value = R.string.next
                 }
@@ -147,7 +148,7 @@ fun PinEntryView(
             title.value = R.string.setupPinTitle
             when (pinCodeStatus.value){
                 PinCodeAction.SETUP_PIN_CODE -> {
-                    messageTitle.value = R.string.createPinCode
+                    messageTitle.value = if (isBackupCard)  R.string.createBackupPinCode else R.string.createPinCode
                     message.value = R.string.createPinCodeMessage
                     buttonText.value = R.string.next
                 }
