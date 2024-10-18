@@ -31,8 +31,7 @@ import java.io.InputStreamReader
 private const val TAG = "SharedViewModel"
 
 class SharedViewModel : ViewModel() {
-    //var isSetupNeeded by mutableStateOf(false) // TOOD: use resultCodeLive instead?
-    var isReadyForPinCode by mutableStateOf(false)
+
     var secretHeaders = mutableStateListOf<SeedkeeperSecretHeader?>()
     var isCardConnected by mutableStateOf(false)
     var isCardDataAvailable by mutableStateOf(false)
@@ -40,26 +39,16 @@ class SharedViewModel : ViewModel() {
     var authenticityStatus by mutableStateOf(AuthenticityStatus.UNKNOWN)
     var currentSecretHeader by mutableStateOf<SeedkeeperSecretHeader?>(null)
     var resultCodeLive by mutableStateOf(NfcResultCode.BUSY)
-//    var backupStatusState by mutableStateOf(BackupStatus.DEFAULT) //TODO remove?
     var cardLabel by mutableStateOf("")
     private var updateSecretsJob: Job? = null
 
     init {
-        //NFCCardService.isSetupNeeded.observeForever {
-        //    isSetupNeeded = it
-        //}
-        NFCCardService.isReadyForPinCode.observeForever {
-            isReadyForPinCode = it
-        }
         NFCCardService.isConnected.observeForever {
             isCardConnected = it
         }
         NFCCardService.resultCodeLive.observeForever {
             resultCodeLive = it
         }
-//        NFCCardService.backupStatus.observeForever { //TODO remove?
-//            backupStatusState = it
-//        }
         NFCCardService.isCardDataAvailable.observeForever {
             isCardDataAvailable = it
         }
@@ -96,21 +85,8 @@ class SharedViewModel : ViewModel() {
         NFCCardService.newPinString = pinString
     }
 
-    fun setNewPinString(pinString: String) { // TODO improve PIN mgmt
-        NFCCardService.oldPinString = NFCCardService.pinString
-        NFCCardService.pinString = pinString
-    }
-
     fun setResultCodeLiveTo(nfcResultCode: NfcResultCode = NfcResultCode.NONE) {
         NFCCardService.resultCodeLive.postValue(nfcResultCode)
-    }
-
-    fun setIsReadyForPinCode() { // todo remove?
-        NFCCardService.isReadyForPinCode.postValue(true)
-    }
-
-    fun getCurrentPinString(): String {
-        return NFCCardService.pinString ?: ""
     }
 
     fun getSeedkeeperStatus(): SeedkeeperStatus? {
@@ -154,12 +130,7 @@ class SharedViewModel : ViewModel() {
         NFCCardService.currentSecretObject.postValue(null)
     }
 
-//    fun setBackupStatus(backupStatus: BackupStatus) {
-//        NFCCardService.backupStatus.postValue(backupStatus)
-//    }
-
     fun getAppletVersionString(): String {
-       //return NFCCardService.cardAppletVersion
         NFCCardService.cardStatus?.let { status ->
             return status.cardVersionString
         } ?: run {

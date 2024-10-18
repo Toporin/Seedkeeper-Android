@@ -37,13 +37,11 @@ object NFCCardService {
 
     // MASTER CARD STATE
     var cardLabel = MutableLiveData("")
-    var isReadyForPinCode = MutableLiveData(false) // todo clean & remove if unnecessary?
     var isCardDataAvailable = MutableLiveData(false)
     var secretHeaders = MutableLiveData<List<SeedkeeperSecretHeader>>()
     var currentSecretObject = MutableLiveData<SeedkeeperSecretObject?>()
     var currentSecretHeader = MutableLiveData<SeedkeeperSecretHeader?>()
     var pinString: String? = null
-    var oldPinString: String? = null// todo remove
     var newPinString: String? = null
     var seedkeeperStatus: SeedkeeperStatus? = null
     var cardLogs: MutableList<SeedkeeperLog> = mutableListOf()
@@ -139,19 +137,6 @@ object NFCCardService {
     /**
      * Initiates scanning for NFC cards and sets up the necessary NFC reader mode for the specified activity.
      *
-     * This method performs the following steps:
-     * 1. Logs the start of the card scanning process.
-     * 2. Sets the provided activity to the class property this.activity.
-     * 3. Creates an instance of NFCCardManager to manage NFC card interactions.
-     * 4. Configures the NFCCardManager to use SatochipCardListenerForAction as the card listener.
-     * 5. Starts the NFCCardManager.
-     * 6. Posts a `BUSY` status to `resultCodeLive` to indicate that the NFC scanning process is ongoing.
-     * 7. Retrieves the default `NfcAdapter` for the given activity.
-     * 8. Enables the NFC reader mode on the `NfcAdapter` with the following flags:
-     *    - `FLAG_READER_NFC_A` and `FLAG_READER_NFC_B`.
-     *    - `FLAG_READER_SKIP_NDEF_CHECK` to skip the NDEF tag check and process all NFC tags.
-     * 9. Logs the end of the method execution for debugging purposes.
-     *
      * @param activity The activity where NFC scanning should be enabled.
      */
     fun scanCardForAction(activity: Activity) {
@@ -161,7 +146,7 @@ object NFCCardService {
         cardManager.setCardListener(SatochipCardListenerForAction)
         cardManager.start()
 
-        resultCodeLive.postValue(NfcResultCode.BUSY)
+        resultCodeLive.postValue(NfcResultCode.BUSY) // indicate that the NFC scanning process is ongoing.
 
         val nfcAdapter = NfcAdapter.getDefaultAdapter(activity) //context)
         nfcAdapter?.enableReaderMode(
@@ -175,14 +160,6 @@ object NFCCardService {
 
     /**
      * Disables the NFC reader mode for the current activity to stop scanning for NFC actions.
-     *
-     * This method performs the following steps:
-     * 1. Logs the start of the disabling card reading process.
-     * 2. Checks if the `activity` is not null.
-     * 3. Checks if the `activity` is finishing. If it is, logs an error and exits the method to avoid performing operations on a finishing activity.
-     * 4. Retrieves the default `NfcAdapter` for the current activity.
-     * 5. Disables the NFC reader mode using `disableReaderMode` on the `NfcAdapter` to stop NFC tag scanning.
-     * 6. Logs a message indicating that NFC reader mode has been disabled.
      */
     fun disableScanForAction() {
         SatoLog.d(TAG, "disableScanForAction Start")
@@ -199,26 +176,6 @@ object NFCCardService {
 
     /**
      * Reads and processes the data from the NFC card to determine its setup status and version.
-     *
-     * This method performs the following steps:
-     * 1. Logs the start of the card reading process.
-     * 2. Sets isCardDataAvailable to false indicating that card data is not available at the moment.
-     * 3. Selects the "seedkeeper" card and checks for successful selection.
-     * 4. Updates cardStatus using cardGetStatus() method.
-     * 5. Calls getCardVersionString(rapduStatus) method to process and obtain the card version string from the status.
-     * 6. Sets seedkeeperStatus to null.
-     * 7. Logs the card status and whether the setup is completed.
-     * 8. Checks if the card setup is completed:
-     *    - If the setup is not done:
-     *      - Logs the card version and indicates that setup is required.
-     *      - Sets `isSetupNeeded` to `true`.
-     *      - Posts `NfcResultCode.REQUIRE_SETUP` to `resultCodeLive`.
-     *      - Exits the method.
-     *    - If the setup is done:
-     *      - Sets `isReadyForPinCode` to `true` indicating that the PIN code is required.
-     *      - Posts `NfcResultCode.OK` to `resultCodeLive` indicating successful card reading.
-     *
-     * If any step fails, an error is logged, and the appropriate result code is posted.
      */
     private fun readCard(isMasterCard : Boolean = true) {//TODO rename to scanCard
         SatoLog.d(TAG, "readCard Start")
@@ -326,17 +283,6 @@ object NFCCardService {
 
     /**
      * Verifies the authenticity of the NFC card and updates the authenticity status.
-     *
-     * This method performs the following steps:
-     * 1. Logs the start of the card authenticity verification process.
-     * 2. Obtains the authentication results from the card through cardVerifyAuthenticity() method.
-     * 3. If authentication results are obtained:
-     *    - Checks the first result of the authentication response:
-     *      - If the result is "OK", updates authenticityStatus to AuthenticityStatus.AUTHENTIC.
-     *      - Otherwise, updates authenticityStatus to AuthenticityStatus.NOT_AUTHENTIC and logs an error message indicating authentication failure.
-     *    - Clears the certificateList and adds new auth results to it.
-     *
-     * If any step fails, an error is logged and authenticityStatus is updated to AuthenticityStatus.UNKNOWN.
      */
     private fun getCardAuthenticty() {// todo rename ?
         try {
@@ -360,17 +306,7 @@ object NFCCardService {
     }
 
     /**
-     * Sets up the NFC card with the necessary configuration and PIN verification.
-     *
-     * This method performs the following steps:
-     * 1. Selects the "seedkeeper" application on the NFC card.
-     * 2. Retrieves and updates the card's application status.
-     * 3. Converts the provided PIN string into a byte array.
-     * 4. Attempts to configure the card with the given parameters (e.g., retry limit, PIN).
-     * 5. Verifies the PIN by setting it and performing a PIN verification check.
-     * 6. Updates the setup status and result codes based on the outcome of the operations.
-     *
-     * If any step fails, an error is logged, and the appropriate result code is posted.
+     * Setup the NFC card with the necessary configuration and PIN
      */
     private fun cardSetup(isMasterCard: Boolean = true) { // todo setup for backup card?
         SatoLog.d(TAG, "cardSetup start")
@@ -419,32 +355,6 @@ object NFCCardService {
             val rapdu = cmdSet.cardVerifyPIN()
             SatoLog.d(TAG, "verifyPin successful")
             return true
-//            when (rapdu.sw) {
-//                in 0x63C1..0x63CF -> {
-//                    // reset cached pin
-//                    if (isMasterCard) pinString = null else backupPinString = null
-//                    // return code
-//                    val lastDigit = rapdu.sw and 0x000F
-//                    val nfcCode = NfcResultCode.WRONG_PIN
-//                    nfcCode.triesLeft = lastDigit
-//                    resultCodeLive.postValue(nfcCode)
-//                    SatoLog.d(TAG, "verifyPin failed, ${lastDigit} tries remaining")
-//                    return false
-//                }
-//                0x9C0C, 0x63C0  -> {
-//                    // reset cached pin
-//                    if (isMasterCard) pinString = null else backupPinString = null
-//                    // return code
-//                    resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
-//                    SatoLog.d(TAG, "verifyPin failed, card blocked!")
-//                    return false
-//                }
-//                else -> {
-//                    //isReadyForPinCode.postValue(false) // todo remove?
-//                    SatoLog.d(TAG, "verifyPin successful")
-//                    return true
-//                }
-//            }
         } catch (e: WrongPINException) {
             // reset cached pin
             if (isMasterCard) pinString = null else backupPinString = null
@@ -999,25 +909,6 @@ object NFCCardService {
                     val rapduReset = cmdSet.cardVerifyPIN() // should throw!
                     SatoLog.e(TAG, "requestFactoryReset unexpected response to reset command: ${rapduReset.sw}")
                     resultCodeLive.postValue(NfcResultCode.CARD_RESET_SENT)
-
-//                    if (rapduReset.sw == 0x63C0 || rapduReset.sw == 0x9C0C) {
-//                        // PIN blocked, now block puk
-//                        do {
-//                            val rapdu = cmdSet.cardUnblockPin(pinBytes)
-//                        } while (rapdu.sw != 0xFF00) // y is visible here!
-//                        resultCodeLive.postValue(NfcResultCode.CARD_RESET)
-//                    } else if ((rapduReset.sw and 0x63C0) == 0x63C0) {
-//                        val lastDigit = (rapduReset.sw and 0x000F)
-//                        val nfcCode = NfcResultCode.CARD_RESET_SENT
-//                        nfcCode.triesLeft = lastDigit
-//                        resultCodeLive.postValue(nfcCode)
-//                    } else {
-//                        SatoLog.e(
-//                            TAG,
-//                            "requestFactoryReset unexpected response to reset command: ${rapduReset.sw}"
-//                        )
-//                        resultCodeLive.postValue(NfcResultCode.CARD_RESET_SENT)
-//                    }
                 } catch (e: WrongPINException){
                     val triesLeft = e.retryAttempts
                     if (triesLeft>0){

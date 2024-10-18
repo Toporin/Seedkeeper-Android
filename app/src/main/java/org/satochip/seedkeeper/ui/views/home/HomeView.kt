@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,7 +19,6 @@ import org.satochip.seedkeeper.data.PinCodeAction
 import org.satochip.seedkeeper.ui.components.home.HomeHeaderRow
 import org.satochip.seedkeeper.ui.components.home.SatoGradientButton
 import org.satochip.seedkeeper.ui.components.home.SatoRoundButton
-import org.satochip.seedkeeper.ui.components.shared.EditableField
 import org.satochip.seedkeeper.utils.webviewActivityIntent
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
@@ -68,12 +65,6 @@ fun HomeView(
                 ) {
                     viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
                     navController.navigate(
-//                        PinCodeView( // TODO remove
-//                            title = R.string.pinCode,
-//                            messageTitle = R.string.pinCode,
-//                            message = R.string.enterPinCodeText,
-//                            placeholderText = R.string.enterPinCode,
-//                        )
                         PinEntryView(
                             pinCodeAction = PinCodeAction.ENTER_PIN_CODE.name,
                             isBackupCard = false,

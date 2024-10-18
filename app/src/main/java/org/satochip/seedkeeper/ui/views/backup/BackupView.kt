@@ -149,13 +149,6 @@ fun BackupView(
                                 BackupStatus.FIRST_STEP -> {
                                     // get backup PIN then scan backup card for secret headers
                                     navController.navigate(
-//                                        PinCodeView(
-//                                            title = R.string.pinCode, //TODO remove
-//                                            messageTitle = R.string.pinCode,
-//                                            message = R.string.enterPinCodeText,
-//                                            placeholderText = R.string.enterPinCode,
-//                                            isBackupCardScan = true
-//                                        )
                                         PinEntryView(
                                             pinCodeAction = PinCodeAction.ENTER_PIN_CODE.name,
                                             isBackupCard = true,
@@ -184,7 +177,7 @@ fun BackupView(
                                 }
                                 BackupStatus.FIFTH_STEP -> {
                                     // finished, back to home screen
-                                    // TODO: success/fail screen??
+                                    // TODO: success/fail screen
                                     navController.navigate(HomeView) {
                                         popUpTo(0)
                                     }

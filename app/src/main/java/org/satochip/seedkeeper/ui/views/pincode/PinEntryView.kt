@@ -25,8 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import kotlinx.coroutines.delay
-import org.satochip.seedkeeper.HomeView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.NfcActionType
@@ -53,98 +51,25 @@ fun PinEntryView(
         when(pinCodeAction){
             PinCodeAction.ENTER_PIN_CODE -> {
                 if (viewModel.resultCodeLive == NfcResultCode.SECRET_HEADER_LIST_SET){
-//                    navController.navigate(HomeView) {
-//                        popUpTo(0)
-//                    }
                     navController.popBackStack()
                 } else if (viewModel.resultCodeLive == NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY){
-//                    navController.navigate(HomeView) {
-//                        popUpTo(0)
-//                    }
                     navController.popBackStack()
                 }
             }
             PinCodeAction.SETUP_PIN_CODE -> {
                 if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_SUCCESSFUL){
-//                    navController.navigate(HomeView) {
-//                        popUpTo(0)
-//                    }
                     navController.popBackStack()
                 } else if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL){
-//                    navController.navigate(HomeView) {
-//                        popUpTo(0)
-//                    }
                     navController.popBackStack()
                 }
             }
             PinCodeAction.CHANGE_PIN_CODE -> {
                 if (viewModel.resultCodeLive == NfcResultCode.PIN_CHANGED){
-//                    navController.navigate(HomeView) {
-//                        popUpTo(0)
-//                    }
                     navController.popBackStack()
                 }
             }
             else -> {} // should not happen
         }
-
-//        when (viewModel.resultCodeLive) {
-//            NfcResultCode.CARD_SETUP_SUCCESSFUL -> {
-//                navController.navigate(HomeView) {
-//                    popUpTo(0)
-//                }
-//            }
-//            NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL -> {
-//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
-//                // TODO redirect to BackupView?
-//                navController.navigate(HomeView) {
-//                    popUpTo(0)
-//                }
-//            }
-//            NfcResultCode.PIN_CHANGED -> {
-//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_CHANGED")
-//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
-//                navController.navigate(HomeView) {
-//                    popUpTo(0)
-//                }
-//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY after nvaigate home")
-//            }
-//            NfcResultCode.SECRET_HEADER_LIST_SET -> {
-//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY")
-//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
-//                navController.navigate(HomeView) {
-//                    popUpTo(0)
-//                }
-//                // reset after a delay
-//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY before delay!")
-//                delay(3000)
-//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY after delay!")
-//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
-//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY after reset resultCodeLive!")
-//            }
-//            NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY -> {
-//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
-//                navController.navigate(HomeView) {
-//                    popUpTo(0)
-//                }
-//            }
-//            NfcResultCode.WRONG_PIN -> {
-//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
-//                navController.navigate(HomeView) {
-//                    popUpTo(0)
-//                }
-//            }
-//            NfcResultCode.CARD_BLOCKED -> {
-//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
-//                navController.navigate(HomeView) {
-//                    popUpTo(0)
-//                }
-//            }
-//            else -> {
-//                // should not happen
-//                print("NewPinCodeView TODO resultCodeLive: ${viewModel.resultCodeLive}") // TODO something?
-//            }
-//        }
     }
 
     // NFC DIALOG
@@ -260,31 +185,6 @@ fun PinEntryView(
         }
     }
 
-    // TODO text depends on action and status
-//    when (pinCodeStatus.value) {
-//        PinCodeAction.ENTER_PIN_CODE -> {
-//            messageTitle.value = R.string.editPinCode
-//            message.value = R.string.editPinCodeMessage
-//            buttonText.value = R.string.next
-//        }
-//        PinCodeAction.CHANGE_PIN_CODE -> {
-//            messageTitle.value = R.string.editPinCode
-//            message.value = R.string.editPinCodeMessage
-//            buttonText.value = R.string.next
-//        }
-//        PinCodeAction.SETUP_PIN_CODE -> {
-//            curPinValue.value = ""
-//            messageTitle.value = R.string.createPinCode
-//            message.value = R.string.createPinCodeMessage
-//            buttonText.value = R.string.next
-//        }
-//        PinCodeAction.CONFIRM_PIN_CODE -> {
-//            messageTitle.value = R.string.confirmPinCode
-//            message.value = R.string.confirmPinCodeMessage
-//            buttonText.value = R.string.confirm
-//        }
-//    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -336,7 +236,8 @@ fun PinEntryView(
                 )
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // PIN field
+                // PIN field according to status
+                // We use different variables to store user PIN for the different steps
                 when (pinCodeStatus.value) {
                     PinCodeAction.ENTER_PIN_CODE -> {
                         InputPinField(
@@ -388,13 +289,6 @@ fun PinEntryView(
                     modifier = Modifier,
                     text = buttonText.value,
                     onClick = {
-                        // check PIN format
-//                        if (curPinValue.value.toByteArray(Charsets.UTF_8).size !in 4..16) {
-//                            appError.value = AppErrorMsg.PIN_WRONG_FORMAT
-//                            showError.value = true
-//                            return@SatoButton
-//                        }
-
                         // update state
                         when (pinCodeAction) {
                             PinCodeAction.ENTER_PIN_CODE -> {
@@ -471,6 +365,7 @@ fun PinEntryView(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // show a cancel button in case of error
                 if (showError.value){
                     SatoButton(
                         modifier = Modifier,

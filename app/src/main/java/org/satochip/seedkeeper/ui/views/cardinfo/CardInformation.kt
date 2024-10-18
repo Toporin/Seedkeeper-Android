@@ -189,9 +189,6 @@ fun CardInformation(
                         onClick = {
                             viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
                             navController.navigate(
-//                                EditPinCodeView( // TODO remove
-//                                    pinCodeStatus = PinCodeStatus.CURRENT_PIN_CODE.name
-//                                )
                                 PinEntryView(
                                     pinCodeAction = PinCodeAction.CHANGE_PIN_CODE.name,
                                     isBackupCard = false,
