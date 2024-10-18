@@ -120,6 +120,9 @@ object NFCCardService {
                     editCardLabel(cardLabel)
                 }
             }
+            NfcActionType.CARD_LOGS -> {
+                getCardLogs()
+            }
             NfcActionType.SCAN_BACKUP_CARD -> {
                 readCard(isMasterCard = false)
             }
@@ -232,8 +235,6 @@ object NFCCardService {
                 SatoLog.e(TAG, "readCard exception: $e")
                 SatoLog.e(TAG, Log.getStackTraceString(e))
             }
-
-            //getCardLogs() // TODO: do that elsewhere
 
             // getCardLabel
             if (isMasterCard) cardLabel.postValue(cmdSet.cardLabel)
@@ -412,10 +413,22 @@ object NFCCardService {
      * Retrieves and sets the logs from the NFC card.
      */
     private fun getCardLogs() {
+        SatoLog.d(TAG, "getCardLogs start")
         try {
-            SatoLog.d(TAG, "getCardLogs start")
+            cmdSet.cardSelect("seedkeeper").checkOK()
+
+            // check authentikey?
+            checkAuthentikey(isMasterCard = true)
+
+            // verify PIN
+            if (!verifyPin(isMasterCard = true)){return}
+
+            // get logs
             cardLogs.clear()
             cardLogs.addAll(cmdSet.seedkeeperPrintLogs(true))
+
+            resultCodeLive.postValue(NfcResultCode.CARD_LOGS_FETCHED_SUCCESSFULLY)
+            SatoLog.d(TAG, "getCardLogs successful")
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "getCardLogs exception: $e")

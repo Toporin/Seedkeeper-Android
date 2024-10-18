@@ -41,6 +41,7 @@
     <string name="secretImportedSuccessfully">Secret importé avec succès!</string>
     <string name="secretFetchedSuccessfully">Secret récupéré avec succès!</string>
     <string name="cardLabelChangedSuccessfully">L\'étiquette de la carte a été modifiée avec succès!</string>
+    <string name="cardLogsFetchedSuccessfully">Les logs de la carte ont été récupérés avec succès!</string>
     <string name="cardSuccessfullyScanned">Carte numérisée avec succès!</string>
     <string name="cardSuccessfullyBackedUp">Carte sauvegardée avec succès!</string>
     <string name="cardSetupSuccessful">Configuration de la carte réussie!</string>

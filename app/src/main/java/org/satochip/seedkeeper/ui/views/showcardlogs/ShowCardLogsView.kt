@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.showcardlogs
 
+import android.app.Activity
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.border
@@ -17,6 +18,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,8 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.NfcActionType
+import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.utils.instructionsMap
@@ -45,6 +50,25 @@ fun ShowCardLogsView(
     navController: NavHostController,
     viewModel: SharedViewModel,
 ) {
+
+    // NFC dialog
+    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
+    if (showNfcDialog.value) {
+        NfcDialog(
+            openDialogCustom = showNfcDialog,
+            resultCodeLive = viewModel.resultCodeLive,
+            isConnected = viewModel.isCardConnected
+        )
+    }
+
+    LaunchedEffect(Unit) {
+        showNfcDialog.value = true // NfcDialog
+        viewModel.scanCardForAction(
+            activity = context as Activity,
+            nfcActionType = NfcActionType.CARD_LOGS,
+        )
+    }
+
     val scrollState = rememberScrollState()
     val clipboardManager = LocalClipboardManager.current
     val copyText = stringResource(id = R.string.copiedToClipboard)

@@ -15,6 +15,7 @@ enum class  NfcResultCode(val resTitle : Int, val resMsg : Int, val resImage : I
     SECRET_IMPORTED_SUCCESSFULLY(R.string.nfcTitleSuccess, R.string.secretImportedSuccessfully, R.drawable.icon_check_gif, null),
     SECRET_FETCHED_SUCCESSFULLY(R.string.nfcTitleSuccess, R.string.secretFetchedSuccessfully, R.drawable.icon_check_gif, null), // TODO rename to SECRET_EXPORTED_SUCCESSFULLY
     CARD_LABEL_CHANGED_SUCCESSFULLY(R.string.nfcTitleSuccess, R.string.cardLabelChangedSuccessfully, R.drawable.icon_check_gif, null),
+    CARD_LOGS_FETCHED_SUCCESSFULLY(R.string.nfcTitleSuccess, R.string.cardLogsFetchedSuccessfully, R.drawable.icon_check_gif, null),
     CARD_SETUP_SUCCESSFUL(R.string.nfcTitleSuccess, R.string.cardSetupSuccessful, R.drawable.icon_check_gif, null),
     CARD_SETUP_FOR_BACKUP_SUCCESSFUL(R.string.nfcTitleSuccess, R.string.cardSetupSuccessful, R.drawable.icon_check_gif, null),
     CARD_SUCCESSFULLY_SCANNED(R.string.nfcTitleSuccess, R.string.cardSuccessfullyScanned, R.drawable.icon_check_gif, null),
