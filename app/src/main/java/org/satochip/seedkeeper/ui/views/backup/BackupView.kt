@@ -60,8 +60,8 @@ fun BackupView(
             backupStatus.value = BackupStatus.SECOND_STEP
         } else if (viewModel.resultCodeLive == NfcResultCode.SECRETS_EXPORTED_SUCCESSFULLY_FROM_MASTER){
             backupStatus.value = BackupStatus.THIRD_STEP
-        } else if (viewModel.resultCodeLive == NfcResultCode.SECRETS_EXPORTED_SUCCESSFULLY_FROM_MASTER){
-            backupStatus.value = BackupStatus.THIRD_STEP
+        } else if (viewModel.resultCodeLive == NfcResultCode.CARD_SUCCESSFULLY_BACKED_UP){
+            backupStatus.value = BackupStatus.FIFTH_STEP
         }
     }
 
