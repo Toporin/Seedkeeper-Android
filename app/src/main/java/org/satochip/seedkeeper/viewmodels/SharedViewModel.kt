@@ -24,6 +24,7 @@ import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.StringConstants
 import org.satochip.seedkeeper.services.NFCCardService
 import org.satochip.seedkeeper.services.SatoLog
+import org.satochip.seedkeeper.utils.bytesToHex
 import org.satochip.seedkeeper.utils.isFrench
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -97,13 +98,20 @@ class SharedViewModel : ViewModel() {
         return NFCCardService.cardStatus
     }
 
-    fun getCardAuthentikey(): String {
-        val authentikey = NFCCardService.authentikey
-        var hexString = ""
-        authentikey?.let {
-            hexString = authentikey.joinToString(separator = "") { byte -> "%02x".format(byte) }
+    fun getAuthentikeyDescription() : String {
+        NFCCardService.authentikey?.let { authentikeyBytes ->
+            val authentikeySecretBytes = ByteArray(authentikeyBytes.size + 1)
+            authentikeySecretBytes[0] = authentikeyBytes.size.toByte()
+            System.arraycopy(authentikeyBytes, 0, authentikeySecretBytes, 1, authentikeyBytes.size)
+            // compute fingerprint for secret
+            val authentikeyFingerprintBytes =
+                SeedkeeperSecretHeader.getFingerprintBytes(authentikeySecretBytes)
+            // create string
+            val authentikeyString = "#${bytesToHex(authentikeyFingerprintBytes)}:${bytesToHex(authentikeyBytes)}"
+            return authentikeyString
+        } ?: run{
+            return ""
         }
-        return hexString
     }
 
     fun getCardLogs(): List<SeedkeeperLog> {

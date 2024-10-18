@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.seedkeeper.PinEntryView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ShowCardLogs
@@ -32,6 +33,7 @@ import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeAction
+import org.satochip.seedkeeper.services.NFCCardService
 import org.satochip.seedkeeper.ui.components.card.CardStatusField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
@@ -40,6 +42,7 @@ import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SatoGreen
+import org.satochip.seedkeeper.utils.bytesToHex
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
@@ -79,7 +82,7 @@ fun CardInformation(
     val cardLabel = viewModel.cardLabel
     val cardAppletVersion = viewModel.getAppletVersionString()
     val cardStatus = viewModel.getSeedkeeperStatus()
-    val cardAuthentikey = viewModel.getCardAuthentikey()
+    val cardAuthentikey = viewModel.getAuthentikeyDescription()
 
      when (authenticityStatus) {
         AuthenticityStatus.AUTHENTIC -> {
