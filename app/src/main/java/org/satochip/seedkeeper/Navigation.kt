@@ -1,16 +1,13 @@
 package org.satochip.seedkeeper
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,27 +16,22 @@ import androidx.navigation.toRoute
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 import org.satochip.seedkeeper.data.AddSecretItems
-import org.satochip.seedkeeper.data.BackupStatus
-import org.satochip.seedkeeper.data.CardInformationItems
-import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
-import org.satochip.seedkeeper.data.PinCodeStatus
+import org.satochip.seedkeeper.data.PinCodeAction
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
-import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.theme.SatoGray
 import org.satochip.seedkeeper.ui.views.addsecret.AddSecretView
 import org.satochip.seedkeeper.ui.views.backup.BackupView
 import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
-import org.satochip.seedkeeper.ui.views.pincode.EditPinCodeView
 import org.satochip.seedkeeper.ui.views.factoryreset.FactoryResetView
 import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.import.ImportSecretView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.mysecret.MySecretView
-import org.satochip.seedkeeper.ui.views.pincode.PinCodeView
+import org.satochip.seedkeeper.ui.views.pincode.PinEntryView
 import org.satochip.seedkeeper.ui.views.settings.SettingsView
 import org.satochip.seedkeeper.ui.views.showcardlogs.ShowCardLogsView
 import org.satochip.seedkeeper.ui.views.showlogs.ShowLogsView
@@ -69,8 +61,6 @@ fun Navigation(
             HomeView
         }
 
-    //val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
-
     // NFC DIALOG
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     if (showNfcDialog.value) {
@@ -81,37 +71,28 @@ fun Navigation(
         )
     }
 
-    // INFO DIALOG
-//    if (showInfoDialog.value) {
-//        InfoPopUpDialog(
-//            isOpen = showInfoDialog,
-//            title = R.string.cardNeedToBeScannedTitle,
-//            message = R.string.cardNeedToBeScannedMessage
-//        )
-//    }
-
     // FIRST TIME SETUP
-//    if (viewModel.isSetupNeeded) { // TODO use resultCodeLive instead?
-//        SatoLog.d(TAG, "Navigation: Card needs to be setup!")
-//        navController.navigate(
-//            NewPinCodeView(
-//                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name
-//            )
-//        )
-//    }
     if (viewModel.resultCodeLive == NfcResultCode.REQUIRE_SETUP) {
         SatoLog.d(TAG, "Navigation: Card needs to be setup!")
         navController.navigate(
-            NewPinCodeView(
-                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name,
+//            NewPinCodeView(
+//                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name,
+//                isBackupCard = false,
+//            )
+            PinEntryView(
+                pinCodeAction = PinCodeAction.SETUP_PIN_CODE.name,
                 isBackupCard = false,
             )
         )
     } else if (viewModel.resultCodeLive == NfcResultCode.REQUIRE_SETUP_FOR_BACKUP) {
         SatoLog.d(TAG, "Navigation: Card needs to be setup!")
         navController.navigate(
-            NewPinCodeView(
-                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name,
+//            NewPinCodeView(
+//                pinCodeStatus = PinCodeStatus.INPUT_NEW_PIN_CODE.name,
+//                isBackupCard = true,
+//            )
+            PinEntryView(
+                pinCodeAction = PinCodeAction.SETUP_PIN_CODE.name,
                 isBackupCard = true,
             )
         )
@@ -243,108 +224,118 @@ fun Navigation(
                 viewModel = viewModel,
             )
         }
-        composable<NewPinCodeView> {
-            val args = it.toRoute<NewPinCodeView>()
-            LaunchedEffect(viewModel.resultCodeLive) {
-                if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_SUCCESSFUL) {
-                    navController.navigate(HomeView) {
-                        popUpTo(0)
-                    }
-                } else if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL) {
-                    // TODO redirect to BackupView?
-                } else {
-                        print("NewPinCodeView TODO resultCodeLive: ${viewModel.resultCodeLive}") // TODO something?
-                    }
-                }
-            EditPinCodeView(
-                placeholderText = R.string.enterPinCode,
-                pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
-                isBackupCard = args.isBackupCard,
-                onClick = { item, pinString ->
-                    when (item) {
-                        CardInformationItems.CONFIRM -> {
-                            pinString?.let {
-                                if (pinString.length >= 4) {// todo check max length in bytes + error mgmt
-                                    showNfcDialog.value = true // NfcDialog
-                                    viewModel.setNewPinString(pinString)
-                                    viewModel.scanCardForAction(
-                                        activity = context as Activity,
-                                        nfcActionType = if (args.isBackupCard) NfcActionType.SETUP_CARD_FOR_BACKUP else NfcActionType.SETUP_CARD
-                                    )
-                                }
-                            }
-                        }
-                        CardInformationItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                        else -> {}
-                    }
-                    return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
-                }
-            )
-        }
-        composable<EditPinCodeView> {
-            val args = it.toRoute<EditPinCodeView>()
-            LaunchedEffect(viewModel.resultCodeLive) {
-                when (viewModel.resultCodeLive) {
-                    NfcResultCode.PIN_CHANGED -> {
-                        navController.navigate(HomeView) {
-                            popUpTo(0)
-                        }
-                    }
-                    else -> {}
-                }
-            }
-
-            val wrongPinText = stringResource(id = R.string.wrongPinCode)
-            EditPinCodeView(
-                placeholderText = R.string.enterPinCode,
-                pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
-                isBackupCard = false,
-                onClick = { item, pinString ->
-                    when (item) {
-                        CardInformationItems.EDIT_PIN_CODE -> {
-                            if (pinString == viewModel.getCurrentPinString()) {
-                                return@EditPinCodeView PinCodeStatus.INPUT_NEW_PIN_CODE
-                            } else {
-                                Toast.makeText(context, wrongPinText, Toast.LENGTH_SHORT).show()
-                                return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
-                            }
-                        }
-                        CardInformationItems.CONFIRM -> {
-                            pinString?.let {
-                                if (pinString.length >= 4) {
-                                    showNfcDialog.value = true // NfcDialog
-                                    viewModel.setNewPinString(pinString)
-                                    viewModel.scanCardForAction(
-                                        activity = context as Activity,
-                                        nfcActionType = NfcActionType.CHANGE_PIN
-                                    )
-                                }
-                            }
-                        }
-                        CardInformationItems.BACK -> {
-                            navController.popBackStack()
-                        }
-                        else -> {}
-                    }
-                    return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
-                }
-            )
-        }
-        composable<PinCodeView> {
-            val args = it.toRoute<PinCodeView>()
-            PinCodeView (
+        composable<PinEntryView> {
+            val args = it.toRoute<PinEntryView>()
+            PinEntryView(
                 context = context,
                 navController = navController,
                 viewModel = viewModel,
-                title = R.string.blankTextField,
-                messageTitle = args.messageTitle,
-                message = args.message,
-                placeholderText = args.placeholderText,
-                isBackupCardScan = args.isBackupCardScan,
+                pinCodeAction = PinCodeAction.valueOf(args.pinCodeAction),
+                isBackupCard = args.isBackupCard,
             )
         }
+//        composable<NewPinCodeView> {
+//            val args = it.toRoute<NewPinCodeView>()
+//            LaunchedEffect(viewModel.resultCodeLive) {
+//                if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_SUCCESSFUL) {
+//                    navController.navigate(HomeView) {
+//                        popUpTo(0)
+//                    }
+//                } else if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL) {
+//                    // TODO redirect to BackupView?
+//                } else {
+//                    print("NewPinCodeView TODO resultCodeLive: ${viewModel.resultCodeLive}") // TODO something?
+//                }
+//            }
+//            EditPinCodeView(
+//                placeholderText = R.string.enterPinCode,
+//                pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
+//                isBackupCard = args.isBackupCard,
+//                onClick = { item, pinString ->
+//                    when (item) {
+//                        CardInformationItems.CONFIRM -> {
+//                            pinString?.let {
+//                                if (pinString.length >= 4) {// todo check max length in bytes + error mgmt
+//                                    showNfcDialog.value = true // NfcDialog
+//                                    viewModel.setNewPinString(pinString)
+//                                    viewModel.scanCardForAction(
+//                                        activity = context as Activity,
+//                                        nfcActionType = if (args.isBackupCard) NfcActionType.SETUP_CARD_FOR_BACKUP else NfcActionType.SETUP_CARD
+//                                    )
+//                                }
+//                            }
+//                        }
+//                        CardInformationItems.BACK -> {
+//                            navController.popBackStack()
+//                        }
+//                        else -> {}
+//                    }
+//                    return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
+//                }
+//            )
+//        }
+//        composable<EditPinCodeView> {
+//            val args = it.toRoute<EditPinCodeView>()
+//            LaunchedEffect(viewModel.resultCodeLive) {
+//                when (viewModel.resultCodeLive) {
+//                    NfcResultCode.PIN_CHANGED -> {
+//                        navController.navigate(HomeView) {
+//                            popUpTo(0)
+//                        }
+//                    }
+//                    else -> {}
+//                }
+//            }
+//
+//            val wrongPinText = stringResource(id = R.string.wrongPinCode)
+//            EditPinCodeView(
+//                placeholderText = R.string.enterPinCode,
+//                pinCode = PinCodeStatus.valueOf(args.pinCodeStatus),
+//                isBackupCard = false,
+//                onClick = { item, pinString ->
+//                    when (item) {
+//                        CardInformationItems.EDIT_PIN_CODE -> {
+//                            if (pinString == viewModel.getCurrentPinString()) {
+//                                return@EditPinCodeView PinCodeStatus.INPUT_NEW_PIN_CODE
+//                            } else {
+//                                Toast.makeText(context, wrongPinText, Toast.LENGTH_SHORT).show()
+//                                return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
+//                            }
+//                        }
+//                        CardInformationItems.CONFIRM -> {
+//                            pinString?.let {
+//                                if (pinString.length >= 4) {// todo check byte length <=16
+//                                    showNfcDialog.value = true // NfcDialog
+//                                    viewModel.setNewPinString(pinString)
+//                                    viewModel.scanCardForAction(
+//                                        activity = context as Activity,
+//                                        nfcActionType = NfcActionType.CHANGE_PIN
+//                                    )
+//                                }
+//                            }
+//                        }
+//                        CardInformationItems.BACK -> {
+//                            navController.popBackStack()
+//                        }
+//                        else -> {}
+//                    }
+//                    return@EditPinCodeView PinCodeStatus.CURRENT_PIN_CODE
+//                }
+//            )
+//        }
+//        composable<PinCodeView> {
+//            val args = it.toRoute<PinCodeView>()
+//            PinCodeView (
+//                context = context,
+//                navController = navController,
+//                viewModel = viewModel,
+//                title = R.string.blankTextField,
+//                messageTitle = args.messageTitle,
+//                message = args.message,
+//                placeholderText = args.placeholderText,
+//                isBackupCardScan = args.isBackupCardScan,
+//            )
+//        }
         composable<BackupView> {
             BackupView(
                 context = context,
@@ -429,21 +420,27 @@ object FactoryResetView
 object MySecretView
 
 @Serializable
-data class EditPinCodeView (
-    val pinCodeStatus: String
-)
-
-@Serializable
-data class NewPinCodeView (
-    val pinCodeStatus: String,
+data class PinEntryView (
+    val pinCodeAction: String,
     val isBackupCard: Boolean = false,
 )
 
-@Serializable
-data class PinCodeView (
-    val title: Int, // todo integrate as always the same?
-    val messageTitle: Int, // todo integrate as always the same?
-    val message: Int, // todo integrate as always the same?
-    val placeholderText: Int = R.string.enterCurrentPinCode, // todo integrate as always the same?
-    val isBackupCardScan: Boolean = false,
-)
+//@Serializable
+//data class EditPinCodeView ( // TODO deprecate
+//    val pinCodeStatus: String
+//)
+
+//@Serializable
+//data class NewPinCodeView ( // TODO deprecate
+//    val pinCodeStatus: String,
+//    val isBackupCard: Boolean = false,
+//)
+
+//@Serializable
+//data class PinCodeView ( // TODO deprecate
+//    val title: Int, // todo integrate as always the same?
+//    val messageTitle: Int, // todo integrate as always the same?
+//    val message: Int, // todo integrate as always the same?
+//    val placeholderText: Int = R.string.enterCurrentPinCode, // todo integrate as always the same?
+//    val isBackupCardScan: Boolean = false,
+//)

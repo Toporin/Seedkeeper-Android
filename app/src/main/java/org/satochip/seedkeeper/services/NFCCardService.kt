@@ -16,6 +16,10 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperSecretOrigin
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.client.seedkeeper.SeedkeeperStatus
+import org.satochip.io.APDUResponse
+import org.satochip.io.WrongPINException
+import org.satochip.io.BlockedPINException
+import org.satochip.io.ResetToFactoryException
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
@@ -39,7 +43,8 @@ object NFCCardService {
     var currentSecretObject = MutableLiveData<SeedkeeperSecretObject?>()
     var currentSecretHeader = MutableLiveData<SeedkeeperSecretHeader?>()
     var pinString: String? = null
-    var oldPinString: String? = null
+    var oldPinString: String? = null// todo remove
+    var newPinString: String? = null
     var seedkeeperStatus: SeedkeeperStatus? = null
     var cardLogs: MutableList<SeedkeeperLog> = mutableListOf()
     var authenticityStatus = MutableLiveData(AuthenticityStatus.UNKNOWN)
@@ -87,6 +92,7 @@ object NFCCardService {
                 readCard(isMasterCard = true)
             }
             NfcActionType.CHANGE_PIN -> {
+                SatoLog.d(TAG, "initialize NfcActionType.CHANGE_PIN")
                 changePin()
             }
             NfcActionType.GENERATE_A_SECRET -> { // TODO rename to IMPORT_SECRET
@@ -214,7 +220,7 @@ object NFCCardService {
      *
      * If any step fails, an error is logged, and the appropriate result code is posted.
      */
-    private fun readCard(isMasterCard : Boolean = true): Boolean {//TODO rename to scanCard
+    private fun readCard(isMasterCard : Boolean = true) {//TODO rename to scanCard
         SatoLog.d(TAG, "readCard Start")
         try {
             isCardDataAvailable.postValue(false)
@@ -238,12 +244,11 @@ object NFCCardService {
                 } else {
                     resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP_FOR_BACKUP)
                 }
-                return false
+                return
             }
 
             // verify PIN
-            verifyPin(isMasterCard)
-            // TODO check pin result?
+            if (!verifyPin(isMasterCard)){return}
 
             // get authentikey
             if (isMasterCard){
@@ -316,7 +321,7 @@ object NFCCardService {
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
         SatoLog.d(TAG, "readCard finished successfully")
-        return true
+        return
     }
 
     /**
@@ -388,7 +393,7 @@ object NFCCardService {
                 resultCodeLive.postValue(NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL)
             }
         } catch (e: Exception) {
-            resultCodeLive.postValue(NfcResultCode.WRONG_PIN)
+            resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "cardSetup exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
@@ -412,32 +417,51 @@ object NFCCardService {
             val pinBytes = if (isMasterCard) pinString?.toByteArray(Charsets.UTF_8) else backupPinString?.toByteArray(Charsets.UTF_8)
             cmdSet.setPin0(pinBytes)
             val rapdu = cmdSet.cardVerifyPIN()
-            when (rapdu.sw) {
-                in 0x63C1..0x63CF -> {
-                    // reset cached pin
-                    if (isMasterCard) pinString = null else backupPinString = null
-                    // return code
-                    val lastDigit = rapdu.sw and 0x000F
-                    val nfcCode = NfcResultCode.WRONG_PIN
-                    nfcCode.triesLeft = lastDigit
-                    resultCodeLive.postValue(nfcCode)
-                    SatoLog.d(TAG, "verifyPin failed, ${lastDigit} tries remaining")
-                    return false
-                }
-                0x9C0C, 0x63C0  -> {
-                    // reset cached pin
-                    if (isMasterCard) pinString = null else backupPinString = null
-                    // return code
-                    resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
-                    SatoLog.d(TAG, "verifyPin failed, card blocked!")
-                    return false
-                }
-                else -> {
-                    //isReadyForPinCode.postValue(false) // todo remove?
-                    SatoLog.d(TAG, "verifyPin successful")
-                    return true
-                }
-            }
+            SatoLog.d(TAG, "verifyPin successful")
+            return true
+//            when (rapdu.sw) {
+//                in 0x63C1..0x63CF -> {
+//                    // reset cached pin
+//                    if (isMasterCard) pinString = null else backupPinString = null
+//                    // return code
+//                    val lastDigit = rapdu.sw and 0x000F
+//                    val nfcCode = NfcResultCode.WRONG_PIN
+//                    nfcCode.triesLeft = lastDigit
+//                    resultCodeLive.postValue(nfcCode)
+//                    SatoLog.d(TAG, "verifyPin failed, ${lastDigit} tries remaining")
+//                    return false
+//                }
+//                0x9C0C, 0x63C0  -> {
+//                    // reset cached pin
+//                    if (isMasterCard) pinString = null else backupPinString = null
+//                    // return code
+//                    resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
+//                    SatoLog.d(TAG, "verifyPin failed, card blocked!")
+//                    return false
+//                }
+//                else -> {
+//                    //isReadyForPinCode.postValue(false) // todo remove?
+//                    SatoLog.d(TAG, "verifyPin successful")
+//                    return true
+//                }
+//            }
+        } catch (e: WrongPINException) {
+            // reset cached pin
+            if (isMasterCard) pinString = null else backupPinString = null
+            // return code
+            val lastDigit = e.retryAttempts
+            val nfcCode = NfcResultCode.WRONG_PIN
+            nfcCode.triesLeft = lastDigit
+            resultCodeLive.postValue(nfcCode)
+            SatoLog.d(TAG, "verifyPin wrong PIN, ${lastDigit} tries remaining")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        } catch (e: BlockedPINException) {
+            // reset cached pin
+            if (isMasterCard) pinString = null else backupPinString = null
+            // return code
+            resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
+            SatoLog.d(TAG, "verifyPin PIN blocked")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "verifyPin exception: $e")
@@ -492,33 +516,53 @@ object NFCCardService {
      * Changes the PIN on the NFC card to a new one provided by the user.
      */
     private fun changePin() {
+        SatoLog.d(TAG, "changePin start")
         try {
-            SatoLog.d(TAG, "changePin start")
             cmdSet.cardSelect("seedkeeper").checkOK()
             val pinBytes = pinString?.toByteArray(Charsets.UTF_8)
-            val oldPinBytes = oldPinString?.toByteArray(Charsets.UTF_8) // todo rename newPin?
+            //val oldPinBytes = oldPinString?.toByteArray(Charsets.UTF_8) // todo rename newPin?
+            val newPinBytes = newPinString?.toByteArray(Charsets.UTF_8) // todo rename newPin?
 
             // check authentikey
             checkAuthentikey(isMasterCard = true)
 
             // change PIN
-            cmdSet.changeCardPin(oldPinBytes, pinBytes)
+            //cmdSet.changeCardPin(oldPinBytes, pinBytes)
+            val rapdu = cmdSet.cardChangePin(pinBytes, newPinBytes)
+            // update pin
+            pinString = newPinString
 
             // verify PIN required after change pin?
-            verifyPin(isMasterCard = true)
+            if (!verifyPin(isMasterCard = true)){return}
 
             resultCodeLive.postValue(NfcResultCode.PIN_CHANGED)
+            SatoLog.d(TAG, "changePin successful")
 
+        } catch (e: WrongPINException) {
+            pinString = null
+            newPinString = null
+            val lastDigit = e.retryAttempts
+            val nfcCode = NfcResultCode.WRONG_PIN
+            nfcCode.triesLeft = lastDigit
+            resultCodeLive.postValue(nfcCode)
+            SatoLog.d(TAG, "changePin wrong PIN, ${lastDigit} tries remaining")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
+        } catch (e: BlockedPINException) {
+            pinString = null
+            newPinString = null
+            resultCodeLive.postValue(NfcResultCode.CARD_BLOCKED)
+            SatoLog.d(TAG, "changePin PIN blocked")
+            SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
-            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, "changePin card mismatch exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "changePin exception: $e")
+            SatoLog.e(TAG, "changePin changePin exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
-        SatoLog.d(TAG, "changePin successful")
+
     }
 
     /**
@@ -572,8 +616,8 @@ object NFCCardService {
             // check authentikey
             checkAuthentikey(isMasterCard = true)
 
-            // verify PIN
-            verifyPin(isMasterCard = true)
+            // verify PIN or stop
+            if (!verifyPin(isMasterCard = true)){return}
 
             // create secret object for import
             val secretBytes = data.getSecretBytes() // todo integrate into createSecretObject
@@ -609,7 +653,7 @@ object NFCCardService {
             checkAuthentikey(isMasterCard = true)
 
             // verify PIN
-            verifyPin(isMasterCard = true)
+            if (!verifyPin(isMasterCard = true)){return null}
 
             // export secret in clear
             val exportedSecret = cmdSet.seedkeeperExportSecret(sid, null)
@@ -646,7 +690,7 @@ object NFCCardService {
             // todo check card version? (already done in MySecretView)
 
             // verify PIN
-            verifyPin(isMasterCard = true)
+            if (!verifyPin(isMasterCard = true)){return}
 
             cmdSet.seedkeeperResetSecret(sid)
 
@@ -685,7 +729,7 @@ object NFCCardService {
             checkAuthentikey(isMasterCard = true)
 
             // verify PIN
-            verifyPin(isMasterCard = true)
+            if (!verifyPin(isMasterCard = true)){return}
 
             cmdSet.setCardLabel(cardLabel)
             resultCodeLive.postValue(NfcResultCode.CARD_LABEL_CHANGED_SUCCESSFULLY)
@@ -721,7 +765,7 @@ object NFCCardService {
             checkAuthentikey(isMasterCard = false)
 
             // verify PIN
-            verifyPin(isMasterCard = false)
+            if (!verifyPin(isMasterCard = false)){return}
 
             //  check if master authentikey is already stored in backup card, else import  it
             val masterAuthentikeySecretHeader = authentikey?.let { authentikey ->
@@ -867,7 +911,7 @@ object NFCCardService {
             checkAuthentikey(isMasterCard = true)
 
             // verify PIN
-            verifyPin(isMasterCard = true)
+            if (!verifyPin(isMasterCard = true)){return}
 
             //  check if backup authentikey is already stored in master card, else import  it
             val backupAuthentikeySecretHeader = backupAuthentikey?.let { backupAuthentikey ->
@@ -946,31 +990,65 @@ object NFCCardService {
             }
 
             if (cardStatus.protocolVersion >= 2) {
-                val allowedChars = ('0'..'9')
-                val randomString = (1..6)
-                    .map { allowedChars.random() }
-                    .joinToString("")
-
                 SatoLog.d(TAG, "requestFactoryReset block pin")
+                val allowedChars = ('0'..'9')
+                val randomString = (1..6).map { allowedChars.random() }.joinToString("")
                 val pinBytes = randomString.toByteArray(Charsets.UTF_8)
-                cmdSet.setPin0(pinBytes)
-                val rapduReset = cmdSet.cardVerifyPIN()
-                if (rapduReset.sw == 0x63C0 ||  rapduReset.sw == 0x9C0C){
-                    // PIN blocked, now block puk
-                    do {
-                        val rapdu = cmdSet.cardUnblockPin(pinBytes)
-                    } while (rapdu.sw != 0xFF00) // y is visible here!
-                    resultCodeLive.postValue(NfcResultCode.CARD_RESET)
-                } else if ((rapduReset.sw and 0x63C0) == 0x63C0 ){
-                    val lastDigit = (rapduReset.sw and 0x000F)
-                    val nfcCode = NfcResultCode.CARD_RESET_SENT
-                    nfcCode.triesLeft = lastDigit
-                    resultCodeLive.postValue(nfcCode)
-                } else {
+                try {
+                    cmdSet.setPin0(pinBytes)
+                    val rapduReset = cmdSet.cardVerifyPIN() // should throw!
                     SatoLog.e(TAG, "requestFactoryReset unexpected response to reset command: ${rapduReset.sw}")
                     resultCodeLive.postValue(NfcResultCode.CARD_RESET_SENT)
+
+//                    if (rapduReset.sw == 0x63C0 || rapduReset.sw == 0x9C0C) {
+//                        // PIN blocked, now block puk
+//                        do {
+//                            val rapdu = cmdSet.cardUnblockPin(pinBytes)
+//                        } while (rapdu.sw != 0xFF00) // y is visible here!
+//                        resultCodeLive.postValue(NfcResultCode.CARD_RESET)
+//                    } else if ((rapduReset.sw and 0x63C0) == 0x63C0) {
+//                        val lastDigit = (rapduReset.sw and 0x000F)
+//                        val nfcCode = NfcResultCode.CARD_RESET_SENT
+//                        nfcCode.triesLeft = lastDigit
+//                        resultCodeLive.postValue(nfcCode)
+//                    } else {
+//                        SatoLog.e(
+//                            TAG,
+//                            "requestFactoryReset unexpected response to reset command: ${rapduReset.sw}"
+//                        )
+//                        resultCodeLive.postValue(NfcResultCode.CARD_RESET_SENT)
+//                    }
+                } catch (e: WrongPINException){
+                    val triesLeft = e.retryAttempts
+                    if (triesLeft>0){
+                        val nfcCode = NfcResultCode.CARD_RESET_SENT
+                        nfcCode.triesLeft = triesLeft
+                        resultCodeLive.postValue(nfcCode)
+                        return
+                    } else {
+                        // PIN blocked, now block puk
+                        while (true) {
+                            try {
+                                cmdSet.cardUnblockPin(pinBytes)
+                            } catch (e: WrongPINException) {
+                            } catch (e: ResetToFactoryException) {
+                                resultCodeLive.postValue(NfcResultCode.CARD_RESET)
+                                return
+                            }
+                        }
+                    }
+                } catch (e: BlockedPINException) {
+                    // PIN blocked, now block puk
+                    while (true) {
+                        try {
+                            cmdSet.cardUnblockPin(pinBytes)
+                        } catch (e: WrongPINException) {
+                        } catch (e: ResetToFactoryException) {
+                            resultCodeLive.postValue(NfcResultCode.CARD_RESET)
+                            return
+                        }
+                    }
                 }
-                return
             } else {
                 // factory reset V1
                 val rapduReset = cmdSet.cardSendResetCommand()

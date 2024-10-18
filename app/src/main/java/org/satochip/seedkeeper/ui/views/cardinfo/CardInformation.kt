@@ -24,13 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import org.satochip.seedkeeper.EditPinCodeView
+import org.satochip.seedkeeper.PinEntryView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ShowCardLogs
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.NfcActionType
-import org.satochip.seedkeeper.data.PinCodeStatus
+import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.PinCodeAction
 import org.satochip.seedkeeper.ui.components.card.CardStatusField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
@@ -186,9 +187,14 @@ fun CardInformation(
                         placeHolder = R.string.changePinCode,
                         isClickable = true,
                         onClick = {
+                            viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
                             navController.navigate(
-                                EditPinCodeView(
-                                    pinCodeStatus = PinCodeStatus.CURRENT_PIN_CODE.name
+//                                EditPinCodeView( // TODO remove
+//                                    pinCodeStatus = PinCodeStatus.CURRENT_PIN_CODE.name
+//                                )
+                                PinEntryView(
+                                    pinCodeAction = PinCodeAction.CHANGE_PIN_CODE.name,
+                                    isBackupCard = false,
                                 )
                             )
                         }

@@ -23,4 +23,5 @@ enum class AppErrorMsg(val msg : Int) {
     NO_CHAR_SELECTED(R.string.errorNoCharSelected),
     PLAINTEXT_EXPORT_NOT_ALLOWED(R.string.errorPlaintextExportNotAllowed),
     PIN_WRONG_FORMAT(R.string.errorPinWrongFormat),
+    PIN_MISMATCH(R.string.errorPinMismatch),
 }

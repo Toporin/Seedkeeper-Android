@@ -2,15 +2,12 @@ package org.satochip.seedkeeper.ui.components.home
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
@@ -33,9 +30,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.CardAuthenticity
 import org.satochip.seedkeeper.MenuView
-import org.satochip.seedkeeper.PinCodeView
+import org.satochip.seedkeeper.PinEntryView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
+import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.PinCodeAction
 import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.theme.SatoGreen
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
@@ -116,13 +115,17 @@ fun HomeHeaderRow(
                 // RESCAN BUTTON
                 IconButton(
                     onClick = {
-                        viewModel.setResultCodeLiveTo()
+                        viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
                         navController.navigate(
-                            PinCodeView(
-                                title = R.string.pinCode,
-                                messageTitle = R.string.pinCode,
-                                message = R.string.enterPinCodeText,
-                                placeholderText = R.string.enterPinCode,
+//                            PinCodeView( // TODO remove
+//                                title = R.string.pinCode,
+//                                messageTitle = R.string.pinCode,
+//                                message = R.string.enterPinCodeText,
+//                                placeholderText = R.string.enterPinCode,
+//                            )
+                            PinEntryView(
+                                pinCodeAction = PinCodeAction.ENTER_PIN_CODE.name,
+                                isBackupCard = false,
                             )
                         )
                     },

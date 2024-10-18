@@ -149,7 +149,7 @@
         <string name="pinRemaining">Warning: PIN remaining: </string>
         <string name="resetCancelled">Factory reset cancelled</string>
 
-    <!--Card's Information View-->
+    <!--Card Information View-->
     <string name="cardVersion">Card version</string>
     <string name="cardLabel">Card label</string>
     <string name="pinCode">PIN code</string>
@@ -164,7 +164,7 @@
     <string name="secretsStored">Secrets stored</string>
     <string name="showCardLogs">Show card logs</string>
 
-    <!--Card's Authenticity View-->
+    <!--Card Authenticity View-->
     <string name="cardAuthFailed">Card authentication failed!</string>
     <string name="cardAuthFailedText">Impossible to authenticate the issuer of this card. It was not issued by Satochip S.R.L.</string>
     <string name="cardAuthFailedUsage">If you didn\'t load the card yourself, be extremely careful!</string>
@@ -180,20 +180,27 @@
 
     <!--Pin Code View-->
     <string name="setup">Setup</string>
+    <string name="setupPinTitle">Setup new PIN</string>
+    <string name="editPinCodeTitle">Change PIN code</string>
     <string name="editPinCode">Change the PIN code</string>
+    <string name="editPinCodeEnterCurrentPin">To modify the card PIN code, first enter the current PIN code.</string>
+    <string name="editPinCodeEnterNewPin">Enter the new PIN code</string>
     <string name="editPinCodeMessage">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
+    <string name="enterPinCodeTitle">Enter PIN code</string>
     <string name="enterCurrentPinCode">Enter the current PIN code</string>
-    <string name="enterPinCodeText">For new card, this will create a PIN. \nYou will need to confirm this PIN on the next screen.</string>-->
+    <string name="enterPinCodeText">If the card has not been setup yet, you will be asked to create a new PIN in the next screen.</string>-->
     <string name="enterPinCode">Enter your PIN code (4–16 char)</string>
     <string name="createPinCode">Create a PIN code</string>
     <string name="createPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>
     <string name="wrongPinCode">Wrong PIN code!</string>
     <string name="wrongPinCodeMessage">The PIN code value does not match! \n please try again</string>
-    <string name="confirmPinCode">Confirm a PIN code</string>
-    <string name="confirmPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>
+    <string name="confirmPinCode">Confirm PIN code</string>
+    <string name="confirmPinCodeMessage">Confirm the PIN code that you entered previously</string>
     <string name="next">Next</string>
     <string name="confirm">Confirm</string>
     <string name="restartTheSetup">Restart the setup</string>
+    <string name="shouldNotHappen">PIN flow error</string>
+    shouldNotHappen
 
     <!--Backup View-->
     <string name="backup">Backup</string>
@@ -286,5 +293,6 @@
     <string name="errorNoCharSelected">"Please select at least one character set"</string>
     <string name="errorPlaintextExportNotAllowed">This secret policy does not allow export in plaintext!</string>
     <string name="errorPinWrongFormat">PIN should be between 4 and 16 characters!</string>
+    <string name="errorPinMismatch">The PIN code value does not match! \nplease try again or cancel</string>
 
 </resources>

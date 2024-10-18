@@ -17,7 +17,6 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PasswordOptions
@@ -91,6 +90,10 @@ class SharedViewModel : ViewModel() {
         } else {
             NFCCardService.pinString = pinString
         }
+    }
+
+    fun changePinStringForCard(pinString: String) {
+        NFCCardService.newPinString = pinString
     }
 
     fun setNewPinString(pinString: String) { // TODO improve PIN mgmt
@@ -180,7 +183,8 @@ class SharedViewModel : ViewModel() {
     }
 
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {
-        SatoLog.d(TAG, "scanCardForAction START")
+        SatoLog.d(TAG, "scanCardForAction START action: ${nfcActionType.name}")
+        //NFCCardService.resultCodeLive.postValue(NfcResultCode.BUSY)
         NFCCardService.actionType = nfcActionType
         viewModelScope.launch {
             NFCCardService.scanCardForAction(activity)

@@ -1,0 +1,487 @@
+package org.satochip.seedkeeper.ui.views.pincode
+
+import android.app.Activity
+import android.content.Context
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import kotlinx.coroutines.delay
+import org.satochip.seedkeeper.HomeView
+import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.AppErrorMsg
+import org.satochip.seedkeeper.data.NfcActionType
+import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.PinCodeAction
+import org.satochip.seedkeeper.services.SatoLog
+import org.satochip.seedkeeper.ui.components.home.NfcDialog
+import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
+import org.satochip.seedkeeper.ui.components.shared.InputPinField
+import org.satochip.seedkeeper.ui.components.shared.SatoButton
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
+
+@Composable
+fun PinEntryView(
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
+    pinCodeAction: PinCodeAction,
+    isBackupCard: Boolean,
+) {
+    LaunchedEffect(viewModel.resultCodeLive) {
+        SatoLog.d("PinEntryView", "LaunchedEffect resultCodeLive: ${viewModel.resultCodeLive}")
+
+        when(pinCodeAction){
+            PinCodeAction.ENTER_PIN_CODE -> {
+                if (viewModel.resultCodeLive == NfcResultCode.SECRET_HEADER_LIST_SET){
+//                    navController.navigate(HomeView) {
+//                        popUpTo(0)
+//                    }
+                    navController.popBackStack()
+                } else if (viewModel.resultCodeLive == NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY){
+//                    navController.navigate(HomeView) {
+//                        popUpTo(0)
+//                    }
+                    navController.popBackStack()
+                }
+            }
+            PinCodeAction.SETUP_PIN_CODE -> {
+                if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_SUCCESSFUL){
+//                    navController.navigate(HomeView) {
+//                        popUpTo(0)
+//                    }
+                    navController.popBackStack()
+                } else if (viewModel.resultCodeLive == NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL){
+//                    navController.navigate(HomeView) {
+//                        popUpTo(0)
+//                    }
+                    navController.popBackStack()
+                }
+            }
+            PinCodeAction.CHANGE_PIN_CODE -> {
+                if (viewModel.resultCodeLive == NfcResultCode.PIN_CHANGED){
+//                    navController.navigate(HomeView) {
+//                        popUpTo(0)
+//                    }
+                    navController.popBackStack()
+                }
+            }
+            else -> {} // should not happen
+        }
+
+//        when (viewModel.resultCodeLive) {
+//            NfcResultCode.CARD_SETUP_SUCCESSFUL -> {
+//                navController.navigate(HomeView) {
+//                    popUpTo(0)
+//                }
+//            }
+//            NfcResultCode.CARD_SETUP_FOR_BACKUP_SUCCESSFUL -> {
+//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+//                // TODO redirect to BackupView?
+//                navController.navigate(HomeView) {
+//                    popUpTo(0)
+//                }
+//            }
+//            NfcResultCode.PIN_CHANGED -> {
+//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_CHANGED")
+//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+//                navController.navigate(HomeView) {
+//                    popUpTo(0)
+//                }
+//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY after nvaigate home")
+//            }
+//            NfcResultCode.SECRET_HEADER_LIST_SET -> {
+//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY")
+//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+//                navController.navigate(HomeView) {
+//                    popUpTo(0)
+//                }
+//                // reset after a delay
+//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY before delay!")
+//                delay(3000)
+//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY after delay!")
+//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+//                SatoLog.d("PinEntryView", "LaunchedEffect PIN_VERIFY after reset resultCodeLive!")
+//            }
+//            NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY -> {
+//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+//                navController.navigate(HomeView) {
+//                    popUpTo(0)
+//                }
+//            }
+//            NfcResultCode.WRONG_PIN -> {
+//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+//                navController.navigate(HomeView) {
+//                    popUpTo(0)
+//                }
+//            }
+//            NfcResultCode.CARD_BLOCKED -> {
+//                //viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+//                navController.navigate(HomeView) {
+//                    popUpTo(0)
+//                }
+//            }
+//            else -> {
+//                // should not happen
+//                print("NewPinCodeView TODO resultCodeLive: ${viewModel.resultCodeLive}") // TODO something?
+//            }
+//        }
+    }
+
+    // NFC DIALOG
+    val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
+    if (showNfcDialog.value) {
+        NfcDialog(
+            openDialogCustom = showNfcDialog,
+            resultCodeLive = viewModel.resultCodeLive,
+            isConnected = viewModel.isCardConnected
+        )
+    }
+
+    // error mgmt
+    val showError = remember {
+        mutableStateOf(false)
+    }
+    val appError = remember {
+        mutableStateOf(AppErrorMsg.OK)
+    }
+
+    val curPinValue = remember {
+        mutableStateOf("")
+    }
+    val curSetupPinValue = remember {
+        mutableStateOf("")
+    }
+    val curChangePinValue = remember {
+        mutableStateOf("")
+    }
+    val curConfirmPinValue = remember {
+        mutableStateOf("")
+    }
+
+    // initial state depending on action targeted
+    val pinCodeStatus = remember {
+        mutableStateOf(
+            when (pinCodeAction) {
+                PinCodeAction.ENTER_PIN_CODE -> {PinCodeAction.ENTER_PIN_CODE}
+                PinCodeAction.SETUP_PIN_CODE -> {PinCodeAction.SETUP_PIN_CODE}
+                PinCodeAction.CHANGE_PIN_CODE -> {PinCodeAction.ENTER_PIN_CODE}
+                else -> {PinCodeAction.ENTER_PIN_CODE} // should not happen
+            }
+        )
+    }
+
+    val placeholderText = R.string.enterPinCode
+    val title =  remember { mutableStateOf(0) } //R.string.blankTextField
+    val messageTitle =  remember { mutableStateOf(0) }
+    val message =  remember { mutableStateOf(0) }
+    val buttonText =  remember { mutableStateOf(0) }
+
+    // check PIN format
+    fun checkPinFormat(pin: String): Boolean {
+        if (pin.toByteArray(Charsets.UTF_8).size !in 4..16) {
+            appError.value = AppErrorMsg.PIN_WRONG_FORMAT
+            showError.value = true
+            return false
+        }
+        return true
+    }
+
+    when (pinCodeAction){
+        PinCodeAction.ENTER_PIN_CODE -> {
+            title.value = R.string.enterPinCodeTitle
+            when (pinCodeStatus.value){
+                PinCodeAction.ENTER_PIN_CODE -> {
+                    messageTitle.value = R.string.enterCurrentPinCode
+                    message.value = R.string.enterPinCodeText
+                    buttonText.value = R.string.next
+                }
+                else -> {} // should not happen
+            }
+        }
+        PinCodeAction.SETUP_PIN_CODE -> {
+            title.value = R.string.setupPinTitle
+            when (pinCodeStatus.value){
+                PinCodeAction.SETUP_PIN_CODE -> {
+                    messageTitle.value = R.string.createPinCode
+                    message.value = R.string.createPinCodeMessage
+                    buttonText.value = R.string.next
+                }
+                PinCodeAction.CONFIRM_PIN_CODE -> {
+                    messageTitle.value = R.string.confirmPinCode
+                    message.value = R.string.confirmPinCodeMessage
+                    buttonText.value = R.string.confirm
+                }
+                else -> {} // should not happen
+            }
+        }
+        PinCodeAction.CHANGE_PIN_CODE -> {
+            title.value = R.string.editPinCodeTitle
+            when (pinCodeStatus.value){
+                PinCodeAction.ENTER_PIN_CODE -> {
+                    messageTitle.value = R.string.editPinCode
+                    message.value = R.string.editPinCodeEnterCurrentPin
+                    buttonText.value = R.string.next
+                }
+                PinCodeAction.CHANGE_PIN_CODE -> {
+                    messageTitle.value = R.string.editPinCode
+                    message.value = R.string.editPinCodeEnterNewPin
+                    buttonText.value = R.string.next
+                }
+                PinCodeAction.CONFIRM_PIN_CODE -> {
+                    messageTitle.value = R.string.confirmPinCode
+                    message.value = R.string.confirmPinCodeMessage
+                    buttonText.value = R.string.confirm
+                }
+                else -> {} // should not happen
+            }
+        }
+        else -> {
+            title.value = R.string.shouldNotHappen
+        }
+    }
+
+    // TODO text depends on action and status
+//    when (pinCodeStatus.value) {
+//        PinCodeAction.ENTER_PIN_CODE -> {
+//            messageTitle.value = R.string.editPinCode
+//            message.value = R.string.editPinCodeMessage
+//            buttonText.value = R.string.next
+//        }
+//        PinCodeAction.CHANGE_PIN_CODE -> {
+//            messageTitle.value = R.string.editPinCode
+//            message.value = R.string.editPinCodeMessage
+//            buttonText.value = R.string.next
+//        }
+//        PinCodeAction.SETUP_PIN_CODE -> {
+//            curPinValue.value = ""
+//            messageTitle.value = R.string.createPinCode
+//            message.value = R.string.createPinCodeMessage
+//            buttonText.value = R.string.next
+//        }
+//        PinCodeAction.CONFIRM_PIN_CODE -> {
+//            messageTitle.value = R.string.confirmPinCode
+//            message.value = R.string.confirmPinCodeMessage
+//            buttonText.value = R.string.confirm
+//        }
+//    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            HeaderAlternateRow(
+                onClick = {
+                    navController.popBackStack()
+                },
+                titleText = title.value
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Spacer(modifier = Modifier)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = messageTitle.value),
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        lineHeight = 40.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        textAlign = TextAlign.Center
+                    )
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(id = message.value),
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                        textAlign = TextAlign.Center
+                    )
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // PIN field
+                when (pinCodeStatus.value) {
+                    PinCodeAction.ENTER_PIN_CODE -> {
+                        InputPinField(
+                            curValue = curPinValue,
+                            placeHolder = placeholderText
+                        )
+                    }
+                    PinCodeAction.SETUP_PIN_CODE -> {
+                        InputPinField(
+                            curValue = curSetupPinValue,
+                            placeHolder = placeholderText
+                        )
+                    }
+                    PinCodeAction.CHANGE_PIN_CODE -> {
+                        InputPinField(
+                            curValue = curChangePinValue,
+                            placeHolder = placeholderText
+                        )
+                    }
+                    PinCodeAction.CONFIRM_PIN_CODE -> {
+                        InputPinField(
+                            curValue = curConfirmPinValue,
+                            placeHolder = placeholderText
+                        )
+                    }
+                }
+
+                // error msg
+                if (showError.value) {
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = stringResource(appError.value.msg),
+                        style = TextStyle(
+                            color = Color.Red,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SatoButton(
+                    modifier = Modifier,
+                    text = buttonText.value,
+                    onClick = {
+                        // check PIN format
+//                        if (curPinValue.value.toByteArray(Charsets.UTF_8).size !in 4..16) {
+//                            appError.value = AppErrorMsg.PIN_WRONG_FORMAT
+//                            showError.value = true
+//                            return@SatoButton
+//                        }
+
+                        // update state
+                        when (pinCodeAction) {
+                            PinCodeAction.ENTER_PIN_CODE -> {
+                                if (!checkPinFormat(pin = curPinValue.value)){ return@SatoButton }
+                                viewModel.setPinStringForCard(pinString = curPinValue.value, isBackupCard = isBackupCard)
+                                showNfcDialog.value = true // NfcDialog
+                                viewModel.scanCardForAction(
+                                    activity = context as Activity,
+                                    nfcActionType = if (isBackupCard) NfcActionType.SCAN_BACKUP_CARD else NfcActionType.SCAN_CARD
+                                )
+                            }
+
+                            PinCodeAction.SETUP_PIN_CODE -> {
+                                when (pinCodeStatus.value){
+                                    PinCodeAction.SETUP_PIN_CODE -> {
+                                        if (!checkPinFormat(pin = curSetupPinValue.value)){ return@SatoButton }
+                                       pinCodeStatus.value = PinCodeAction.CONFIRM_PIN_CODE
+                                    }
+                                    PinCodeAction.CONFIRM_PIN_CODE -> {
+                                        if (!checkPinFormat(pin = curConfirmPinValue.value)){ return@SatoButton }
+                                        // check that pins match
+                                        if (curSetupPinValue.value != curConfirmPinValue.value) {
+                                            appError.value = AppErrorMsg.PIN_MISMATCH
+                                            showError.value = true
+                                            return@SatoButton
+                                        }
+                                        // perform setup
+                                        viewModel.setPinStringForCard(curSetupPinValue.value, isBackupCard = isBackupCard)
+                                        showNfcDialog.value = true // NfcDialog
+                                        viewModel.scanCardForAction(
+                                            activity = context as Activity,
+                                            nfcActionType = if (isBackupCard) NfcActionType.SETUP_CARD_FOR_BACKUP else NfcActionType.SETUP_CARD
+                                        )
+                                    }
+                                    else -> {} // should not happen
+                                }
+                            }
+
+                            PinCodeAction.CHANGE_PIN_CODE -> {
+                                when (pinCodeStatus.value){
+                                    PinCodeAction.ENTER_PIN_CODE -> {
+                                        if (!checkPinFormat(pin = curPinValue.value)){ return@SatoButton }
+                                        // enter existing PIN then switch to new PIN
+                                        pinCodeStatus.value = PinCodeAction.CHANGE_PIN_CODE
+                                    }
+                                    PinCodeAction.CHANGE_PIN_CODE -> {
+                                        if (!checkPinFormat(pin = curChangePinValue.value)){ return@SatoButton }
+                                        // enter new PIN, then switch to confirm new PIN
+                                        pinCodeStatus.value = PinCodeAction.CONFIRM_PIN_CODE
+                                    }
+                                    PinCodeAction.CONFIRM_PIN_CODE -> {
+                                        if (!checkPinFormat(pin = curConfirmPinValue.value)){ return@SatoButton }
+                                        // check that pins match
+                                        if (curChangePinValue.value != curConfirmPinValue.value) {
+                                            appError.value = AppErrorMsg.PIN_MISMATCH
+                                            showError.value = true
+                                            return@SatoButton
+                                        }
+                                        // perform change
+                                        viewModel.setPinStringForCard(curPinValue.value, isBackupCard = false)
+                                        viewModel.changePinStringForCard(curChangePinValue.value)
+                                        showNfcDialog.value = true // NfcDialog
+                                        viewModel.scanCardForAction(
+                                            activity = context as Activity,
+                                            nfcActionType = NfcActionType.CHANGE_PIN
+                                        )
+                                    }
+                                    else -> {} // should not happen
+                                }
+                            }
+                            else -> {} // should not happen
+                        }
+                    },
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (showError.value){
+                    SatoButton(
+                        modifier = Modifier,
+                        text = R.string.cancel,
+                        onClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+

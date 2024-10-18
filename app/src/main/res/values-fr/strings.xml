@@ -180,20 +180,26 @@
 
     <!--Pin Code View-->
     <string name="setup">Configuration</string>
+    <string name="setupPinTitle">Setup</string>
+    <string name="editPinCodeTitle">Modifier le code PIN</string>
     <string name="editPinCode">Modifier le code PIN</string>
+    <string name="editPinCodeEnterCurrentPin">Pour modifier le code de la carte, entrez d\'abord le code PIN actuel.</string>
+    <string name="editPinCodeEnterNewPin">Entrez maintenant le nouveau code PIN.</string>
     <string name="editPinCodeMessage">Modifiez le code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
-    <string name="enterCurrentPinCode">Saisir le code PIN actuel</string>
-    <string name="enterPinCodeText">Pour une nouvelle carte, cela créera un PIN. \nVous devrez confirmer ce PIN à l\'écran suivant.</string>
+    <string name="enterPinCodeTitle">Saisir code PIN</string>
+    <string name="enterCurrentPinCode">Saisissez le code PIN actuel</string>
+    <string name="enterPinCodeText">Si la carte n\'est pas encore configurée, il vous sera demandé de créer un code PIN au prochain écran.</string>
     <string name="enterPinCode">Entrez votre code PIN (4–16 caractères)</string>
     <string name="createPinCode">Créer un code PIN</string>
     <string name="createPinCodeMessage">Créez un code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
     <string name="wrongPinCode">Code PIN erroné! </string>
     <string name="wrongPinCodeMessage">Les codes PIN ne correspondent pas. Veuillez réessayer.</string>
     <string name="confirmPinCode">Confirmer le code PIN</string>
-    <string name="confirmPinCodeMessage">Confirmez votre code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
+    <string name="confirmPinCodeMessage">Veuillez confirmer le code PIN que vous avez entré précédemment.</string>
     <string name="next">Suivant</string>
     <string name="confirm">Confirmer</string>
     <string name="restartTheSetup">Redémarrez la configuration</string>
+    <string name="shouldNotHappen">PIN flow error</string>
 
     <!--Backup View-->
     <string name="backup">Backup</string>
@@ -286,5 +292,6 @@
     <string name="errorNoCharSelected">Sélectionnez au moins un set de charactères pour la génération aléatoire</string>
     <string name="errorPlaintextExportNotAllowed">Les paramètres de ce secret ne permettent pas l\'export en clair!</string>
     <string name="errorPinWrongFormat">PIN doit être compris entre 4 et 16 charactères</string>
+    <string name="errorPinMismatch">Les codes PIN ne correspondent pas! \nVeuillez réessayer ou annuler.</string>
 
 </resources>

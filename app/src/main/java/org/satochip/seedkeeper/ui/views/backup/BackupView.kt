@@ -15,17 +15,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.HomeView
-import org.satochip.seedkeeper.PinCodeView
+import org.satochip.seedkeeper.PinEntryView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.PinCodeAction
 import org.satochip.seedkeeper.ui.components.backup.BackupText
 import org.satochip.seedkeeper.ui.components.backup.BackupTransferImages
 import org.satochip.seedkeeper.ui.components.backup.MainBackupButton
@@ -149,12 +149,16 @@ fun BackupView(
                                 BackupStatus.FIRST_STEP -> {
                                     // get backup PIN then scan backup card for secret headers
                                     navController.navigate(
-                                        PinCodeView(
-                                            title = R.string.pinCode,
-                                            messageTitle = R.string.pinCode,
-                                            message = R.string.enterPinCodeText,
-                                            placeholderText = R.string.enterPinCode,
-                                            isBackupCardScan = true
+//                                        PinCodeView(
+//                                            title = R.string.pinCode, //TODO remove
+//                                            messageTitle = R.string.pinCode,
+//                                            message = R.string.enterPinCodeText,
+//                                            placeholderText = R.string.enterPinCode,
+//                                            isBackupCardScan = true
+//                                        )
+                                        PinEntryView(
+                                            pinCodeAction = PinCodeAction.ENTER_PIN_CODE.name,
+                                            isBackupCard = true,
                                         )
                                     )
                                 }

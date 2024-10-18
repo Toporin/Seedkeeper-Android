@@ -23,15 +23,16 @@ fun NfcDialog(
     BottomDrawer(
         showSheet = openDialogCustom
     ) {
-        LaunchedEffect(resultCodeLive) {
-            SatoLog.d(TAG, "LaunchedEffect START ${resultCodeLive}")
-            while (resultCodeLive == NfcResultCode.BUSY || resultCodeLive == NfcResultCode.NONE) {
-                SatoLog.d(TAG, "LaunchedEffect in while delay 2s ${resultCodeLive}")
-                delay(2.seconds)
-            }
-            SatoLog.d(TAG, "LaunchedEffect after while delay ${resultCodeLive}")
-        }
+//        LaunchedEffect(resultCodeLive) {
+//            SatoLog.d(TAG, "LaunchedEffect START ${resultCodeLive}")
+//            while (resultCodeLive == NfcResultCode.BUSY) {
+//                SatoLog.d(TAG, "LaunchedEffect in while delay 2s ${resultCodeLive}")
+//                delay(2.seconds)
+//            }
+//            SatoLog.d(TAG, "LaunchedEffect after while delay ${resultCodeLive}")
+//        }
         if (resultCodeLive == NfcResultCode.BUSY) {
+            // Busy scanning
             if (isConnected) {
                 DrawerScreen(
                     closeSheet = {
@@ -53,6 +54,7 @@ fun NfcDialog(
                 )
             }
         } else {
+            // finished scanning with some result code
             DrawerScreen(
                 closeSheet = {
                     openDialogCustom.value = !openDialogCustom.value
@@ -66,6 +68,7 @@ fun NfcDialog(
                 triesLeft = resultCodeLive.triesLeft
             )
             LaunchedEffect(Unit) {
+                // automatically close nfc toast after some delay
                 delay(1.seconds)
                 openDialogCustom.value = false
             }
