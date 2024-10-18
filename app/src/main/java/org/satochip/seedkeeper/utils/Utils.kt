@@ -6,6 +6,10 @@ import java.util.Locale
 
 const val TAG = "Utils"
 
+fun bytesToHex(bytes: ByteArray) : String {
+    return bytes.joinToString(separator = "") { byte -> "%02x".format(byte) }
+}
+
 fun getSeedQr(mnemonic: String): String {
     // todo add support for other wordlist languages
     // based on https://github.com/SeedSigner/seedsigner/blob/dev/docs/seed_qr/README.md#standard-seedqr-specification

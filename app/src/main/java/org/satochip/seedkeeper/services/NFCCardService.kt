@@ -25,6 +25,7 @@ import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.utils.CardMismatchException
+import org.satochip.seedkeeper.utils.bytesToHex
 
 private const val TAG = "NFCCardService"
 
@@ -776,7 +777,7 @@ object NFCCardService {
             val authentikeyFingerprintBytes =
                 SeedkeeperSecretHeader.getFingerprintBytes(authentikeySecretBytes)
             // create label, header & secret object
-            val authentikeyLabel = "Backup Seedkeeper authentikey" // todo improve label
+            val authentikeyLabel = "Authentikey #${bytesToHex(authentikeyFingerprintBytes)}"
             val authentikeySecretHeader = SeedkeeperSecretHeader(
                 0,
                 SeedkeeperSecretType.PUBKEY,
