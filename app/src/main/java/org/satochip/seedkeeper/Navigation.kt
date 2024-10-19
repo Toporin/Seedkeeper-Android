@@ -28,6 +28,7 @@ import org.satochip.seedkeeper.ui.views.cardinfo.CardAuthenticity
 import org.satochip.seedkeeper.ui.views.cardinfo.CardInformation
 import org.satochip.seedkeeper.ui.views.factoryreset.FactoryResetView
 import org.satochip.seedkeeper.ui.views.home.HomeView
+import org.satochip.seedkeeper.ui.views.cardinfo.EditCardLabelView
 import org.satochip.seedkeeper.ui.views.import.ImportSecretView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
 import org.satochip.seedkeeper.ui.views.mysecret.MySecretView
@@ -216,6 +217,13 @@ fun Navigation(
                 viewModel = viewModel,
             )
         }
+        composable<EditCardLabelView> {
+            EditCardLabelView(
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
+            )
+        }
         composable<PinEntryView> {
             val args = it.toRoute<PinEntryView>()
             PinEntryView(
@@ -292,6 +300,8 @@ object SettingsView
 object CardInformation
 @Serializable
 object CardAuthenticity
+@Serializable
+object EditCardLabelView
 @Serializable
 object BackupView
 @Serializable

@@ -26,7 +26,6 @@ fun getSeedQr(mnemonic: String): String {
     return mnemonicDecimalString
 }
 
-// TODO: remove (obsolete?)
 fun isClickable(
     secret: MutableState<String>,
     curValueLabel: MutableState<String>

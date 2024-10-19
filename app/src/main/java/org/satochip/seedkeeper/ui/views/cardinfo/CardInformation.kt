@@ -27,11 +27,14 @@ import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.PinEntryView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ShowCardLogs
+import org.satochip.seedkeeper.EditCardLabelView
+import org.satochip.seedkeeper.CardAuthenticity
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeAction
+import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.card.CardStatusField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
@@ -127,7 +130,7 @@ fun CardInformation(
                         title = R.string.cardAuthenticity,
                         text = stringResource(id = cardAuthenticityText.value),
                         onClick = {
-                            navController.navigate(org.satochip.seedkeeper.CardAuthenticity)
+                            navController.navigate(CardAuthenticity)
                         },
                         containerColor = logoColor.value,
                         isClickable = true,
@@ -141,22 +144,14 @@ fun CardInformation(
                     }
 
                     EditableField(
-                        isEditable = true,
+                        isEditable = false,
                         isIconShown = true,
                         title = R.string.cardLabel,
                         curValue = curValue,
+                        isClickable = true,
                         onClick = {
-                            if (cardLabel != null && cardLabel.toByteArray(Charsets.UTF_8).size <= 64) {
-                                showNfcDialog.value = true // NfcDialog
-                                viewModel.setupNewCardLabel(cardLabel)
-                                viewModel.scanCardForAction(
-                                    activity = context as Activity,
-                                    nfcActionType = NfcActionType.EDIT_CARD_LABEL
-                                )
-                            } else {
-                                appError.value = AppErrorMsg.CARD_LABEL_TOO_LONG
-                                showError.value = true
-                            }
+                            viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+                            navController.navigate(EditCardLabelView)
                         }
                     )
                     // error msg

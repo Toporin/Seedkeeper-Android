@@ -150,7 +150,7 @@
         <string name="pinRemaining">Attention: PIN restants: </string>
         <string name="resetCancelled">Réinitialisation de la carte annulée</string>
 
-    <!--Card's Information View-->
+    <!--Card Information View-->
     <string name="cardVersion">Version de la carte</string>
     <string name="cardLabel">Etiquette de la carte</string>
     <string name="pinCode">Code PIN</string>
@@ -165,7 +165,12 @@
     <string name="secretsStored">Secrets stockés</string>
     <string name="showCardLogs">Afficher les journaux de cartes</string>
 
-    <!--Card's Authenticity View-->
+    <!--Edit Card Label View-->
+    <string name="cardLabelTitle">Modifier le label de la carte</string>
+    <string name="cardLabelMsg">Vous permet de modifier le label de votre carte (max 64 charactères)</string>
+    <string name="cardLabelToast">Label modifié avec succès!</string>
+
+    <!--Card Authenticity View-->
     <string name="cardAuthFailed">Echec de l\'authentification de la carte !</string>
     <string name="cardAuthFailedText">Impossible d\'authentifier l\'émetteur de cette carte. Elle n\'a pas été émise par Satochip S.R.L.</string>
     <string name="cardAuthFailedUsage">Si vous n\'avez pas vous-même chargé la carte, soyez extrêmement prudent!</string>

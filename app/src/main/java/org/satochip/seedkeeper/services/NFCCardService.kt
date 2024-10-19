@@ -655,8 +655,10 @@ object NFCCardService {
             // verify PIN
             if (!verifyPin(isMasterCard = true)){return}
 
+            // Change label
             cmdSet.setCardLabel(cardLabel)
             resultCodeLive.postValue(NfcResultCode.CARD_LABEL_CHANGED_SUCCESSFULLY)
+            SatoLog.e(TAG, "editCardLabel label set to: $cardLabel")
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
             SatoLog.e(TAG, "card mismatch exception: $e")

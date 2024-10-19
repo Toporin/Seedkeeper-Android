@@ -235,8 +235,6 @@ fun ImportPassword(
 
             // generate button
             if (importMode == AddSecretItems.GENERATE_A_SECRET) {
-                val selectMoreSets = stringResource(id = R.string.selectMoreSets)
-
                 SatoButton(
                     modifier = Modifier
                         .weight(1f),
@@ -259,11 +257,7 @@ fun ImportPassword(
                             if (passwordOptions.value.isMemorableSelected) {
                                 viewModel.generateMemorablePassword(passwordOptions.value, context)
                             } else {
-                                val password = viewModel.generatePassword(passwordOptions.value)
-                                password ?: run {
-                                    Toast.makeText(context, selectMoreSets, Toast.LENGTH_SHORT).show()
-                                    ""
-                                } // TODO: clean
+                                viewModel.generatePassword(passwordOptions.value)
                             }
                     },
                     text = if (secret.value.isNotEmpty()) R.string.regenerate else R.string.generate,

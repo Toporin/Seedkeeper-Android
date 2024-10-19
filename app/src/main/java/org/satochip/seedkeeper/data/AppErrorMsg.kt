@@ -9,7 +9,7 @@ enum class AppErrorMsg(val msg : Int) {
     MNEMONIC_EMPTY(R.string.errorMnemonicEmpty),
     DESCRIPTOR_EMPTY(R.string.errorDescriptorEmpty),
     DATA_EMPTY(R.string.errorDataEmpty),
-    CARD_LABEL_TOO_LONG(R.string.errorCardLabelTooLong), // TODO
+    CARD_LABEL_TOO_LONG(R.string.errorCardLabelTooLong),
     LABEL_TOO_LONG(R.string.errorLabelTooLong),
     PASSWORD_TOO_LONG(R.string.errorPasswordTooLong),
     MNEMONIC_TOO_LONG(R.string.errorMnemonicTooLong),

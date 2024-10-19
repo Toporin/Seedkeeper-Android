@@ -122,7 +122,7 @@ class SharedViewModel : ViewModel() {
         return NFCCardService.certificateList
     }
 
-    fun setupNewCardLabel(cardLabel: String) {
+    fun setNewCardLabel(cardLabel: String) {
         NFCCardService.cardLabel.postValue(cardLabel)
     }
 
@@ -172,7 +172,7 @@ class SharedViewModel : ViewModel() {
     }
 
     // TODO: move to Utils?
-    fun generatePassword(options: PasswordOptions): String? {
+    fun generatePassword(options: PasswordOptions): String {
         var characterSet = ""
         val password = StringBuilder()
 
@@ -189,7 +189,7 @@ class SharedViewModel : ViewModel() {
             characterSet += StringConstants.SYMBOLS.value
 
         if (characterSet.isEmpty())
-            return null
+            return ""
 
         for (i in 0 until options.passwordLength) {
             val randomIndex = (characterSet.indices).random()
