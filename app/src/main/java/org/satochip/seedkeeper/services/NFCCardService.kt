@@ -132,7 +132,7 @@ object NFCCardService {
                 readCard(isMasterCard = false)
             }
             NfcActionType.EXPORT_SECRETS_FROM_MASTER -> { // TODO rename EXPORT_SECRETS_FOR_BACKUP?
-                exportSecretsForBackup()
+                exportSecretsFromMaster()
             }
             NfcActionType.TRANSFER_TO_BACKUP -> { // TODO rename IMPORT_SECRETS_TO_BACKUP
                 importSecretsToBackup()
@@ -906,9 +906,9 @@ object NFCCardService {
      * Export a list of encrypted secret objects from the master card.
      * This list of secret will be imported in the backup card in a subsequent step.
      */
-    private fun exportSecretsForBackup(){
+    private fun exportSecretsFromMaster(){
         try {
-            SatoLog.d(TAG, "exportSecretsForBackup start")
+            SatoLog.d(TAG, "exportSecretsFromMaster start")
             cmdSet.cardSelect("seedkeeper").checkOK()
 
             // check authentikey
@@ -925,21 +925,20 @@ object NFCCardService {
             }
 
             // export secrets
-            exportSecretsFromMaster(backupAuthentikeySecretHeader?.sid)
+            exportSecrets(backupAuthentikeySecretHeader?.sid)
 
             // return success code
             resultCodeLive.postValue(NfcResultCode.SECRETS_EXPORTED_SUCCESSFULLY_FROM_MASTER)
-
+            SatoLog.d(TAG, "exportSecretsFromMaster finished successfully!")
         }catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
-            SatoLog.e(TAG, "card mismatch exception: $e")
+            SatoLog.e(TAG, "exportSecretsFromMaster card mismatch exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "importSecret exception: $e")
+            SatoLog.e(TAG, "exportSecretsFromMaster exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }// TODO catch PIN exceptions,
-        SatoLog.d(TAG, "exportSecretsForBackup finished successfully!")
     }
 
     /**
@@ -949,21 +948,21 @@ object NFCCardService {
      *
      * @param pubSid An optional secret id from authentikey secret for encrypted export. If pubSid equals null secrets are exported without encryption.
      */
-    private fun exportSecretsFromMaster(pubSid: Int? = null) {
+    private fun exportSecrets(pubSid: Int? = null) {
         try {
-            SatoLog.d(TAG, "exportSecretsFromMaster start")
+            SatoLog.d(TAG, "exportSecrets start")
             secretObjectsForBackup.clear()
             for ((index, item) in secretHeadersForBackup.withIndex()) {
-                SatoLog.d(TAG, "exportSecretsFromMaster backupExportProgress: ${backupExportProgress.value}")
+                SatoLog.d(TAG, "exportSecrets backupExportProgress: ${backupExportProgress.value}")
                 val secretObject = cmdSet.seedkeeperExportSecret(item.sid, pubSid)
                 secretObjectsForBackup.add(secretObject)
                 backupExportProgress.postValue(index.toFloat() / secretHeadersForBackup.size)
-                SatoLog.d(TAG, "exportSecretsFromMaster exported encrypted secret with label: ${secretObject.secretHeader.label} and sid: ${secretObject.secretHeader.sid}")
+                SatoLog.d(TAG, "exportSecrets exported encrypted secret with label: ${secretObject.secretHeader.label} and sid: ${secretObject.secretHeader.sid}")
             }
-            SatoLog.d(TAG, "exportSecretsFromMaster exported successfully!")
+            SatoLog.d(TAG, "exportSecrets exported successfully!")
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "exportSecretsFromMaster exception: $e")
+            SatoLog.e(TAG, "exportSecrets exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
     }
