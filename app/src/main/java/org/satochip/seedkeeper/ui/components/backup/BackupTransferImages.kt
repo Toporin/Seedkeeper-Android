@@ -29,7 +29,7 @@ fun BackupTransferImages(
                     image = R.drawable.second_welcome_card
                 )
             }
-            BackupStatus.FAILURE -> {} // todo: something?
+            BackupStatus.FAILURE -> {}
             else -> {
                 BackupTransferImage(
                     image = R.drawable.backup_card,

@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.ui.views.cardinfo
 
-import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,10 +30,8 @@ import org.satochip.seedkeeper.EditCardLabelView
 import org.satochip.seedkeeper.CardAuthenticity
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeAction
-import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.card.CardStatusField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
@@ -81,7 +78,7 @@ fun CardInformation(
     val authenticityStatus = viewModel.authenticityStatus
     val cardLabel = viewModel.cardLabel
     val cardAppletVersion = viewModel.getAppletVersionString()
-    val cardStatus = viewModel.getSeedkeeperStatus()
+    val seedkeeperStatus = viewModel.getSeedkeeperStatus()
     val cardAuthentikey = viewModel.getAuthentikeyDescription()
 
      when (authenticityStatus) {
@@ -122,7 +119,7 @@ fun CardInformation(
                         title = R.string.seedkeeperStatus,
                         cardAppletVersion = cardAppletVersion,
                         cardAuthentikey = cardAuthentikey,
-                        cardStatus = cardStatus
+                        seedkeeperStatus = seedkeeperStatus
                     )
                 }
                 item {
