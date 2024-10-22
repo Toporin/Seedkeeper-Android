@@ -353,7 +353,7 @@ object NFCCardService {
      *
      * @return true if the PIN is successfully verified, false otherwise.
      */
-    private fun verifyPin(isMasterCard : Boolean = true): Boolean { // todo return pinStatus?
+    private fun verifyPin(isMasterCard : Boolean = true): Boolean {
         try {
             SatoLog.d(TAG, "verifyPin start")
             val pinBytes = if (isMasterCard) pinString?.toByteArray(Charsets.UTF_8) else backupPinString?.toByteArray(Charsets.UTF_8)

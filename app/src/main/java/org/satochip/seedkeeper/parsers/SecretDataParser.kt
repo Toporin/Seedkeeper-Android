@@ -57,7 +57,7 @@ class SecretDataParser {
             SatoLog.e(TAG, "Invalid masterseedSize")
             return null
         }
-        val masterseedBytes = bytes.copyOfRange(index, index + masterseedSize) // todo: find usage
+        val masterseedBytes = bytes.copyOfRange(index, index + masterseedSize) // not used currently
 
         index += masterseedSize
         index++

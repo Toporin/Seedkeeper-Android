@@ -49,7 +49,6 @@ import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.utils.webviewActivityIntent
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
-// TODO rename to ShowSecretView
 @Composable
 fun ShowSecretView(
     context: Context,
