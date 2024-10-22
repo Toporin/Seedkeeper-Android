@@ -17,7 +17,6 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretOrigin
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.io.APDUException
-import org.satochip.io.APDUResponse
 import org.satochip.io.WrongPINException
 import org.satochip.io.BlockedPINException
 import org.satochip.io.ResetToFactoryException
@@ -111,7 +110,7 @@ object NFCCardService {
             NfcActionType.SETUP_CARD_FOR_BACKUP -> {
                 cardSetup(isMasterCard = false)
             }
-            NfcActionType.GET_SECRET -> { // TODO rename to EXPORT_SECRET
+            NfcActionType.EXPORT_SECRET -> {
                 currentSecretHeader.value?.let{ secretHeader ->
                     currentSecretObject.postValue(exportSecret(secretHeader.sid))
                 }

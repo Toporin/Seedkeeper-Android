@@ -345,7 +345,7 @@ fun MySecretView(
                                 showNfcDialog.value = true // NfcDialog
                                 viewModel.scanCardForAction(
                                     activity = context as Activity,
-                                    nfcActionType = NfcActionType.GET_SECRET
+                                    nfcActionType = NfcActionType.EXPORT_SECRET
                                 )
                             }
                         },
