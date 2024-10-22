@@ -93,7 +93,7 @@ object NFCCardService {
         when (actionType) {
             NfcActionType.DO_NOTHING -> {}
             NfcActionType.SCAN_CARD -> {
-                readCard(isMasterCard = true)
+                scanCard(isMasterCard = true)
             }
             NfcActionType.CHANGE_PIN -> {
                 SatoLog.d(TAG, "initialize NfcActionType.CHANGE_PIN")
@@ -129,7 +129,7 @@ object NFCCardService {
                 getCardLogs()
             }
             NfcActionType.SCAN_BACKUP_CARD -> {
-                readCard(isMasterCard = false)
+                scanCard(isMasterCard = false)
             }
             NfcActionType.EXPORT_SECRETS_FROM_MASTER -> {
                 exportSecretsFromMaster()
@@ -186,8 +186,8 @@ object NFCCardService {
     /**
      * Reads and processes the data from the NFC card to determine its setup status and version.
      */
-    private fun readCard(isMasterCard : Boolean = true) {//TODO rename to scanCard
-        SatoLog.d(TAG, "readCard Start")
+    private fun scanCard(isMasterCard : Boolean = true) {//TODO rename to scanCard
+        SatoLog.d(TAG, "scanCard Start")
         try {
             isCardDataAvailable.postValue(false)
             cmdSet.cardSelect("seedkeeper").checkOK()
@@ -200,13 +200,13 @@ object NFCCardService {
             } else {
                 backupCardStatus = cardStatusLocal
             }
-            SatoLog.d(TAG, "readCard cardStatus: $cardStatusLocal")
+            SatoLog.d(TAG, "scanCard cardStatus: $cardStatusLocal")
 
             // check setup
             if (!cardStatusLocal.isSetupDone) {
-                SatoLog.d(TAG, "readCard setup not done CardVersionInt: ${cardStatusLocal.cardVersionInt}")
+                SatoLog.d(TAG, "scanCard setup not done CardVersionInt: ${cardStatusLocal.cardVersionInt}")
                 if (isMasterCard) {
-                    resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP) // todo: deal backup or master card
+                    resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP)
                 } else {
                     resultCodeLive.postValue(NfcResultCode.REQUIRE_SETUP_FOR_BACKUP)
                 }
@@ -229,16 +229,16 @@ object NFCCardService {
                 val secretHeadersLocal = cmdSet.seedkeeperListSecretHeaders()
                 if (isMasterCard){
                     secretHeaders.postValue(secretHeadersLocal)
-                    SatoLog.d(TAG, "readCard fetched list of secret headers for master with size: ${secretHeadersLocal.size}")
+                    SatoLog.d(TAG, "scanCard fetched list of secret headers for master with size: ${secretHeadersLocal.size}")
                 } else {
                     backupSecretHeaders.clear()
                     backupSecretHeaders.addAll(secretHeadersLocal)
-                    SatoLog.d(TAG, "readCard fetched list of secret headers for backup with size: ${secretHeadersLocal.size}")
+                    SatoLog.d(TAG, "scanCard fetched list of secret headers for backup with size: ${secretHeadersLocal.size}")
                 }
             } catch (e: Exception) {
                 secretHeaders.postValue(emptyList())
                 resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-                SatoLog.e(TAG, "readCard exception: $e")
+                SatoLog.e(TAG, "scanCard exception: $e")
                 SatoLog.e(TAG, Log.getStackTraceString(e))
             }
 
@@ -263,7 +263,7 @@ object NFCCardService {
                         backupSecretHeader.fingerprintBytes.contentEquals(secretHeader.fingerprintBytes)
                     } || secretHeader.type == SeedkeeperSecretType.PUBKEY
                 } as MutableList<SeedkeeperSecretHeader>
-                SatoLog.d(TAG, "readCard generated list of secretsHeaders for backup with size: ${secretHeadersForBackup.size}")
+                SatoLog.d(TAG, "scanCard generated list of secretsHeaders for backup with size: ${secretHeadersForBackup.size}")
             }
 
             // update card status
@@ -273,8 +273,8 @@ object NFCCardService {
             } else {
                 resultCodeLive.postValue(NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY)
             }
-
-            // TODO catch wrong pin
+            SatoLog.d(TAG, "scanCard finished successfully")
+            
         } catch (e: Exception) {
             if (isMasterCard){
                 secretHeaders.postValue(emptyList())
@@ -282,10 +282,9 @@ object NFCCardService {
                 backupSecretHeaders.clear()
             }
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
-            SatoLog.e(TAG, "readCard exception: $e")
+            SatoLog.e(TAG, "scanCard exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
-        SatoLog.d(TAG, "readCard finished successfully")
         return
     }
 
