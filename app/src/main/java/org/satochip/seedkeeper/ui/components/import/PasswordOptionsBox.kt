@@ -38,10 +38,9 @@ import org.satochip.seedkeeper.ui.theme.SatoActiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 
-// TODO rename to PasswordOptionsBox
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PasswordLengthField(
+fun PasswordOptionsBox(
     passwordOptions: MutableState<PasswordOptions>
 ) {
     var sliderPosition by remember { mutableFloatStateOf(passwordOptions.value.passwordLength.toFloat()) }

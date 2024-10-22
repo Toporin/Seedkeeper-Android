@@ -117,12 +117,6 @@ fun HomeHeaderRow(
                     onClick = {
                         viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
                         navController.navigate(
-//                            PinCodeView( // TODO remove
-//                                title = R.string.pinCode,
-//                                messageTitle = R.string.pinCode,
-//                                message = R.string.enterPinCodeText,
-//                                placeholderText = R.string.enterPinCode,
-//                            )
                             PinEntryView(
                                 pinCodeAction = PinCodeAction.ENTER_PIN_CODE.name,
                                 isBackupCard = false,

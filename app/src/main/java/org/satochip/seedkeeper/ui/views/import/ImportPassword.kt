@@ -34,7 +34,7 @@ import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.PasswordOptions
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
 import org.satochip.seedkeeper.ui.components.import.InputField
-import org.satochip.seedkeeper.ui.components.import.PasswordLengthField
+import org.satochip.seedkeeper.ui.components.import.PasswordOptionsBox
 import org.satochip.seedkeeper.ui.components.import.SecretTextField
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.PopUpDialog
@@ -188,7 +188,7 @@ fun ImportPassword(
 
             // Password options
             if (importMode == ImportMode.GENERATE_A_SECRET) {
-                PasswordLengthField(
+                PasswordOptionsBox(
                     passwordOptions = passwordOptions
                 )
             } else {
