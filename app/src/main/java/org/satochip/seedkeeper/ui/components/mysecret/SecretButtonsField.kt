@@ -54,16 +54,6 @@ fun SecretButtonsField(
                         horizontalPadding = 1.dp,
                         buttonColor = if (isSecretShown.value) SatoButtonPurple else SatoButtonPurple.copy(alpha = 0.6f)
                     )
-    //                todo: logic should be changed
-//                SatoButton(
-//                    modifier = Modifier,
-//                    onClick = {
-//                        mySecretStatus.value = MySecretStatus.X_PUB
-//                    },
-//                    text = R.string.xpub,
-//                    image = R.drawable.xpub_icon,
-//                    horizontalPadding = 2.dp
-//                )
                 }
             }
             else -> {}

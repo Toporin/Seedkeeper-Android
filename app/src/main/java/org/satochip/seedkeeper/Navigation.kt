@@ -31,7 +31,7 @@ import org.satochip.seedkeeper.ui.views.home.HomeView
 import org.satochip.seedkeeper.ui.views.cardinfo.EditCardLabelView
 import org.satochip.seedkeeper.ui.views.import.ImportSecretView
 import org.satochip.seedkeeper.ui.views.menu.MenuView
-import org.satochip.seedkeeper.ui.views.mysecret.MySecretView
+import org.satochip.seedkeeper.ui.views.mysecret.ShowSecretView
 import org.satochip.seedkeeper.ui.views.pincode.PinEntryView
 import org.satochip.seedkeeper.ui.views.settings.SettingsView
 import org.satochip.seedkeeper.ui.views.showcardlogs.ShowCardLogsView
@@ -249,7 +249,7 @@ fun Navigation(
             )
         }
         composable<MySecretView> {
-            MySecretView(
+            ShowSecretView(
                 context = context,
                 navController = navController,
                 viewModel = viewModel,

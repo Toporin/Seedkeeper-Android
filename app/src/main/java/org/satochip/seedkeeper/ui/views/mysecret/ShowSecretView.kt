@@ -51,7 +51,7 @@ import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 // TODO rename to ShowSecretView
 @Composable
-fun MySecretView(
+fun ShowSecretView(
     context: Context,
     viewModel: SharedViewModel,
     navController: NavHostController,
