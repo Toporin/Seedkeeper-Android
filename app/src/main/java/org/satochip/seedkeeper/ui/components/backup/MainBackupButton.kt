@@ -31,7 +31,10 @@ fun MainBackupButton(
             BackupStatus.FOURTH_STEP -> {
                 R.string.next
             }
-            BackupStatus.FIFTH_STEP -> {
+            BackupStatus.SUCCESS -> {
+                R.string.home
+            }
+            BackupStatus.FAILURE -> {
                 R.string.home
             }
         }

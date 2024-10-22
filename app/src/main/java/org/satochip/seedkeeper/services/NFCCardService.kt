@@ -16,11 +16,13 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperSecretOrigin
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.client.seedkeeper.SeedkeeperStatus
+import org.satochip.io.APDUException
 import org.satochip.io.APDUResponse
 import org.satochip.io.WrongPINException
 import org.satochip.io.BlockedPINException
 import org.satochip.io.ResetToFactoryException
 import org.satochip.seedkeeper.data.AuthenticityStatus
+import org.satochip.seedkeeper.data.BackupErrorData
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.SecretData
@@ -55,9 +57,13 @@ object NFCCardService {
     var backupCardStatus: ApplicationStatus? = null
     var backupAuthentikey: ByteArray?  = null
     var backupPinString: String? = null
-    private var backupSecretHeaders: MutableList<SeedkeeperSecretHeader> = mutableListOf()
-    private var secretHeadersForBackup: MutableList<SeedkeeperSecretHeader> = mutableListOf()
-    private var secretObjectsForBackup: MutableList<SeedkeeperSecretObject> = mutableListOf()
+    var backupSecretHeaders: MutableList<SeedkeeperSecretHeader> = mutableListOf()
+    var secretHeadersForBackup: MutableList<SeedkeeperSecretHeader> = mutableListOf()
+    var secretObjectsForBackup: MutableList<SeedkeeperSecretObject> = mutableListOf()
+    var backupErrors:  MutableList<BackupErrorData> = mutableListOf()
+    var backupImportProgress = MutableLiveData(0f)
+    var backupExportProgress = MutableLiveData(0f)
+    var backupNumberOfSecretsImported = 0
 
     //GENERATE SECRET
     var passwordData: SecretData? = null // TODO rename
@@ -219,6 +225,7 @@ object NFCCardService {
             }
 
             // get list of secretHeaders
+            // TODO: show progress bar
             try {
                 val secretHeadersLocal = cmdSet.seedkeeperListSecretHeaders()
                 if (isMasterCard){
@@ -554,7 +561,23 @@ object NFCCardService {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
             SatoLog.e(TAG, "card mismatch exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
-        }catch (e: Exception) {
+        } catch (e: APDUException) {
+            val sw = e.sw
+            if (sw == 0x9C01){
+                resultCodeLive.postValue(NfcResultCode.NO_MEMORY_LEFT)
+                SatoLog.e(TAG, "No memory available for import: $e")
+                SatoLog.e(TAG, Log.getStackTraceString(e))
+            } else if (sw == 0x9C32){
+                resultCodeLive.postValue(NfcResultCode.SECRET_TOO_LONG)
+                SatoLog.e(TAG, "Secret too long for import: $e")
+                SatoLog.e(TAG, Log.getStackTraceString(e))
+            }
+            else {
+                resultCodeLive.postValue(NfcResultCode.CARD_ERROR)
+                SatoLog.e(TAG, "importSecret exception: $e")
+                SatoLog.e(TAG, Log.getStackTraceString(e))
+            }
+        } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "importSecret exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
@@ -700,27 +723,83 @@ object NFCCardService {
                 }
             }
 
+            // clear import logs
+            backupNumberOfSecretsImported = 0
+            backupErrors.clear()
+
             // import encrypted secrets into backup card
             masterAuthentikeySecretHeader?.sid?.let { masterSid ->
-                for (item in secretObjectsForBackup) {
+                for ((index, item) in secretObjectsForBackup.withIndex()) {
+
+                    SatoLog.d(TAG, "importSecretsToBackup backupImportProgress: ${backupImportProgress.value}")
                     item.isEncrypted = true
                     item.secretEncryptedParams.sidPubkey = masterSid
-                    cmdSet.seedkeeperImportSecret(item)
-                    SatoLog.d(TAG, "importSecretsToBackup imported secret with label ${item.secretHeader.label} and sid ${item.secretHeader.sid}")
+                    try {
+                        cmdSet.seedkeeperImportSecret(item)
+                        backupImportProgress.postValue(index.toFloat() / secretObjectsForBackup.size)
+                        backupNumberOfSecretsImported +=1
+                        SatoLog.d(TAG, "importSecretsToBackup imported secret with label ${item.secretHeader.label} and sid ${item.secretHeader.sid}")
+                    } catch (e: APDUException) {
+                        SatoLog.d(TAG, "importSecretsToBackup failed to import secret with label ${item.secretHeader.label} and sid ${item.secretHeader.sid}")
+                        var nfcResultCode = NfcResultCode.NONE
+                        when (e.sw) {
+                            0x9C01 -> {
+                                nfcResultCode = NfcResultCode.NO_MEMORY_LEFT
+                                SatoLog.e(TAG, "No memory available for import: $e")
+                                SatoLog.e(TAG, Log.getStackTraceString(e))
+                            }
+                            0x9C32 -> {
+                                nfcResultCode = NfcResultCode.SECRET_TOO_LONG
+                                SatoLog.e(TAG, "Secret too long for import: $e")
+                                SatoLog.e(TAG, Log.getStackTraceString(e))
+                            }
+                            else -> {
+                                nfcResultCode = NfcResultCode.CARD_ERROR
+                                SatoLog.e(TAG, "importSecret exception: $e")
+                                SatoLog.e(TAG, Log.getStackTraceString(e))
+                            }
+                        }
+                        // log error
+                        val backupError = BackupErrorData(
+                            sid = item.secretHeader.sid,
+                            label = item.secretHeader.label,
+                            type = item.secretHeader.type,
+                            subtype = item.secretHeader.subtype,
+                            nfcResultCode = nfcResultCode,
+                        )
+                        backupErrors.add(backupError)
+                    }
                 }
                 secretObjectsForBackup.clear()
             }
             resultCodeLive.postValue(NfcResultCode.CARD_SUCCESSFULLY_BACKED_UP)
+            SatoLog.d(TAG, "importSecretsToBackup finished successfully!")
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
             SatoLog.e(TAG, "importSecretsToBackup exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
+        }  catch (e: APDUException) {
+            val sw = e.sw
+            if (sw == 0x9C01){
+                resultCodeLive.postValue(NfcResultCode.NO_MEMORY_LEFT)
+                SatoLog.e(TAG, "No memory available for import: $e")
+                SatoLog.e(TAG, Log.getStackTraceString(e))
+            } else if (sw == 0x9C32){
+                resultCodeLive.postValue(NfcResultCode.SECRET_TOO_LONG)
+                SatoLog.e(TAG, "Secret too long for import: $e")
+                SatoLog.e(TAG, Log.getStackTraceString(e))
+            }
+            else {
+                resultCodeLive.postValue(NfcResultCode.CARD_ERROR)
+                SatoLog.e(TAG, "importSecret exception: $e")
+                SatoLog.e(TAG, Log.getStackTraceString(e))
+            }
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "importSecretsToBackup exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
-        SatoLog.d(TAG, "importSecretsToBackup finished successfully!")
+
     }
 
     /**
@@ -872,20 +951,22 @@ object NFCCardService {
      * @param pubSid An optional secret id from authentikey secret for encrypted export. If pubSid equals null secrets are exported without encryption.
      */
     private fun exportSecretsFromMaster(pubSid: Int? = null) {
-        SatoLog.d(TAG, "exportSecretsFromMaster start")
         try {
+            SatoLog.d(TAG, "exportSecretsFromMaster start")
             secretObjectsForBackup.clear()
-            for (item in secretHeadersForBackup) {
+            for ((index, item) in secretHeadersForBackup.withIndex()) {
+                SatoLog.d(TAG, "exportSecretsFromMaster backupExportProgress: ${backupExportProgress.value}")
                 val secretObject = cmdSet.seedkeeperExportSecret(item.sid, pubSid)
                 secretObjectsForBackup.add(secretObject)
+                backupExportProgress.postValue(index.toFloat() / secretHeadersForBackup.size)
                 SatoLog.d(TAG, "exportSecretsFromMaster exported encrypted secret with label: ${secretObject.secretHeader.label} and sid: ${secretObject.secretHeader.sid}")
             }
+            SatoLog.d(TAG, "exportSecretsFromMaster exported successfully!")
         } catch (e: Exception) {
             resultCodeLive.postValue(NfcResultCode.NFC_ERROR)
             SatoLog.e(TAG, "exportSecretsFromMaster exception: $e")
             SatoLog.e(TAG, Log.getStackTraceString(e))
         }
-        SatoLog.d(TAG, "exportSecretsFromMaster secrets exported successfully!")
     }
 
     /**

@@ -59,6 +59,9 @@
     <string name="cardResetCancel">Factory reset annulé.</string>
     <string name="cardReadyToReset">La carte est prête à être réinitialisée!</string>
     <string name="cardNotInitialized">Carte non initialisée!</string>
+    <string name="noMemoryLeft">Plus de mémoire disponible sur la carte!</string>
+    <string name="secretTooLong">Echec de l\'import, le secret est trop long!</string>
+    <string name="cardError">Erreur lors du traitement par la carte</string>
 
     <!--Generate View-->
     <string name="generate">Générer</string>
@@ -227,7 +230,10 @@
     <string name="pairingThirdStepDoneText">Vous êtes maintenant prêt à copier le contenu de cette carte sur votre carte de backup en utilisant une communication cryptée.</string>
     <string name="pairingFourthStep">Veuillez préparer votre carte de backup Seedkeeper et cliquez sur suivant pour copier votre sauvegarde.</string>
     <string name="congratulations">Félicitations !</string>
+    <string name="numberSecretsSaved">secrets sauvegardés dans le backup.</string>
     <string name="backupFifthText">Vous avez réussi à faire une sauvegarde de votre carte Seedkeeper.</string>
+    <string name="backupWarning">Attention!</string>
+    <string name="backupFailedText">Des problèmes sont survenus lors de la sauvegarde. Il est possible que certains secrets n\'aient pas été sauvegardés.</string>
 
     <!--Home View-->
     <string name="homeAuthenticatedText">Gérez vos secrets liés à la crypto avec Seedkeeper.</string>
@@ -301,5 +307,6 @@
     <string name="errorPlaintextExportNotAllowed">Les paramètres de ce secret ne permettent pas l\'export en clair!</string>
     <string name="errorPinWrongFormat">PIN doit être compris entre 4 et 16 charactères</string>
     <string name="errorPinMismatch">Les codes PIN ne correspondent pas! \nVeuillez réessayer ou annuler.</string>
+
 
 </resources>

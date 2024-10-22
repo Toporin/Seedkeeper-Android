@@ -26,9 +26,13 @@ enum class  NfcResultCode(val resTitle : Int, val resMsg : Int, val resImage : I
     NONE(R.string.scanning, R.string.nfcResultCodeNone, R.drawable.error_24px, null),
     BUSY(R.string.scanning, R.string.nfcResultCodeBusy, R.drawable.contactless_24px, null),
     NFC_ERROR(R.string.nfcTitleWarning, R.string.nfcResultCodeNfcError, R.drawable.error_24px, null),
+    CARD_ERROR(R.string.nfcTitleWarning, R.string.cardError, R.drawable.error_24px, null),
     REQUIRE_SETUP(R.string.nfcTitleSuccess, R.string.cardNotInitialized, R.drawable.error_24px, null),
     REQUIRE_SETUP_FOR_BACKUP(R.string.nfcTitleSuccess, R.string.cardNotInitialized, R.drawable.error_24px, null),
     WRONG_PIN(R.string.nfcTitleWarning, R.string.nfcWrongPin, R.drawable.error_24px, null),
     CARD_BLOCKED(R.string.nfcTitleWarning, R.string.nfcCardBlocked, R.drawable.error_24px, null),
     CARD_MISMATCH(R.string.nfcTitleWarning, R.string.cardMismatch, R.drawable.error_24px, null),
+    NO_MEMORY_LEFT(R.string.nfcTitleWarning, R.string.noMemoryLeft, R.drawable.error_24px, null),
+    SECRET_TOO_LONG(R.string.nfcTitleWarning, R.string.secretTooLong, R.drawable.error_24px, null),
+
 }

@@ -6,5 +6,6 @@ enum class BackupStatus {
     SECOND_STEP,
     THIRD_STEP,
     FOURTH_STEP,
-    FIFTH_STEP
+    SUCCESS,
+    FAILURE,
 }

@@ -3,9 +3,11 @@ package org.satochip.seedkeeper.viewmodels
 import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -43,6 +45,10 @@ class SharedViewModel : ViewModel() {
     var cardLabel by mutableStateOf("")
     private var updateSecretsJob: Job? = null
 
+    // backup
+    var backupImportProgress by mutableFloatStateOf(0f) //mutableFloatStateOf(0f)
+    var backupExportProgress by mutableFloatStateOf(0f)
+
     init {
         NFCCardService.isConnected.observeForever {
             isCardConnected = it
@@ -71,6 +77,12 @@ class SharedViewModel : ViewModel() {
                 secretHeaders.clear()
                 secretHeaders.addAll(it)
             }
+        }
+        NFCCardService.backupImportProgress.observeForever{
+            backupImportProgress = it
+        }
+        NFCCardService.backupExportProgress.observeForever{
+            backupExportProgress = it
         }
     }
 

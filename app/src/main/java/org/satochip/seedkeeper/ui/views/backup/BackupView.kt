@@ -5,11 +5,17 @@ import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
@@ -17,7 +23,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.HomeView
 import org.satochip.seedkeeper.PinEntryView
@@ -26,6 +37,8 @@ import org.satochip.seedkeeper.data.BackupStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeAction
+import org.satochip.seedkeeper.services.NFCCardService
+import org.satochip.seedkeeper.ui.components.backup.BackupErrorCard
 import org.satochip.seedkeeper.ui.components.backup.BackupText
 import org.satochip.seedkeeper.ui.components.backup.BackupTransferImages
 import org.satochip.seedkeeper.ui.components.backup.MainBackupButton
@@ -40,19 +53,23 @@ fun BackupView(
     navController: NavHostController,
     viewModel: SharedViewModel,
 ) {
+    // backup flow state
+    val backupStatus = remember { //rememberSaveable {
+        mutableStateOf(BackupStatus.DEFAULT)
+    }
+
     // NFC dialog
     val showNfcDialog = remember { mutableStateOf(false) } // for NfcDialog
     if (showNfcDialog.value) {
         NfcDialog(
             openDialogCustom = showNfcDialog,
             resultCodeLive = viewModel.resultCodeLive,
-            isConnected = viewModel.isCardConnected
+            isConnected = viewModel.isCardConnected,
+            progress = if (backupStatus.value == BackupStatus.SECOND_STEP)
+                    viewModel.backupExportProgress
+                else
+                    viewModel.backupImportProgress,
         )
-    }
-
-    // backup flow state
-    val backupStatus = remember { //rememberSaveable {
-        mutableStateOf(BackupStatus.DEFAULT)
     }
 
     LaunchedEffect(viewModel.resultCodeLive) {
@@ -61,7 +78,15 @@ fun BackupView(
         } else if (viewModel.resultCodeLive == NfcResultCode.SECRETS_EXPORTED_SUCCESSFULLY_FROM_MASTER){
             backupStatus.value = BackupStatus.THIRD_STEP
         } else if (viewModel.resultCodeLive == NfcResultCode.CARD_SUCCESSFULLY_BACKED_UP){
-            backupStatus.value = BackupStatus.FIFTH_STEP
+            if (NFCCardService.backupErrors.isEmpty()) {
+                backupStatus.value = BackupStatus.SUCCESS
+            } else {
+                backupStatus.value = BackupStatus.FAILURE
+            }
+        } else if (viewModel.resultCodeLive == NfcResultCode.CARD_BLOCKED ||
+                    viewModel.resultCodeLive == NfcResultCode.NO_MEMORY_LEFT)
+        {
+            backupStatus.value = BackupStatus.FAILURE
         }
     }
 
@@ -113,30 +138,75 @@ fun BackupView(
                     .height(500.dp)
                     .padding(24.dp)
             ) {
+
                 Box(modifier = Modifier.align(Alignment.TopCenter)) {
-                    BackupTransferImages(
-                        backupStatus = backupStatus.value
-                    )
+                    if (backupStatus.value == BackupStatus.FAILURE){
+                        // show error logs
+                        LazyColumn(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(16.dp)
+                        ) {
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentHeight()
+                                        .padding(vertical = 16.dp),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("details",
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 18.sp,
+                                            lineHeight = 22.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    )
+                                }
+                            }
+                            items(NFCCardService.backupErrors) { errorItem ->
+                                BackupErrorCard(errorItem)
+                            }
+                        }
+
+                    } else {
+                        if (backupStatus.value == BackupStatus.SUCCESS){
+                            Text("${NFCCardService.backupNumberOfSecretsImported} " + stringResource(R.string.numberSecretsSaved),
+                                style = TextStyle(
+                                    color = Color.Black,
+                                    fontSize = 18.sp,
+                                    lineHeight = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                        // backup card illustration
+                        BackupTransferImages(
+                            backupStatus = backupStatus.value
+                        )
+                    }
                 }
+
                 Column(
                     modifier = Modifier.align(Alignment.BottomCenter),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    if (!(backupStatus.value == BackupStatus.DEFAULT || backupStatus.value == BackupStatus.FIFTH_STEP)) {
-                        SecondaryBackupButton( // todo remove or improve?
-                            backupStatus = backupStatus,
-                            goBack = {
-                                when (backupStatus.value) {
-                                    BackupStatus.FIRST_STEP -> {
-                                        backupStatus.value = BackupStatus.DEFAULT
-                                    }
-                                    else -> {
-                                        backupStatus.value = BackupStatus.FIRST_STEP
-                                    }
-                                }
-                            }
-                        )
-                    }
+//                    if (!(backupStatus.value == BackupStatus.DEFAULT || backupStatus.value == BackupStatus.SUCCESS)) {
+//                        SecondaryBackupButton( // todo remove or improve?
+//                            backupStatus = backupStatus,
+//                            goBack = {
+//                                when (backupStatus.value) {
+//                                    BackupStatus.FIRST_STEP -> {
+//                                        backupStatus.value = BackupStatus.DEFAULT
+//                                    }
+//                                    else -> {
+//                                        backupStatus.value = BackupStatus.FIRST_STEP
+//                                    }
+//                                }
+//                            }
+//                        )
+//                    }
                     MainBackupButton(
                         backupStatus = backupStatus,
                         onClick = {
@@ -175,9 +245,15 @@ fun BackupView(
                                         nfcActionType = NfcActionType.TRANSFER_TO_BACKUP
                                     )
                                 }
-                                BackupStatus.FIFTH_STEP -> {
-                                    // finished, back to home screen
-                                    // TODO: success/fail screen
+                                BackupStatus.SUCCESS -> {
+                                    // finished with success, back to home screen
+                                    navController.navigate(HomeView) {
+                                        popUpTo(0)
+                                    }
+                                    backupStatus.value = BackupStatus.DEFAULT
+                                }
+                                BackupStatus.FAILURE -> {
+                                    // finished with error, back to home screen
                                     navController.navigate(HomeView) {
                                         popUpTo(0)
                                     }

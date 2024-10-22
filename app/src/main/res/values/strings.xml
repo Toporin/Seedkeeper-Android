@@ -59,6 +59,9 @@
     <string name="cardResetSent">Reset command sent</string>
     <string name="cardResetCancel">Factory reset cancelled.</string>
     <string name="cardNotInitialized">Card not initialized!</string>
+    <string name="noMemoryLeft">No more memory available on card!</string>
+    <string name="secretTooLong">Import failed, the secret is too long!</string>
+    <string name="cardError">Error during card processing</string>
 
     <!--Generate View-->
     <string name="generate">Generate</string>
@@ -228,7 +231,10 @@
     <string name="pairingThirdStepDoneText">You are now ready to copy the content of this card to your backup card using an encrypted communication.</string>
     <string name="pairingFourthStep">Please prepare your Seedkeeper backup card and click next to copy your backup.</string>
     <string name="congratulations">Congratulations!</string>
+    <string name="numberSecretsSaved">secrets saved in backup card</string>
     <string name="backupFifthText">You have successfully made a backup of your Seedkeeper card.</string>
+    <string name="backupWarning">Warning!</string>
+    <string name="backupFailedText">There were some issues during backup. Some secrets may not have been backed up.</string>
 
     <!--Home View-->
     <string name="homeAuthenticatedText">Manage your crypto-related secrets at your fingertips with Seedkeeper.</string>

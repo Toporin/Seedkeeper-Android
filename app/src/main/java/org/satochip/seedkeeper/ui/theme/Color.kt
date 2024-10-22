@@ -37,3 +37,6 @@ val SatoInactiveTracer = Color(0xFF785467)
 val SatoToggled = Color(0xFF3C3C43)
 val SatoChecked = Color(0xFF594D53)
 val SatoChecker = Color(0xFF956B80)
+
+// NFC scann
+val SatoNfcBlue = Color(0xFF007aff)
