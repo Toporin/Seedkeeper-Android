@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
@@ -138,8 +137,8 @@ class SharedViewModel : ViewModel() {
         NFCCardService.cardLabel.postValue(cardLabel)
     }
 
-    fun setPasswordData(passwordData: SecretData) {// TODO rename to secretData/secretPayload
-        NFCCardService.passwordData = passwordData
+    fun setSecretData(secretData: SecretData) {
+        NFCCardService.secretData = secretData
     }
 
     fun updateCurrentSecretHeader(secretHeader: SeedkeeperSecretHeader){

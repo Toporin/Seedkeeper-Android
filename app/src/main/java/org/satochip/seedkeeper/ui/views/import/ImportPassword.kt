@@ -318,7 +318,7 @@ fun ImportPassword(
                         }
                     }
 
-                    viewModel.setPasswordData(secretData)
+                    viewModel.setSecretData(secretData)
                     showNfcDialog.value = true
                     viewModel.scanCardForAction(
                         activity = context as Activity,

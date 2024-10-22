@@ -279,7 +279,6 @@ class SecretDataParser {
         )
     }
 
-    // TODO: parse masterseed + pubkey
     private fun parseGeneralData(bytes: ByteArray): SecretData? {
         val secretSize = bytes[0].toInt()
         if (1 + secretSize > bytes.size) {

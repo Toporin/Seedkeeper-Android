@@ -14,7 +14,7 @@ data class SecretData(
     var size: Int? = null,
     var type: SeedkeeperSecretType,
     var password: String? = null,
-    var passphrase: String? = null, // TODO: use this instead of password for passphrase
+    var passphrase: String? = null,
     var label: String,
     var login: String? = null,
     var url: String? = null,

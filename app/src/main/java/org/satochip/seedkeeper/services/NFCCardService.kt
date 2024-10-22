@@ -65,7 +65,7 @@ object NFCCardService {
     var backupNumberOfSecretsImported = 0
 
     //GENERATE SECRET
-    var passwordData: SecretData? = null // TODO rename
+    var secretData: SecretData? = null
 
     // NFC
     var resultCodeLive = MutableLiveData(NfcResultCode.BUSY)
@@ -100,7 +100,7 @@ object NFCCardService {
                 changePin()
             }
             NfcActionType.IMPORT_SECRET -> {
-                passwordData?.let { data ->
+                secretData?.let { data ->
                     importSecret(data = data)
                 }
             }
