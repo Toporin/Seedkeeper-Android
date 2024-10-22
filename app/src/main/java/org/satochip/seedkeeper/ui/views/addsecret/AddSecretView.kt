@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.ImportSecretView
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
@@ -36,8 +36,6 @@ fun AddSecretView(
     context: Context,
     viewModel: SharedViewModel,
     navController: NavHostController,
-    //onClick: (AddSecretItems) -> Unit,
-    //webViewAction: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -99,11 +97,9 @@ fun AddSecretView(
                         color = SatoDarkPurple,
                         drawableId = R.drawable.generate_icon,
                         onClick = {
-                            //onClick(AddSecretItems.GENERATE_A_SECRET)
-                            //navController.navigate(GenerateView)
                             navController.navigate(
                                 ImportSecretView(
-                                    importMode = AddSecretItems.GENERATE_A_SECRET.name
+                                    importMode = ImportMode.GENERATE_A_SECRET.name
                                 )
                             )
                         }
@@ -120,10 +116,9 @@ fun AddSecretView(
                         color = SatoLightPurple,
                         drawableId = R.drawable.import_icon,
                         onClick = {
-                            //onClick(AddSecretItems.IMPORT_A_SECRET)
                             navController.navigate(
                                 ImportSecretView(
-                                    importMode = AddSecretItems.IMPORT_A_SECRET.name
+                                    importMode = ImportMode.IMPORT_A_SECRET.name
                                 )
                             )
                         }
@@ -141,7 +136,6 @@ fun AddSecretView(
                     color = SatoLightPurple,
                     drawableId = R.drawable.how_to
                 ) {
-                    //webViewAction(howToUseSeedkeeperUri)
                     webviewActivityIntent(
                         url = howToUseSeedkeeperUri,
                         context = context

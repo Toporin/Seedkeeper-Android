@@ -1,7 +1,6 @@
 package org.satochip.seedkeeper.data
 
-//TODO rename to ImportMode
-enum class AddSecretItems {
+enum class ImportMode {
     GENERATE_A_SECRET,
     IMPORT_A_SECRET,
 }

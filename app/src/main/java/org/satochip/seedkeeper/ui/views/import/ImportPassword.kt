@@ -3,7 +3,6 @@ package org.satochip.seedkeeper.ui.views.import
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.NfcActionType
@@ -52,7 +51,7 @@ fun ImportPassword(
     navController: NavHostController,
     viewModel: SharedViewModel,
     settings: SharedPreferences,
-    importMode: AddSecretItems,
+    importMode: ImportMode,
     curValueLabel: MutableState<String>,
 ) {
     // NFC dialog
@@ -133,7 +132,7 @@ fun ImportPassword(
     ) {
 
         // TITLE
-        if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+        if (importMode == ImportMode.IMPORT_A_SECRET) {
             TitleTextField(
                 title = R.string.importAPassword,
                 text = R.string.importAPasswordMessage
@@ -188,7 +187,7 @@ fun ImportPassword(
         ) {
 
             // Password options
-            if (importMode == AddSecretItems.GENERATE_A_SECRET) {
+            if (importMode == ImportMode.GENERATE_A_SECRET) {
                 PasswordLengthField(
                     passwordOptions = passwordOptions
                 )
@@ -234,7 +233,7 @@ fun ImportPassword(
         ) {
 
             // generate button
-            if (importMode == AddSecretItems.GENERATE_A_SECRET) {
+            if (importMode == ImportMode.GENERATE_A_SECRET) {
                 SatoButton(
                     modifier = Modifier
                         .weight(1f),

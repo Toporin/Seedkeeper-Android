@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
@@ -30,7 +30,7 @@ fun ImportSecretView(
     navController: NavHostController,
     viewModel: SharedViewModel,
     settings: SharedPreferences,
-    importMode: AddSecretItems,
+    importMode: ImportMode,
 ) {
     val scrollState = rememberScrollState()
 

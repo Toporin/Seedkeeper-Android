@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
-import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.data.NfcResultCode
 import org.satochip.seedkeeper.data.PinCodeAction
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
@@ -262,7 +262,7 @@ fun Navigation(
                 navController = navController,
                 viewModel = viewModel,
                 settings = settings,
-                importMode = AddSecretItems.valueOf(args.importMode),
+                importMode = ImportMode.valueOf(args.importMode),
             )
         }
         composable<ShowCardLogs> {

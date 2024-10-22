@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.data.AppErrorMsg
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.data.NfcActionType
@@ -50,7 +50,7 @@ fun ImportMnemonic(
     context: Context,
     navController: NavHostController,
     viewModel: SharedViewModel,
-    importMode: AddSecretItems,
+    importMode: ImportMode,
     curValueLabel: MutableState<String>,
 ) {
     // NFC dialog
@@ -90,7 +90,7 @@ fun ImportMnemonic(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+        if (importMode == ImportMode.IMPORT_A_SECRET) {
             TitleTextField(
                 title = R.string.importAMnemonicPhrase,
                 text = R.string.importAMnemonicPhraseMessage
@@ -111,7 +111,7 @@ fun ImportMnemonic(
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        if (importMode == AddSecretItems.GENERATE_A_SECRET){
+        if (importMode == ImportMode.GENERATE_A_SECRET){
             SelectField(
                 selectList = listOf(
                     SelectFieldItem(prefix = null, text = R.string.mnemonicSize),
@@ -155,7 +155,7 @@ fun ImportMnemonic(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+            if (importMode == ImportMode.IMPORT_A_SECRET) {
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.enterYourMnemonic),
@@ -195,7 +195,7 @@ fun ImportMnemonic(
             horizontalArrangement = Arrangement.Center
         ) {
             // generate button
-            if (importMode == AddSecretItems.GENERATE_A_SECRET) {
+            if (importMode == ImportMode.GENERATE_A_SECRET) {
                 SatoButton(
                     modifier = Modifier
                         .weight(1f),

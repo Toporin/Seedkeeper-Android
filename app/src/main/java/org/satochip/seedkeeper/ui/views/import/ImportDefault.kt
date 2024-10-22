@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.data.GenerateStatus
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
 import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
@@ -21,13 +21,13 @@ import org.satochip.seedkeeper.ui.views.menu.MenuCard
 
 @Composable
 fun ImportDefault(
-    importMode: AddSecretItems,
+    importMode: ImportMode,
     generateStatus: MutableState<GenerateStatus>
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+        if (importMode == ImportMode.IMPORT_A_SECRET) {
             TitleTextField(
                 title = R.string.importASecret,
                 text = R.string.importASecretMessage
@@ -46,7 +46,7 @@ fun ImportDefault(
                     .fillMaxWidth()
                     .heightIn(min = 110.dp),
                 text = stringResource(id = R.string.password),
-                textMessage = if (importMode == AddSecretItems.IMPORT_A_SECRET) stringResource(R.string.importAPasswordMessage) else stringResource(R.string.generateAPasswordExplanation),
+                textMessage = if (importMode == ImportMode.IMPORT_A_SECRET) stringResource(R.string.importAPasswordMessage) else stringResource(R.string.generateAPasswordExplanation),
                 textAlign = Alignment.TopStart,
                 color = SatoDarkPurple,
                 drawableId = R.drawable.password_icon,
@@ -61,7 +61,7 @@ fun ImportDefault(
                     .fillMaxWidth()
                     .heightIn(min = 110.dp),
                 text = stringResource(id = R.string.mnemonic),
-                textMessage = if (importMode == AddSecretItems.IMPORT_A_SECRET) stringResource(R.string.importAMnemonicPhraseMessage) else stringResource(R.string.generateAMnemonicPhraseExplanation),
+                textMessage = if (importMode == ImportMode.IMPORT_A_SECRET) stringResource(R.string.importAMnemonicPhraseMessage) else stringResource(R.string.generateAMnemonicPhraseExplanation),
                 textAlign = Alignment.TopStart,
                 color = SatoLightPurple,
                 drawableId = R.drawable.mnemonic,
@@ -73,7 +73,7 @@ fun ImportDefault(
             Spacer(modifier = Modifier.height(16.dp))
 
             // these secrets can only be imported, not randomly generated
-            if (importMode == AddSecretItems.IMPORT_A_SECRET) {
+            if (importMode == ImportMode.IMPORT_A_SECRET) {
                 MenuCard(
                     modifier = Modifier
                         .fillMaxWidth()
