@@ -2,6 +2,8 @@ package org.satochip.seedkeeper.utils
 
 import androidx.compose.runtime.MutableState
 import org.bitcoinj.crypto.MnemonicCode
+import org.satochip.client.seedkeeper.SeedkeeperSecretType
+import org.satochip.seedkeeper.R
 import java.util.Locale
 
 const val TAG = "Utils"
@@ -37,6 +39,32 @@ fun isClickable(
 fun isFrench(): Boolean {
     val locale = Locale.getDefault()
     return locale.language == Locale.FRENCH.language
+}
+
+fun getDrawableIdFromType(type: SeedkeeperSecretType): Int {
+    return when (type) {
+        SeedkeeperSecretType.PASSWORD -> {
+            R.drawable.password_icon
+        }
+        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC -> {
+            R.drawable.mnemonic
+        }
+        SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
+            R.drawable.atom_light
+        }
+        SeedkeeperSecretType.DATA -> {
+            R.drawable.free_data
+        }
+        SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
+            R.drawable.wallet
+        }
+        SeedkeeperSecretType.PUBKEY -> {
+            R.drawable.key
+        }
+        else -> {
+            R.drawable.key
+        }
+    }
 }
 
 val instructionsMap: Map<Byte, String> = mapOf(

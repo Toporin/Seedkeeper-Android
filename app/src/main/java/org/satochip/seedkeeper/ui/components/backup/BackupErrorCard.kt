@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.BackupErrorData
+import org.satochip.seedkeeper.utils.getDrawableIdFromType
 
 @Composable
 fun BackupErrorCard(backupErrorData: BackupErrorData) {
@@ -38,26 +39,7 @@ fun BackupErrorCard(backupErrorData: BackupErrorData) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-
-            // todo move to utils?
-            val imageId: Int =  when (backupErrorData.type) {
-                SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
-                    R.drawable.mnemonic // todo: use distinct icon for electrum seed?
-                }
-                SeedkeeperSecretType.DATA -> {
-                    R.drawable.free_data
-                }
-                SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
-                    R.drawable.wallet
-                }
-                SeedkeeperSecretType.PUBKEY -> {
-                    R.drawable.key
-                }
-                else -> {
-                    R.drawable.password_icon
-                }
-            }
-
+            val imageId: Int = getDrawableIdFromType(backupErrorData.type)
             Image(
                 painter = painterResource(id = imageId),
                 contentDescription = null,

@@ -105,7 +105,7 @@ fun ShowSecretView(
     val secret = remember {
         mutableStateOf<SecretData?>(null)
     }
-    LaunchedEffect(viewModel.currentSecretHeader) { // TODO use Unit?
+    LaunchedEffect(viewModel.currentSecretHeader) {
         viewModel.currentSecretHeader?.let { currentSecretHeader ->
             secret.value = SecretData(
                     label = currentSecretHeader.label,

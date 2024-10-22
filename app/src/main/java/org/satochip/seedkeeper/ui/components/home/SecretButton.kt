@@ -25,6 +25,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.ui.components.shared.GifImage
 import org.satochip.seedkeeper.ui.theme.SatoPurple
+import org.satochip.seedkeeper.utils.getDrawableIdFromType
 import org.satochip.seedkeeper.utils.satoClickEffect
 
 @Composable
@@ -51,24 +52,7 @@ fun SecretButton(
         verticalAlignment = Alignment.CenterVertically
     ) {
         secretHeader?.let {
-            val imageId: Int =  when (secretHeader.type) {
-                    SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
-                        R.drawable.mnemonic
-                    }
-                    SeedkeeperSecretType.DATA -> {
-                        R.drawable.free_data
-                    }
-                    SeedkeeperSecretType.WALLET_DESCRIPTOR -> {
-                        R.drawable.wallet
-                    }
-                    SeedkeeperSecretType.PUBKEY -> {
-                        R.drawable.key
-                    }
-                    else -> {
-                        R.drawable.password_icon
-                    }
-                }
-
+            val imageId: Int = getDrawableIdFromType(secretHeader.type)
             Row(
                 modifier = Modifier
                     .weight(1f)
