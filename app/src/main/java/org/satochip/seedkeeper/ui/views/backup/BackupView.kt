@@ -42,7 +42,6 @@ import org.satochip.seedkeeper.ui.components.backup.BackupErrorCard
 import org.satochip.seedkeeper.ui.components.backup.BackupText
 import org.satochip.seedkeeper.ui.components.backup.BackupTransferImages
 import org.satochip.seedkeeper.ui.components.backup.MainBackupButton
-import org.satochip.seedkeeper.ui.components.backup.SecondaryBackupButton
 import org.satochip.seedkeeper.ui.components.home.NfcDialog
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
@@ -230,7 +229,7 @@ fun BackupView(
                                     showNfcDialog.value = true // NfcDialog
                                     viewModel.scanCardForAction(
                                         activity = context as Activity,
-                                        nfcActionType = NfcActionType.SCAN_MASTER_CARD
+                                        nfcActionType = NfcActionType.EXPORT_SECRETS_FROM_MASTER
                                     )
                                 }
                                 BackupStatus.THIRD_STEP -> {
