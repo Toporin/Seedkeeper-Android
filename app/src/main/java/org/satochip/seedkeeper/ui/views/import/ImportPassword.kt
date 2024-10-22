@@ -77,11 +77,10 @@ fun ImportPassword(
         mutableStateOf("")
     }
     val curValueLogin = remember {
-        mutableStateOf("") //TODO: could be null
-        //mutableStateOf<String?>(null)
+        mutableStateOf("")
     }
     val curValueUrl = remember {
-        mutableStateOf("") //TODO: could be null
+        mutableStateOf("")
     }
     val passwordOptions = remember {
         mutableStateOf(

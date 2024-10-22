@@ -5,6 +5,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.services.SatoLog
+import org.satochip.seedkeeper.utils.bytesToHex
 import org.satochip.seedkeeper.utils.countWords
 import java.nio.ByteBuffer
 
@@ -44,7 +45,6 @@ class SecretDataParser {
 
     private fun parseMasterseedMnemonicCardData(bytes: ByteArray): SecretData? {
         var index = 0
-        var descriptor = ""
 
         if (bytes.isEmpty()) {
             SatoLog.e(TAG, "Byte array is empty")
@@ -60,7 +60,7 @@ class SecretDataParser {
         val masterseedBytes = bytes.copyOfRange(index, index + masterseedSize) // not used currently
 
         index += masterseedSize
-        index++
+        index++ // wordlist (currently english only)
         val entropySize = bytes[index].toUByte().toInt()
         index++
 
@@ -83,18 +83,17 @@ class SecretDataParser {
                 passphrase = String(passphraseBytes, Charsets.UTF_8)
             }
         }
+
+        var descriptor: String? = null
         if (index < bytes.size) {
             val descriptorSizeArray = bytes.sliceArray(index..index + 1)
             val descriptorSize = ByteBuffer.wrap(descriptorSizeArray).short
             index += 2
-            if (index + descriptorSize > bytes.size) {
-                SatoLog.e(TAG, "Invalid descriptor size")
-                return null
+            if (descriptorSize > 0 &&  index + descriptorSize <= bytes.size) {
+                val descriptorBytes = bytes.copyOfRange(index, index + descriptorSize)
+                descriptor = String(descriptorBytes, Charsets.UTF_8)
             }
-            val descriptorBytes = bytes.copyOfRange(index, index + descriptorSize)
-            descriptor = String(descriptorBytes, Charsets.UTF_8)
         }
-
 
         return SecretData(
             passphrase = passphrase,

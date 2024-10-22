@@ -76,10 +76,10 @@ fun ImportMnemonic(
         mutableStateOf("")
     }
     val curValuePassphrase = remember {
-        mutableStateOf("") //TODO: could be null
+        mutableStateOf("")
     }
     val curValueWalletDescriptor = remember {
-        mutableStateOf("") //TODO: could be null
+        mutableStateOf("")
     }
     val passwordOptions = remember {
         mutableStateOf(
@@ -200,7 +200,6 @@ fun ImportMnemonic(
                     modifier = Modifier
                         .weight(1f),
                     onClick = {
-                        // TODO check passwordOptions
                         try {
                             secret.value = viewModel.generateMnemonic(passwordOptions.value.passwordLength)
                         } catch (e: IllegalArgumentException) {

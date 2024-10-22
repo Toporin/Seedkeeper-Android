@@ -23,7 +23,7 @@ fun GetSpecificSecretInfoFields(
                         text = (size).toString()
                     )
                 }
-                secret.value?.password?.also { passphrase ->
+                secret.value?.passphrase?.also { passphrase ->
                     SecretInfoField(
                         title = R.string.passphrase,
                         optional = R.string.optional,

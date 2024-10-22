@@ -46,7 +46,7 @@ data class SecretData(
                         secretBytes.add(passphraseSize)
                         secretBytes.addAll(passphraseBytes.toList())
                     } ?: run {
-                        secretBytes.add(0x00.toByte())
+                        secretBytes.add(0x00.toByte()) // must add 0x00 to remove ambiguity if descriptor is present
                     }
                     this.descriptor?.let { descriptor ->
                         val descriptorBytes = descriptor.toByteArray(Charsets.UTF_8)
