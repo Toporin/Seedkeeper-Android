@@ -241,7 +241,7 @@ fun BackupView(
                                     showNfcDialog.value = true // NfcDialog
                                     viewModel.scanCardForAction(
                                         activity = context as Activity,
-                                        nfcActionType = NfcActionType.TRANSFER_TO_BACKUP
+                                        nfcActionType = NfcActionType.IMPORT_SECRETS_TO_BACKUP
                                     )
                                 }
                                 BackupStatus.SUCCESS -> {

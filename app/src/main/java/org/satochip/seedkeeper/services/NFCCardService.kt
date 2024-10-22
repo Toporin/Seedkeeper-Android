@@ -131,10 +131,10 @@ object NFCCardService {
             NfcActionType.SCAN_BACKUP_CARD -> {
                 readCard(isMasterCard = false)
             }
-            NfcActionType.EXPORT_SECRETS_FROM_MASTER -> { // TODO rename EXPORT_SECRETS_FOR_BACKUP?
+            NfcActionType.EXPORT_SECRETS_FROM_MASTER -> {
                 exportSecretsFromMaster()
             }
-            NfcActionType.TRANSFER_TO_BACKUP -> { // TODO rename IMPORT_SECRETS_TO_BACKUP
+            NfcActionType.IMPORT_SECRETS_TO_BACKUP -> { // TODO rename IMPORT_SECRETS_TO_BACKUP
                 importSecretsToBackup()
             }
             NfcActionType.RESET_CARD -> {
