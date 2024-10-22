@@ -322,7 +322,7 @@ fun ImportPassword(
                     showNfcDialog.value = true
                     viewModel.scanCardForAction(
                         activity = context as Activity,
-                        nfcActionType = NfcActionType.GENERATE_A_SECRET
+                        nfcActionType = NfcActionType.IMPORT_SECRET
                     )
 
                     // save login in preferences

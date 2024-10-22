@@ -8,7 +8,7 @@ enum class NfcActionType {
     CHANGE_PIN,
     EXPORT_SECRET,
     DELETE_SECRET,
-    GENERATE_A_SECRET, // todo rename IMPORT_SECRET
+    IMPORT_SECRET,
     EDIT_CARD_LABEL,
     CARD_LOGS,
     SCAN_BACKUP_CARD,//TODO rename

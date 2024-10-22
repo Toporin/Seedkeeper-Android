@@ -99,7 +99,7 @@ object NFCCardService {
                 SatoLog.d(TAG, "initialize NfcActionType.CHANGE_PIN")
                 changePin()
             }
-            NfcActionType.GENERATE_A_SECRET -> { // TODO rename to IMPORT_SECRET
+            NfcActionType.IMPORT_SECRET -> {
                 passwordData?.let { data ->
                     importSecret(data = data)
                 }
