@@ -32,18 +32,20 @@
     <string name="data">Data</string>
 
     <!--NFC code validation-->
-    <string name="nfcTitleSuccess"></string>
+    <string name="nfcTitleSuccess">OK</string>
     <string name="nfcOk">Operation successful!</string>
     <string name="nfcTitleWarning">Warning</string>
+    <string name="nfcTitleInfo">Info</string>
     <string name="nfcErrorOccured">An error occured, please try again</string>
     <string name="pinVerified">Pin verified!</string>
+    <string name="pinChangedSuccessfully">Pin changed successfully!</string>
     <string name="secretHeaderListSet">Card scanned successfully!</string>
     <string name="secretImportedSuccessfully">Secret imported successfully!</string>
-    <string name="secretFetchedSuccessfully">Secret fetched successfully!</string>
+    <string name="secretFetchedSuccessfully">Secret exported successfully!</string>
     <string name="cardLabelChangedSuccessfully">Card label changed successfully!</string>
     <string name="cardLogsFetchedSuccessfully">Card logs fetched successfully!</string>
-    <string name="cardSuccessfullyScanned">Card successfully scanned!</string>
-    <string name="cardSuccessfullyBackedUp">Card successfully backed up!</string>
+    <string name="cardSuccessfullyScanned">Card scanned successfully!</string>
+    <string name="cardSuccessfullyBackedUp">Card backed up successfully!</string>
     <string name="cardSetupSuccessful">Card setup successful!</string>
     <string name="scanning">Scanning</string>
     <string name="nfcResultCodeNone">None</string>
@@ -59,6 +61,7 @@
     <string name="cardResetSent">Reset command sent</string>
     <string name="cardResetCancel">Factory reset cancelled.</string>
     <string name="cardNotInitialized">Card not initialized!</string>
+    <string name="backupCardNotInitialized">Backup card not initialized!</string>
     <string name="noMemoryLeft">No more memory available on card!</string>
     <string name="secretTooLong">Import failed, the secret is too long!</string>
     <string name="cardError">Error during card processing</string>

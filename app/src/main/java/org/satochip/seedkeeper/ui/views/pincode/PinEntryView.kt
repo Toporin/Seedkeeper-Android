@@ -50,7 +50,7 @@ fun PinEntryView(
 
         when(pinCodeAction){
             PinCodeAction.ENTER_PIN_CODE -> {
-                if (viewModel.resultCodeLive == NfcResultCode.SECRET_HEADER_LIST_SET){
+                if (viewModel.resultCodeLive == NfcResultCode.CARD_SCANNED_SUCCESSFULLY){
                     navController.popBackStack()
                 } else if (viewModel.resultCodeLive == NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY){
                     navController.popBackStack()

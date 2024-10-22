@@ -32,14 +32,16 @@
     <string name="data">Texte libre</string>
 
     <!--NFC code validation-->
-    <string name="nfcTitleSuccess"></string>
+    <string name="nfcTitleSuccess">OK</string>
     <string name="nfcOk">Opération réussie !</string>
     <string name="nfcTitleWarning">Attention</string>
+    <string name="nfcTitleInfo">Info</string>
     <string name="nfcErrorOccured">Une erreur s\'est produite, veuillez réessayer</string>
     <string name="pinVerified">Code PIN vérifié!</string>
+    <string name="pinChangedSuccessfully">Code PIN changé avec succès!</string>
     <string name="secretHeaderListSet">Carte scannée avec succès!</string>
     <string name="secretImportedSuccessfully">Secret importé avec succès!</string>
-    <string name="secretFetchedSuccessfully">Secret récupéré avec succès!</string>
+    <string name="secretFetchedSuccessfully">Secret exporté avec succès!</string>
     <string name="cardLabelChangedSuccessfully">L\'étiquette de la carte a été modifiée avec succès!</string>
     <string name="cardLogsFetchedSuccessfully">Les logs de la carte ont été récupérés avec succès!</string>
     <string name="cardSuccessfullyScanned">Carte numérisée avec succès!</string>
@@ -59,6 +61,7 @@
     <string name="cardResetCancel">Factory reset annulé.</string>
     <string name="cardReadyToReset">La carte est prête à être réinitialisée!</string>
     <string name="cardNotInitialized">Carte non initialisée!</string>
+    <string name="backupCardNotInitialized">Carte de backup non initialisée!</string>
     <string name="noMemoryLeft">Plus de mémoire disponible sur la carte!</string>
     <string name="secretTooLong">Echec de l\'import, le secret est trop long!</string>
     <string name="cardError">Erreur lors du traitement par la carte</string>

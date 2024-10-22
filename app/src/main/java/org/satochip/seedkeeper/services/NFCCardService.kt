@@ -269,7 +269,7 @@ object NFCCardService {
             // update card status
             if (isMasterCard){
                 isCardDataAvailable.postValue(true)
-                resultCodeLive.postValue(NfcResultCode.SECRET_HEADER_LIST_SET)
+                resultCodeLive.postValue(NfcResultCode.CARD_SCANNED_SUCCESSFULLY)
             } else {
                 resultCodeLive.postValue(NfcResultCode.BACKUP_CARD_SCANNED_SUCCESSFULLY)
             }
@@ -604,7 +604,7 @@ object NFCCardService {
             // export secret in clear
             val exportedSecret = cmdSet.seedkeeperExportSecret(sid, null)
 
-            resultCodeLive.postValue(NfcResultCode.SECRET_FETCHED_SUCCESSFULLY)
+            resultCodeLive.postValue(NfcResultCode.SECRET_EXPORTED_SUCCESSFULLY)
             return exportedSecret
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
