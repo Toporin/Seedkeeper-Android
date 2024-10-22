@@ -72,7 +72,7 @@ fun ShowCardLogsView(
     val scrollState = rememberScrollState()
     val clipboardManager = LocalClipboardManager.current
     val copyText = stringResource(id = R.string.copiedToClipboard)
-    val cardLogs = viewModel.getCardLogs() // todo: fetch logs from card
+    val cardLogs = viewModel.getCardLogs()
     val filteredLogs = cardLogs.filter { log -> log.sw != 0 }
 
     Column(

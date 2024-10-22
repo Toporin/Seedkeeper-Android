@@ -241,7 +241,7 @@ fun ShowSecretView(
 
                     secret.value?.type?.let { type ->
                         GetSpecificSecretInfoFields(
-                            type = type.name, // todo: use type instead of type.name
+                            secretType = type,
                             secret = secret
                         )
                     }

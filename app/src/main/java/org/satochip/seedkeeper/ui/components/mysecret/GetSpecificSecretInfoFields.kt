@@ -8,10 +8,9 @@ import org.satochip.seedkeeper.data.SecretData
 
 @Composable
 fun GetSpecificSecretInfoFields(
-    type: String,
+    secretType: SeedkeeperSecretType,
     secret: MutableState<SecretData?>,
 ) {
-    val secretType = SeedkeeperSecretType.valueOf(type)
     when (secretType) {
 
         // Mnemonic
