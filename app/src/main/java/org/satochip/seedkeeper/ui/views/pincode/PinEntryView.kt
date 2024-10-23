@@ -212,7 +212,8 @@ fun PinEntryView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
                 Text(
                     text = stringResource(id = messageTitle.value),
@@ -235,7 +236,7 @@ fun PinEntryView(
                         textAlign = TextAlign.Center
                     )
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // PIN field according to status
                 // We use different variables to store user PIN for the different steps
@@ -280,12 +281,9 @@ fun PinEntryView(
                         )
                     )
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 SatoButton(
                     modifier = Modifier,
                     text = buttonText.value,
@@ -364,10 +362,10 @@ fun PinEntryView(
                         }
                     },
                 )
-                Spacer(modifier = Modifier.height(16.dp))
 
                 // show a cancel button in case of error
                 if (showError.value){
+                    Spacer(modifier = Modifier.height(16.dp))
                     SatoButton(
                         modifier = Modifier,
                         text = R.string.cancel,
@@ -377,6 +375,7 @@ fun PinEntryView(
                     )
                 }
             }
+            Spacer(modifier = Modifier)
         }
     }
 }

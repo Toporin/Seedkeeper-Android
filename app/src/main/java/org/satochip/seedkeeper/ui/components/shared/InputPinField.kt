@@ -76,7 +76,6 @@ fun InputPinField(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
         TextField(
             modifier = modifier
                 .fillMaxWidth()
