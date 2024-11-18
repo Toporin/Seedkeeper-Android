@@ -202,7 +202,7 @@
     <string name="enterMasterPinCode">Enter your PIN code</string>
     <string name="enterBackupPinCode">Enter the PIN code for your backup card</string>
     <string name="enterPinCodeText">If the card has not been setup yet, you will be asked to create a new PIN in the next screen.</string>-->
-    <string name="enterPinCode">Enter your PIN code (4–16 char)</string>
+    <string name="enterPinCode">Enter PIN (4–16 chars)</string>
     <string name="createPinCode">Create a PIN code for your card</string>
     <string name="createBackupPinCode">Create a PIN code for your backup card</string>
     <string name="createPinCodeMessage">Create a PIN code to secure access to your Seedkeeper smart card.</string>

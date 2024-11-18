@@ -202,7 +202,7 @@
     <string name="enterMasterPinCode">Saisissez le code PIN de votre carte</string>
     <string name="enterBackupPinCode">Saisissez le code PIN de votre carte de backup</string>
     <string name="enterPinCodeText">Si la carte n\'est pas encore configurée, il vous sera demandé de créer votre code PIN au prochain écran.</string>
-    <string name="enterPinCode">Entrez votre code PIN (4–16 caractères)</string>
+    <string name="enterPinCode">Entrez PIN (4–16 caractères)</string>
     <string name="createPinCode">Créez un code PIN pour votre carte</string>
     <string name="createBackupPinCode">Créez un code PIN pour votre carte de backup</string>
     <string name="createPinCodeMessage">Créez un code PIN pour sécuriser l\'accès à votre carte Seedkeeper.</string>
