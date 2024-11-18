@@ -60,6 +60,7 @@ fun FactoryResetDefault(
         warning = R.string.allDataErasedWarning,
         subText = R.string.allDataErasedIrreversible,
     )
+
     Row(
         modifier = Modifier
             .fillMaxWidth(),
