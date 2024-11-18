@@ -155,22 +155,28 @@ fun ImportMnemonic(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            if (importMode == ImportMode.IMPORT_A_SECRET) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = stringResource(R.string.enterYourMnemonic),
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.ExtraLight,
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
+//            if (importMode == ImportMode.IMPORT_A_SECRET) {
+//                Spacer(modifier = Modifier.height(12.dp))
+//                Text(
+//                    text = stringResource(R.string.enterYourMnemonic),
+//                    style = TextStyle(
+//                        color = Color.Black,
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.ExtraLight,
+//                    )
+//                )
+//            }
+//            Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
                 curValue = secret,
+                placeholder =
+                if (importMode == ImportMode.GENERATE_A_SECRET)
+                    stringResource(id = R.string.secretGeneratePlaceholder)
+                else
+                    stringResource(id = R.string.enterYourMnemonic),
                 isEditable = true,
                 isQRCodeEnabled = false,
+                isSeedQRCodeEnabled = false,
                 minHeight = 250.dp
             )
         }

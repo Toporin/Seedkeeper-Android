@@ -70,12 +70,14 @@ fun ImportFreeField(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth(),
     ) {
         TitleTextField(
             title = R.string.importFreeField,
             text = R.string.importFreeFieldMessage
         )
+
         Spacer(modifier = Modifier.height(8.dp))
         InputField(
             curValue = curValueLabel,
@@ -84,26 +86,30 @@ fun ImportFreeField(
         )
         Spacer(modifier = Modifier.height(12.dp))
     }
+
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = stringResource(R.string.enterYourData),
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraLight,
-                )
-            )
-            Spacer(modifier = Modifier.height(12.dp))
+//            Text(
+//                text = stringResource(R.string.enterYourData),
+//                style = TextStyle(
+//                    color = Color.Black,
+//                    fontSize = 16.sp,
+//                    fontWeight = FontWeight.ExtraLight,
+//                )
+//            )
+//            Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
                 curValue = secret,
+                placeholder = stringResource(id = R.string.enterYourData),
                 isEditable = true,
                 isQRCodeEnabled = false,
+                isSeedQRCodeEnabled = false,
                 minHeight = 250.dp
             )
         }

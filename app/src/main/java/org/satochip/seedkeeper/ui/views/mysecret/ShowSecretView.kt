@@ -130,6 +130,16 @@ fun ShowSecretView(
         }
     }
 
+    fun enableSeedQRCode(secretType: SeedkeeperSecretType, secretSubtype: Int): Boolean {
+        if (secretType == SeedkeeperSecretType.BIP39_MNEMONIC){
+            return true
+        }
+        else if (secretType == SeedkeeperSecretType.MASTERSEED &&  secretSubtype == 0x01){
+            return true
+        }
+        return false
+    }
+
     val stringResourceMap = mapOf(
         SeedkeeperSecretType.MASTERSEED to stringResource(id = R.string.masterseed),
         SeedkeeperSecretType.BIP39_MNEMONIC to stringResource(id = R.string.masterseed),
@@ -251,6 +261,8 @@ fun ShowSecretView(
 
                 SecretTextField(
                     curValue = secretText,
+                    placeholder = stringResource(id = R.string.secretRevealPlaceholder),
+                    isSeedQRCodeEnabled = enableSeedQRCode(secretType= secret.value?.type ?: SeedkeeperSecretType.DEFAULT_TYPE, secret.value?.subType ?: 0),
                     minHeight = 250.dp
                 )
 

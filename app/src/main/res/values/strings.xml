@@ -112,10 +112,12 @@
     <string name="importAWalletDescriptorMessage">Allows you to import an existing wallet descriptor into your Seedkeeper.</string>
     <string name="importFreeField">Import what you want</string>
     <string name="importFreeFieldMessage">Allows you to import any data into your Seedkeeper</string>
-    <string name="enterYourMnemonic">Enter your mnemonic:</string>
-    <string name="enterYourPassword">Enter your password:</string>
-    <string name="enterYourWalletDescriptor">Enter your wallet descriptor:</string>
-    <string name="enterYourData">Enter your data:</string>
+    <string name="enterYourMnemonic">Enter your mnemonic here</string>
+    <string name="enterYourPassword">Enter your password here</string>
+    <string name="enterYourWalletDescriptor">Enter your wallet descriptor here</string>
+    <string name="enterYourData">Enter your data here</string>
+    <string name="enterYourSecret">Enter your secret here</string>
+    <string name="secretGeneratePlaceholder">Click on \'Generate\' to generate a random secret</string>
     <string name="mnemonicType">Mnemonic type</string>
     <string name="bip">BIP39</string>
     <string name="walletDescriptor">Wallet descriptor</string>
@@ -256,6 +258,7 @@
     <string name="manageSecret">Manage your secret</string>
     <string name="manageSecretMessage">Secret information and related actions</string>
     <string name="showSecret">Reveal</string>
+    <string name="secretRevealPlaceholder">Click on \'Reveal\' to export secret from card</string>
     <string name="deleteSecret">Delete</string>
     <string name="seed">Seed</string>
     <string name="seedQR">SeedQR</string>

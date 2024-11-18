@@ -190,23 +190,30 @@ fun ImportPassword(
                 PasswordOptionsBox(
                     passwordOptions = passwordOptions
                 )
-            } else {
-                Text(
-                    text = stringResource(R.string.enterYourPassword),
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.ExtraLight,
-                    )
-                )
             }
+//            else {
+//                Text(
+//                    text = stringResource(R.string.enterYourPassword),
+//                    style = TextStyle(
+//                        color = Color.Black,
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.ExtraLight,
+//                    )
+//                )
+//            }
             Spacer(modifier = Modifier.height(12.dp))
 
             // PASSWORD
             SecretTextField(
                 curValue = secret,
+                placeholder =
+                if (importMode == ImportMode.GENERATE_A_SECRET)
+                    stringResource(id = R.string.secretGeneratePlaceholder)
+                else
+                    stringResource(id = R.string.enterYourPassword),
                 isEditable = true,
                 isQRCodeEnabled = false,
+                isSeedQRCodeEnabled = false,
                 minHeight = 250.dp
             )
         }

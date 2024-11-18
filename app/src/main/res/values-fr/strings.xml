@@ -44,7 +44,7 @@
     <string name="secretFetchedSuccessfully">Secret exporté avec succès!</string>
     <string name="cardLabelChangedSuccessfully">L\'étiquette de la carte a été modifiée avec succès!</string>
     <string name="cardLogsFetchedSuccessfully">Les logs de la carte ont été récupérés avec succès!</string>
-    <string name="cardSuccessfullyScanned">Carte numérisée avec succès!</string>
+    <string name="cardSuccessfullyScanned">Carte scannée avec succès!</string>
     <string name="cardSuccessfullyBackedUp">Carte sauvegardée avec succès!</string>
     <string name="cardSetupSuccessful">Configuration de la carte réussie!</string>
     <string name="scanning">Scanning</string>
@@ -112,10 +112,12 @@
     <string name="importAWalletDescriptorMessage">Vous permet d\'importer un descripteur de portefeuille existant dans votre Seedkeeper.</string>
     <string name="importFreeField">Importez ce que vous voulez</string>
     <string name="importFreeFieldMessage">Vous permet d\'importer n\'importe quelles données dans votre Seedkeeper</string>
-    <string name="enterYourMnemonic">Entrer votre seedphrase:</string>
-    <string name="enterYourPassword">Entrer votre mot de passe:</string>
-    <string name="enterYourWalletDescriptor">Entrez votre descripteur:</string>
-    <string name="enterYourData">Entrez vos données:</string>
+    <string name="enterYourMnemonic">Entrez votre mnémonique ici</string>
+    <string name="enterYourPassword">Entrez votre mot de passe ici</string>
+    <string name="enterYourWalletDescriptor">Entrez votre descripteur ici</string>
+    <string name="enterYourData">Entrez vos données ici</string>
+    <string name="enterYourSecret">Entrez votre secret ici</string>
+    <string name="secretGeneratePlaceholder">Clickez sur \'Générer\' pour générer un secret aléatoirement</string>
     <string name="mnemonicType">Type de seedphrase</string>
     <string name="bip">BIP39</string>
     <string name="walletDescriptor">Descripteur de portefeuille</string>
@@ -255,6 +257,7 @@
     <string name="manageSecret">Gérez votre secret</string>
     <string name="manageSecretMessage">Informations et actions liées au secret</string>
     <string name="showSecret">Révéler</string>
+    <string name="secretRevealPlaceholder">Clickez sur \'Révéler\' pour exporter le secret de la carte</string>
     <string name="deleteSecret">Supprimer</string>
     <string name="seed">Seed</string>
     <string name="seedQR">SeedQR</string>

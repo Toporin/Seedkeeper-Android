@@ -27,6 +27,7 @@ import androidx.navigation.NavHostController
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AppErrorMsg
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.ui.components.import.InputField
@@ -91,19 +92,21 @@ fun ImportWalletDescriptor(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(
-                text = stringResource(R.string.enterYourWalletDescriptor),
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraLight,
-                )
-            )
-            Spacer(modifier = Modifier.height(12.dp))
+//            Text(
+//                text = stringResource(R.string.enterYourWalletDescriptor),
+//                style = TextStyle(
+//                    color = Color.Black,
+//                    fontSize = 16.sp,
+//                    fontWeight = FontWeight.ExtraLight,
+//                )
+//            )
+//            Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
                 curValue = secret,
+                placeholder = stringResource(id = R.string.enterYourWalletDescriptor),
                 isEditable = true,
                 isQRCodeEnabled = false,
+                isSeedQRCodeEnabled = false,
                 minHeight = 250.dp
             )
         }
