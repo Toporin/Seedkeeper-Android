@@ -85,7 +85,7 @@ fun ShowCardLogsView(
             onClick = {
                 navController.navigateUp()
             },
-            titleText = R.string.cardLogs
+            titleText = stringResource(R.string.cardLogs)
         )
         Column(
             modifier = Modifier

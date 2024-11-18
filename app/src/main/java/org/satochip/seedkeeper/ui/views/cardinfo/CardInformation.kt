@@ -103,7 +103,7 @@ fun CardInformation(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeaderAlternateRow(
-                titleText = R.string.cardInfo,
+                titleText = stringResource(R.string.cardInfo),
                 onClick = {
                     navController.popBackStack()
                 }

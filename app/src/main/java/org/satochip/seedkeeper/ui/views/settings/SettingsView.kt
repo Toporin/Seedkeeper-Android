@@ -66,7 +66,7 @@ fun SettingsView(
         ) {
             HeaderAlternateRow(
                 onClick = { navController.popBackStack() },
-                titleText = R.string.settings
+                titleText = stringResource(R.string.settings)
             )
             Image(
                 painter = painterResource(id = R.drawable.tools),

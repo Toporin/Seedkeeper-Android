@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
@@ -75,7 +76,7 @@ fun ImportSecretView(
                 onClick = {
                     navController.popBackStack()
                 },
-                titleText = R.string.blankTextField
+                titleText = stringResource(R.string.blankTextField)
             )
             Column(
                 modifier = Modifier

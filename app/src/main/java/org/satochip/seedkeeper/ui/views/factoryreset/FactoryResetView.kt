@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
@@ -51,7 +52,7 @@ fun FactoryResetView(
             Column {
                 HeaderAlternateRow(
                     onClick = { navController.popBackStack() },
-                    titleText = R.string.reset
+                    titleText = stringResource(R.string.reset)
                 )
                 if (factoryResetStatus.value != FactoryResetStatus.RESET_SUCCESSFUL) {
                     Image(

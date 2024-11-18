@@ -61,7 +61,7 @@ fun ShowLogsView(
             onClick = {
                 navController.navigateUp()
             },
-            titleText = R.string.logs
+            titleText = stringResource(R.string.logs)
         )
         Column(
             modifier = Modifier

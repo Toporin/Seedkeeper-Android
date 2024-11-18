@@ -96,7 +96,7 @@ fun EditCardLabelView(
                 onClick = {
                     navController.popBackStack()
                 },
-                titleText = R.string.blankTextField
+                titleText = stringResource(R.string.blankTextField)
             )
 
             Column(

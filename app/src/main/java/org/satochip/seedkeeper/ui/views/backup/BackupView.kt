@@ -118,7 +118,7 @@ fun BackupView(
                     }
                     backupStatus.value = BackupStatus.DEFAULT
                 },
-                titleText = title.intValue
+                titleText = stringResource(title.intValue)
             )
             Column(
                 modifier = Modifier

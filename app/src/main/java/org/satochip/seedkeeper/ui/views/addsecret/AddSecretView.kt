@@ -47,7 +47,7 @@ fun AddSecretView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeaderAlternateRow(
-                titleText = R.string.blankTextField,
+                titleText = stringResource(R.string.blankTextField),
                 onClick = {
                     navController.popBackStack()
                 }

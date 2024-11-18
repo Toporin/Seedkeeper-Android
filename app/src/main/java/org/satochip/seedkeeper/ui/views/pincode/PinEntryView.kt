@@ -198,7 +198,7 @@ fun PinEntryView(
                 onClick = {
                     navController.popBackStack()
                 },
-                titleText = title.value
+                titleText = stringResource(title.value)
             )
         }
         Column(

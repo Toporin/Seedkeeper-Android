@@ -191,7 +191,8 @@ fun ShowSecretView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeaderAlternateRow(
-                titleText = R.string.mySecret,
+                //titleText = stringResource(R.string.mySecret),
+                titleText = stringResourceMap[secret.value?.type] ?: "",
                 onClick = {
                     viewModel.resetCurrentSecretObject()
                     navController.popBackStack()
@@ -210,16 +211,16 @@ fun ShowSecretView(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = stringResourceMap[secret.value?.type] ?: "",
-                        style = TextStyle(
-                            color = Color.Black,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    Text(
+//                        text = stringResourceMap[secret.value?.type] ?: "",
+//                        style = TextStyle(
+//                            color = Color.Black,
+//                            fontSize = 24.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            textAlign = TextAlign.Center
+//                        )
+//                    )
+//                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = stringResource(id = R.string.manageSecretMessage),
                         style = TextStyle(
