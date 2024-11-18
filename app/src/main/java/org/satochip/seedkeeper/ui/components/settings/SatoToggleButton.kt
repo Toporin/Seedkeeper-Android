@@ -57,13 +57,14 @@ fun SatoToggleButton(
             text = stringResource(id = text),
             style = TextStyle(
                 color = Color.White,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 lineHeight = 22.sp,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.Bold
             )
         )
         Switch(
-            modifier = Modifier,
+            modifier = Modifier
+                .scale(scale = 0.8f),
             checked = isChecked.value,
             onCheckedChange = {
                 isChecked.value = !isChecked.value

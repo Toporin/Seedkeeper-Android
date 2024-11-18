@@ -108,7 +108,7 @@ fun SettingsView(
                     ).apply()
                 }
             )
-            Spacer(modifier = Modifier.height(35.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             SatoButton(
                 modifier = Modifier
                     .padding(
@@ -127,14 +127,14 @@ fun SettingsView(
             Spacer(
                 modifier = Modifier
                     .padding(horizontal = 32.dp)
-                    .padding(top = 32.dp, bottom = 10.dp)
+                    .padding(top = 20.dp, bottom = 20.dp)
                     .height(2.dp)
                     .fillMaxWidth()
                     .background(SatoDividerPurple),
             )
             SatoDescriptionField(
                 title = R.string.factoryReset,
-                text = R.string.factoryResetText
+                //text = R.string.factoryResetText // redundant
             )
             CardResetButton(
                 title = R.string.factoryResetWarning,

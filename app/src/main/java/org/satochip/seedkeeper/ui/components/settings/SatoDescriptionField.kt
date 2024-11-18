@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SatoDescriptionField(
     title: Int,
-    text: Int,
+    text: Int? = null,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -31,15 +31,17 @@ fun SatoDescriptionField(
                 fontWeight = FontWeight.ExtraLight
             )
         )
-        Text(
-            text = stringResource(id = text),
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 14.sp,
-                lineHeight = 24.sp,
-                fontWeight = FontWeight.ExtraLight
+        text?.let {
+            Text(
+                text = stringResource(id = text),
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 14.sp,
+                    lineHeight = 24.sp,
+                    fontWeight = FontWeight.ExtraLight
+                )
             )
-        )
+        }
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
