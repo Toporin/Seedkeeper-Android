@@ -549,7 +549,8 @@ object NFCCardService {
             val secretBytes = data.getSecretBytes() // todo integrate into createSecretObject
             val secretObject = createSecretObject(secretBytes, data)
             val newSecretHeader = cmdSet.seedkeeperImportSecret(secretObject)
-            val newSecretHeaders =(secretHeaders.value ?: emptyList()).plus(newSecretHeader)
+            //val newSecretHeaders =(secretHeaders.value ?: emptyList()).plus(newSecretHeader) // append new secret
+            val newSecretHeaders = listOf(newSecretHeader).plus(secretHeaders.value ?: emptyList()) // prepend new secret
             secretHeaders.postValue(newSecretHeaders)
             resultCodeLive.postValue(NfcResultCode.SECRET_IMPORTED_SUCCESSFULLY)
         } catch (e: CardMismatchException) {
