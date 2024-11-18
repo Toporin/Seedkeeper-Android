@@ -30,6 +30,8 @@
     <string name="password">Mot de passe</string>
     <string name="descriptors">Descripteur</string>
     <string name="data">Texte libre</string>
+    <string name="secret">Secret</string>
+    <string name="unsupportedSecret">Secret non supporté</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess">OK</string>
@@ -88,7 +90,7 @@
         <string name="mnemonicSize">Taille</string>
         <string name="mnemonicWords">%d mots</string>
         <string name="passphrase"> Passphrase</string>
-        <string name="walletDescriptorOptional"> Descripteur de portefeuille</string>
+        <string name="walletDescriptorOptional"> Descripteur de portefeuille (optionnel)</string>
         <!--Login/Password-->
         <string name="loginOptional">Login</string>
         <string name="urlOptional">URL</string>
@@ -117,7 +119,7 @@
     <string name="enterYourWalletDescriptor">Entrez votre descripteur ici</string>
     <string name="enterYourData">Entrez vos données ici</string>
     <string name="enterYourSecret">Entrez votre secret ici</string>
-    <string name="secretGeneratePlaceholder">Clickez sur \'Générer\' pour générer un secret aléatoirement</string>
+    <string name="secretGeneratePlaceholder">Cliquez sur \'Générer\' pour générer un secret aléatoirement</string>
     <string name="mnemonicType">Type de seedphrase</string>
     <string name="bip">BIP39</string>
     <string name="walletDescriptor">Descripteur de portefeuille</string>
@@ -257,7 +259,7 @@
     <string name="manageSecret">Gérez votre secret</string>
     <string name="manageSecretMessage">Informations et actions liées au secret</string>
     <string name="showSecret">Révéler</string>
-    <string name="secretRevealPlaceholder">Clickez sur \'Révéler\' pour exporter le secret de la carte</string>
+    <string name="secretRevealPlaceholder">Cliquez sur \'Révéler\' pour exporter le secret de la carte</string>
     <string name="deleteSecret">Supprimer</string>
     <string name="seed">Seed</string>
     <string name="seedQR">SeedQR</string>

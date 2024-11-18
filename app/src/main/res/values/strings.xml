@@ -30,6 +30,8 @@
     <string name="password">Password</string>
     <string name="descriptors">Descriptors</string>
     <string name="data">Data</string>
+    <string name="secret">Secret</string>
+    <string name="unsupportedSecret">Unsupported secret</string>
 
     <!--NFC code validation-->
     <string name="nfcTitleSuccess">OK</string>
@@ -88,7 +90,7 @@
         <string name="mnemonicSize">Mnemonic size</string>
         <string name="mnemonicWords">%d words</string>
         <string name="passphrase"> Passphrase</string>
-        <string name="walletDescriptorOptional"> Wallet descriptor</string>
+        <string name="walletDescriptorOptional"> Wallet descriptor (optional)</string>
         <!--Login/Password-->
         <string name="loginOptional">Login</string>
         <string name="urlOptional">URL</string>

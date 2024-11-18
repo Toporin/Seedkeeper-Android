@@ -266,6 +266,7 @@ fun ShowSecretView(
                 }
 
                 SecretTextField(
+                    title = (stringResourceMap[secret.value?.type] ?: stringResource(id = R.string.unsupportedSecret)) + ":",
                     curValue = secretText,
                     placeholder = stringResource(id = R.string.secretRevealPlaceholder),
                     isSeedQRCodeEnabled = enableSeedQRCode(secretType= secret.value?.type ?: SeedkeeperSecretType.DEFAULT_TYPE, secret.value?.subType ?: 0),

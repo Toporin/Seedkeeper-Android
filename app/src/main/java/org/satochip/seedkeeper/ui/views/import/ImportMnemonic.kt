@@ -141,13 +141,17 @@ fun ImportMnemonic(
         Spacer(modifier = Modifier.height(20.dp))
 
         // Wallet descriptor
-        InputField(
+        SecretTextField(
             curValue = curValueWalletDescriptor,
-            placeHolder = R.string.walletDescriptorOptional,
-            optional = R.string.optional,
-            containerColor = SatoPurple.copy(alpha = 0.5f)
+            placeholder = stringResource(id = R.string.walletDescriptorOptional),
+            isEditable = true,
+            isQRCodeEnabled = false,
+            isSeedQRCodeEnabled = false,
+            minHeight = 150.dp
         )
+        Spacer(modifier = Modifier.height(20.dp))
     }
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -155,18 +159,6 @@ fun ImportMnemonic(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-//            if (importMode == ImportMode.IMPORT_A_SECRET) {
-//                Spacer(modifier = Modifier.height(12.dp))
-//                Text(
-//                    text = stringResource(R.string.enterYourMnemonic),
-//                    style = TextStyle(
-//                        color = Color.Black,
-//                        fontSize = 16.sp,
-//                        fontWeight = FontWeight.ExtraLight,
-//                    )
-//                )
-//            }
-//            Spacer(modifier = Modifier.height(12.dp))
             SecretTextField(
                 curValue = secret,
                 placeholder =

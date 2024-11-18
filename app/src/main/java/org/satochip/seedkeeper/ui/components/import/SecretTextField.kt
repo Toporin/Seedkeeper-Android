@@ -5,8 +5,11 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -53,6 +56,7 @@ import org.satochip.seedkeeper.utils.getSeedQr
 
 @Composable
 fun SecretTextField(
+    title: String? = null,
     isEditable: Boolean = false,
     curValue: MutableState<String>,
     placeholder: String = "",
@@ -76,218 +80,237 @@ fun SecretTextField(
     }
     val copyText = stringResource(id = R.string.copiedToClipboard)
 
-    Box(
-        modifier = Modifier
-            .heightIn(
-                min = minHeight
-            )
-            .background(
-                color = containerColor,
-                shape = RoundedCornerShape(16.dp)
-            )
+    Column(
+        modifier = Modifier.fillMaxWidth()
     ) {
-
-        if (curValue.value != "") {
-
-            // UPPER-LEFT QR descriptions
-            Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .zIndex(1f)
-                    .align(Alignment.TopStart)
-            ) {
-                if (isSeedQRCodeEnabled) {
-                    if (isSeedQRCodeSelected.value) {
-                        Text(
-                            text = "SeedQR",
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.ExtraLight,
-                                textAlign = TextAlign.Start
-                            )
-                        )
-                    }
-                }
-                if (isQRCodeEnabled) {
-                    if (isQRCodeSelected.value) {
-                        Text(
-                            text = "QRcode",
-                            style = TextStyle(
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.ExtraLight,
-                                textAlign = TextAlign.Start
-                            )
-                        )
-                    }
-                }
-            }
-
-            // UPPER-RIGHT ICONS
-            Row(
-                modifier = Modifier
-                    .padding(8.dp)
-                    //.width(if (isQRCodeEnabled) 96.dp else 64.dp)
-                    .zIndex(1f)
-                    .align(Alignment.TopEnd)
-            ) {
-                if (isSeedQRCodeEnabled) {
-                    // SeedQR code image
-                    Image(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(16.dp)
-                            .satoClickEffect(
-                                onClick = {
-                                    isSeedQRCodeSelected.value = true //!isSeedQRCodeSelected.value
-                                    isQRCodeSelected.value = false
-                                }
-                            ),
-                        painter = painterResource(id = R.drawable.pill),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit,
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
-                }
-                if (isQRCodeEnabled) {
-                    // QR code image
-                    Image(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .size(16.dp)
-                            .satoClickEffect(
-                                onClick = {
-                                    isSeedQRCodeSelected.value = false
-                                    isQRCodeSelected.value = true // !isQRCodeSelected.value
-                                }
-                            ),
-                        painter = painterResource(id = R.drawable.seedqr_icon),
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit,
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
-                }
-                // Copy-to-clipboard
-                Image(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(16.dp)
-                        .satoClickEffect(
-                            onClick = {
-                                clipboardManager.setText(AnnotatedString(curValue.value))
-                                Toast
-                                    .makeText(context, copyText, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        ),
-                    painter = painterResource(id = R.drawable.copy_icon),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(Color.White)
+        title?.let {
+            Text(
+                text = title,
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    lineHeight = 21.sp,
+                    fontWeight = FontWeight.ExtraLight,
+                    textAlign = TextAlign.Start
                 )
-                // Show/hide password
-                Image(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(16.dp)
-                        .satoClickEffect(
-                            onClick = {
-                                isQRCodeSelected.value = false
-                                isSeedQRCodeSelected.value = false
-                                passwordVisibility.value = !passwordVisibility.value
-                            }
-                        ),
-                    painter = painterResource(id = if (passwordVisibility.value) R.drawable.show_password else R.drawable.hide_password),
-                    contentDescription = null,
-                    contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(Color.White)
-                )
-            }
+            )
+            Spacer(modifier = Modifier.height(6.dp))
         }
 
-        if (isQRCodeSelected.value) {
-            // QR-CODE
-            val qrCodeBytes = QRCode(curValue.value).render().getBytes()
-            DataAsQrCode(
-                qrCodeBytes = qrCodeBytes
-            )
-        } else if (isSeedQRCodeSelected.value) {
-            // SEEDQR
-            var qrCodeString: String? = null
-            try {
-                qrCodeString = getSeedQr(curValue.value)
-            } catch (e: Exception) {
-                SatoLog.e(TAG, "Failed to generate SeedQR: ${e}")
+        Box(
+            modifier = Modifier
+                .heightIn(
+                    min = minHeight
+                )
+                .background(
+                    color = containerColor,
+                    shape = RoundedCornerShape(16.dp)
+                )
+        ) {
+
+            if (curValue.value != "") {
+
+                // UPPER-LEFT QR descriptions
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .zIndex(1f)
+                        .align(Alignment.TopStart)
+                ) {
+                    if (isSeedQRCodeEnabled) {
+                        if (isSeedQRCodeSelected.value) {
+                            Text(
+                                text = "SeedQR",
+                                style = TextStyle(
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.ExtraLight,
+                                    textAlign = TextAlign.Start
+                                )
+                            )
+                        }
+                    }
+                    if (isQRCodeEnabled) {
+                        if (isQRCodeSelected.value) {
+                            Text(
+                                text = "QRcode",
+                                style = TextStyle(
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.ExtraLight,
+                                    textAlign = TextAlign.Start
+                                )
+                            )
+                        }
+                    }
+                }
+
+                // UPPER-RIGHT ICONS
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        //.width(if (isQRCodeEnabled) 96.dp else 64.dp)
+                        .zIndex(1f)
+                        .align(Alignment.TopEnd)
+                ) {
+                    if (isSeedQRCodeEnabled) {
+                        // SeedQR code image
+                        Image(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(16.dp)
+                                .satoClickEffect(
+                                    onClick = {
+                                        isSeedQRCodeSelected.value =
+                                            true //!isSeedQRCodeSelected.value
+                                        isQRCodeSelected.value = false
+                                    }
+                                ),
+                            painter = painterResource(id = R.drawable.pill),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            colorFilter = ColorFilter.tint(Color.White)
+                        )
+                    }
+                    if (isQRCodeEnabled) {
+                        // QR code image
+                        Image(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(16.dp)
+                                .satoClickEffect(
+                                    onClick = {
+                                        isSeedQRCodeSelected.value = false
+                                        isQRCodeSelected.value = true // !isQRCodeSelected.value
+                                    }
+                                ),
+                            painter = painterResource(id = R.drawable.seedqr_icon),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
+                            colorFilter = ColorFilter.tint(Color.White)
+                        )
+                    }
+                    // Copy-to-clipboard
+                    Image(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(16.dp)
+                            .satoClickEffect(
+                                onClick = {
+                                    clipboardManager.setText(AnnotatedString(curValue.value))
+                                    Toast
+                                        .makeText(context, copyText, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            ),
+                        painter = painterResource(id = R.drawable.copy_icon),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
+                    // Show/hide password
+                    Image(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(16.dp)
+                            .satoClickEffect(
+                                onClick = {
+                                    isQRCodeSelected.value = false
+                                    isSeedQRCodeSelected.value = false
+                                    passwordVisibility.value = !passwordVisibility.value
+                                }
+                            ),
+                        painter = painterResource(id = if (passwordVisibility.value) R.drawable.show_password else R.drawable.hide_password),
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit,
+                        colorFilter = ColorFilter.tint(Color.White)
+                    )
+                }
             }
-            qrCodeString?.also { qrCodeString ->
-               val qrCodeBytes = QRCode(qrCodeString).render().getBytes()
+
+            if (isQRCodeSelected.value) {
+                // QR-CODE
+                val qrCodeBytes = QRCode(curValue.value).render().getBytes()
                 DataAsQrCode(
                     qrCodeBytes = qrCodeBytes
                 )
-            } ?: run {
-                Text(
-                    text = "Failed to generate SeedQR",
+            } else if (isSeedQRCodeSelected.value) {
+                // SEEDQR
+                var qrCodeString: String? = null
+                try {
+                    qrCodeString = getSeedQr(curValue.value)
+                } catch (e: Exception) {
+                    SatoLog.e(TAG, "Failed to generate SeedQR: ${e}")
+                }
+                qrCodeString?.also { qrCodeString ->
+                    val qrCodeBytes = QRCode(qrCodeString).render().getBytes()
+                    DataAsQrCode(
+                        qrCodeBytes = qrCodeBytes
+                    )
+                } ?: run {
+                    Text(
+                        text = "Failed to generate SeedQR",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
+                            .padding(vertical = 24.dp, horizontal = 16.dp)
+                            .zIndex(0.5f),
+                        style = TextStyle(
+                            color = Color.Red,
+                            fontSize = 18.sp,
+                            lineHeight = 22.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+
+            } else {
+                // SECRET TEXT
+                TextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.Center)
                         .padding(vertical = 24.dp, horizontal = 16.dp)
                         .zIndex(0.5f),
-                    style = TextStyle(
-                        color = Color.Red,
+                    enabled = isEditable,
+                    value = curValue.value,
+                    onValueChange = {
+                        curValue.value = it
+                    },
+                    placeholder = { Text(placeholder) },
+                    keyboardActions = KeyboardActions(
+                        onDone = { keyboardController?.hide() }
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        autoCorrect = false,
+                        keyboardType = KeyboardType.Text
+                    ),
+                    visualTransformation = if (passwordVisibility.value) VisualTransformation.None else visualTransformation,
+                    textStyle = TextStyle(
+                        color = Color.White,
                         fontSize = 18.sp,
                         lineHeight = 22.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
-                    )
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent,
+                        focusedTextColor = Color.Black,
+                        unfocusedTextColor = Color.Black,
+                        cursorColor = Color.Black,
+                        focusedLabelColor = Color.Black,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        disabledTextColor = Color.Black,
+                    ),
+                    minLines = 1,
                 )
             }
-
-        } else {
-            // SECRET TEXT
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Center)
-                    .padding(vertical = 24.dp, horizontal = 16.dp)
-                    .zIndex(0.5f),
-                enabled = isEditable,
-                value = curValue.value,
-                onValueChange = {
-                    curValue.value = it
-                },
-                placeholder = {Text(placeholder)},
-                keyboardActions = KeyboardActions(
-                    onDone = { keyboardController?.hide() }
-                ),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Text
-                ),
-                visualTransformation = if (passwordVisibility.value) VisualTransformation.None else visualTransformation,
-                textStyle = TextStyle(
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    lineHeight = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                ),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    cursorColor = Color.Black,
-                    focusedLabelColor = Color.Black,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    disabledTextColor = Color.Black,
-                ),
-                minLines = 1,
-            )
         }
     }
 }

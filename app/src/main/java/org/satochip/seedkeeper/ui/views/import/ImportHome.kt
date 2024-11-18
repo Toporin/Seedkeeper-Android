@@ -30,7 +30,6 @@ fun ImportHome(
     navController: NavHostController,
     viewModel: SharedViewModel,
     curValueLabel: MutableState<String>,
-    //onClick: (ImportViewItems, String?) -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
