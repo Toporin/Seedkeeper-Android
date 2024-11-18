@@ -153,15 +153,21 @@ fun ShowSecretView(
     )
 
     when (secret.value?.type) {
-        SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
-            if (secret.value?.subType != 0) {
+        SeedkeeperSecretType.MASTERSEED -> {
+            if (secret.value?.subType != 0) { // masterseed-mnemonic
                 secret.value?.mnemonic?.let { mnemonic ->
                     secretText.value = mnemonic
                 }
-            } else {
+            } else { // masterseed
+                // todo: masterseed hex value is stored in password field
                 secret.value?.password?.let { password ->
                     secretText.value = password
                 }
+            }
+        }
+        SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC -> {
+            secret.value?.mnemonic?.let { mnemonic ->
+                secretText.value = mnemonic
             }
         }
         SeedkeeperSecretType.PASSWORD -> {

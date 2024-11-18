@@ -139,7 +139,7 @@ class SecretDataParser {
         }
 
         return SecretData(
-            password = passphrase,
+            passphrase = passphrase,
             mnemonic = mnemonic,
             size = mnemonic.countWords(),
             label = "",

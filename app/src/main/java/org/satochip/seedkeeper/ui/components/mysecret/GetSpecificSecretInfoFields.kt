@@ -36,8 +36,8 @@ fun GetSpecificSecretInfoFields(
                         optional = R.string.optional,
                         text = descriptor
                     )
+                    // todo use SecretTextField
                 }
-
             }
         }
 
