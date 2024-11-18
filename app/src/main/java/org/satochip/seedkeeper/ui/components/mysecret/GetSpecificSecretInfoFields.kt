@@ -65,7 +65,8 @@ fun GetSpecificSecretInfoFields(
                 SecretInfoField(
                     title = R.string.url,
                     optional = R.string.optional,
-                    text = url
+                    text = url,
+                    isUrl = true,
                 )
             }
 

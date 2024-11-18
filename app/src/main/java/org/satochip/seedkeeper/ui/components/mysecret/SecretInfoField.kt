@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -36,6 +37,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,11 +50,31 @@ import org.satochip.seedkeeper.utils.satoClickEffect
 fun SecretInfoField(
     title: Int,
     optional: Int? = null,
-    text: String
+    text: String,
+    isUrl: Boolean = false,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current as Activity
     val copyText = stringResource(id = R.string.copiedToClipboard)
+
+    val annotatedLinkString: AnnotatedString = remember {
+        buildAnnotatedString {
+            val styleLink = SpanStyle(
+                color = Color(0xff64B5F6),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                textDecoration = TextDecoration.Underline
+            )
+            withLink(LinkAnnotation.Url(url = text)) {
+                withStyle(
+                    style = styleLink
+                ) {
+                    append(text)
+                }
+            }
+        }
+    }
+
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -92,17 +115,29 @@ fun SecretInfoField(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = text,
-                style = TextStyle(
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    lineHeight = 21.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Start
+            if (isUrl){
+                Text(
+                    text = annotatedLinkString,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        lineHeight = 21.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Start
+                    )
                 )
-            )
-
+            }else {
+                Text(
+                    text = text,
+                    style = TextStyle(
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        lineHeight = 21.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Start
+                    )
+                )
+            }
             Spacer(modifier = Modifier)
 
             Image(
