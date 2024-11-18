@@ -193,12 +193,12 @@
     <!--Pin Code View-->
     <string name="setup">Setup</string>
     <string name="setupPinTitle">Setup new PIN</string>
-    <string name="editPinCodeTitle">Change PIN code</string>
-    <string name="editPinCode">Change the PIN code</string>
+    <string name="editPinCodeTitle">Change PIN</string>
+    <string name="editPinCode">Change your PIN code</string>
     <string name="editPinCodeEnterCurrentPin">To modify the card PIN code, first enter the current PIN code.</string>
     <string name="editPinCodeEnterNewPin">Enter the new PIN code</string>
     <string name="editPinCodeMessage">Edit the PIN code to secure access to your Seedkeeper smart card.</string>
-    <string name="enterPinCodeTitle">Enter PIN code</string>
+    <string name="enterPinCodeTitle">Enter PIN</string>
     <string name="enterMasterPinCode">Enter your PIN code</string>
     <string name="enterBackupPinCode">Enter the PIN code for your backup card</string>
     <string name="enterPinCodeText">If the card has not been setup yet, you will be asked to create a new PIN in the next screen.</string>-->

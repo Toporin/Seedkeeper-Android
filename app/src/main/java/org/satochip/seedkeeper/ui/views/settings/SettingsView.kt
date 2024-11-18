@@ -27,13 +27,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.FactoryResetView
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ShowCardLogs
 import org.satochip.seedkeeper.ShowLogsView
 import org.satochip.seedkeeper.data.SeedkeeperPreferences
+import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.settings.*
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
+import org.satochip.seedkeeper.ui.theme.SatoLightPurple
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
@@ -135,7 +138,20 @@ fun SettingsView(
             SatoDescriptionField(
                 title = R.string.factoryReset,
                 //text = R.string.factoryResetText // redundant
+                //text = R.string.factoryResetWarning
             )
+//            InfoField(
+//                title = R.string.factoryResetWarning,
+//                titleColor = Color.Red,
+//                text = stringResource(id = R.string.resetMyCard),
+//                onClick = {
+//                    navController.navigate(FactoryResetView)
+//                },
+//                containerColor = Color.Red,
+//                isClickable = true,
+//                icon = R.drawable.warning,
+//                isPadded = false
+//            )
             CardResetButton(
                 title = R.string.factoryResetWarning,
                 text = stringResource(id = R.string.resetMyCard),

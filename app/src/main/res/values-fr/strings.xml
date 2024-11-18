@@ -136,7 +136,7 @@
     <string name="starterIntro">Introduction de démarrage</string>
     <string name="debugMode">Mode débogage</string>
     <string name="verbouseLogs">Activez la collecte des journaux détaillés</string>
-    <string name="showLogs">Afficher les journaux</string>
+    <string name="showLogs">Afficher les logs</string>
     <string name="factoryReset">Réinitialisation d\'usine</string>
     <string name="factoryResetText">Réinitialisez votre carte à son état d\'usine.</string>
     <string name="factoryResetWarning">Attention: cela effacera tous les secrets!</string>
@@ -169,7 +169,7 @@
     <string name="memoryAvailable">Mémoire disponible</string>
     <string name="memoryTotal">Mémoire totale</string>
     <string name="secretsStored">Secrets stockés</string>
-    <string name="showCardLogs">Afficher les journaux de cartes</string>
+    <string name="showCardLogs">Afficher les logs de carte</string>
 
     <!--Edit Card Label View-->
     <string name="cardLabelTitle">Modifier le label de la carte</string>
@@ -192,8 +192,8 @@
 
     <!--Pin Code View-->
     <string name="setup">Configuration</string>
-    <string name="setupPinTitle">Setup</string>
-    <string name="editPinCodeTitle">Modifier le code PIN</string>
+    <string name="setupPinTitle">Setup code PIN</string>
+    <string name="editPinCodeTitle">Modifier code PIN</string>
     <string name="editPinCode">Modifier le code PIN</string>
     <string name="editPinCodeEnterCurrentPin">Pour modifier le code de la carte, entrez d\'abord le code PIN actuel.</string>
     <string name="editPinCodeEnterNewPin">Entrez maintenant le nouveau code PIN.</string>
@@ -279,7 +279,7 @@
     <string name="logsDisabledText">Veuillez activer le mode débogage</string>
 
     <!--Show Card Logs View-->
-    <string name="cardLogs">Journaux de logs</string>
+    <string name="cardLogs">Logs de la carte</string>
     
     <!-- Links -->
     <string name="howToUseSeedkeeper">https://satochip.io/fr/installation-et-utilisation-de-seedkeeper-sur-mobile/</string>

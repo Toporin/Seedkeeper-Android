@@ -41,7 +41,7 @@ fun CardStatusField(
                 color = Color.Black,
                 fontSize = 18.sp,
                 lineHeight = 22.sp,
-                fontWeight = FontWeight.ExtraBold
+                fontWeight = FontWeight.Bold
             )
         )
         Column(
