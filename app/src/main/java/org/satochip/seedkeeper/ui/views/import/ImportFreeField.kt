@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -69,129 +70,102 @@ fun ImportFreeField(
         mutableStateOf("")
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-    ) {
-        TitleTextField(
-            title = R.string.importFreeField,
-            text = R.string.importFreeFieldMessage
-        )
+    TitleTextField(
+        title = R.string.importFreeField,
+        text = R.string.importFreeFieldMessage
+    )
 
-        Spacer(modifier = Modifier.height(8.dp))
-        InputField(
-            curValue = curValueLabel,
-            placeHolder = R.string.label,
-            containerColor = SatoPurple.copy(alpha = 0.5f)
+    InputField(
+        curValue = curValueLabel,
+        placeHolder = R.string.label,
+        containerColor = SatoPurple.copy(alpha = 0.5f)
+    )
+
+    SecretTextField(
+        curValue = secret,
+        placeholder = stringResource(id = R.string.enterYourData),
+        isEditable = true,
+        isQRCodeEnabled = false,
+        isSeedQRCodeEnabled = false,
+        minHeight = 250.dp
+    )
+
+    // error msg
+    if (showError.value) {
+        Text(
+            text = stringResource(appError.value.msg),
+            style = TextStyle(
+                color = Color.Red,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
         )
-        Spacer(modifier = Modifier.height(12.dp))
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Row(
+        modifier = Modifier.fillMaxWidth(), //fillMaxSize(),
+        horizontalArrangement = Arrangement.Center
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-//            Text(
-//                text = stringResource(R.string.enterYourData),
-//                style = TextStyle(
-//                    color = Color.Black,
-//                    fontSize = 16.sp,
-//                    fontWeight = FontWeight.ExtraLight,
-//                )
-//            )
-//            Spacer(modifier = Modifier.height(12.dp))
-            SecretTextField(
-                curValue = secret,
-                placeholder = stringResource(id = R.string.enterYourData),
-                isEditable = true,
-                isQRCodeEnabled = false,
-                isSeedQRCodeEnabled = false,
-                minHeight = 250.dp
-            )
-        }
+        //Import
+        SatoButton(
+            modifier = Modifier,
+            onClick = {
 
-        // error msg
-        if (showError.value) {
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(appError.value.msg),
-                style = TextStyle(
-                    color = Color.Red,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textAlign = TextAlign.Center
+                //check inputs
+                if (curValueLabel.value.isEmpty()){
+                    appError.value = AppErrorMsg.LABEL_EMPTY
+                    showError.value = true
+                    return@SatoButton
+                }
+                if (curValueLabel.value.toByteArray(Charsets.UTF_8).size > 127){
+                    appError.value = AppErrorMsg.LABEL_TOO_LONG
+                    showError.value = true
+                    return@SatoButton
+                }
+                if (secret.value.isEmpty()){
+                    appError.value = AppErrorMsg.DATA_EMPTY
+                    showError.value = true
+                    return@SatoButton
+                }
+                if (secret.value.toByteArray(Charsets.UTF_8).size > 65535){
+                    appError.value = AppErrorMsg.DATA_TOO_LONG
+                    showError.value = true
+                    return@SatoButton
+                }
+
+                val secretData = SecretData(
+                    type = SeedkeeperSecretType.DATA,
+                    label = curValueLabel.value,
+                    data = secret.value
                 )
-            )
-        }
 
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            //Import
-            SatoButton(
-                modifier = Modifier,
-                onClick = {
-
-                    //check inputs
-                    if (curValueLabel.value.isEmpty()){
-                        appError.value = AppErrorMsg.LABEL_EMPTY
+                if (viewModel.getProtocolVersionInt() == 1){
+                    val payloadBytes = secretData.getSecretBytes()
+                    if (payloadBytes.size > 255){
+                        appError.value = AppErrorMsg.SECRET_TOO_LONG_FOR_V1
                         showError.value = true
                         return@SatoButton
                     }
-                    if (curValueLabel.value.toByteArray(Charsets.UTF_8).size > 127){
-                        appError.value = AppErrorMsg.LABEL_TOO_LONG
-                        showError.value = true
-                        return@SatoButton
-                    }
-                    if (secret.value.isEmpty()){
-                        appError.value = AppErrorMsg.DATA_EMPTY
-                        showError.value = true
-                        return@SatoButton
-                    }
-                    if (secret.value.toByteArray(Charsets.UTF_8).size > 65535){
-                        appError.value = AppErrorMsg.DATA_TOO_LONG
-                        showError.value = true
-                        return@SatoButton
-                    }
+                }
 
-                    val secretData = SecretData(
-                        type = SeedkeeperSecretType.DATA,
-                        label = curValueLabel.value,
-                        data = secret.value
-                    )
-
-                    if (viewModel.getProtocolVersionInt() == 1){
-                        val payloadBytes = secretData.getSecretBytes()
-                        if (payloadBytes.size > 255){
-                            appError.value = AppErrorMsg.SECRET_TOO_LONG_FOR_V1
-                            showError.value = true
-                            return@SatoButton
-                        }
-                    }
-
-                    viewModel.setSecretData(secretData)
-                    showNfcDialog.value = true
-                    viewModel.scanCardForAction(
-                        activity = context as Activity,
-                        nfcActionType = NfcActionType.IMPORT_SECRET
-                    )
+                viewModel.setSecretData(secretData)
+                showNfcDialog.value = true
+                viewModel.scanCardForAction(
+                    activity = context as Activity,
+                    nfcActionType = NfcActionType.IMPORT_SECRET
+                )
 
 
-                },
-                text = R.string.importButton,
-                buttonColor = if (
-                    isClickable(
-                        secret,
-                        curValueLabel
-                    )
-                ) SatoButtonPurple else SatoButtonPurple.copy(alpha = 0.6f),
-            )
-        }
+            },
+            text = R.string.importButton,
+            buttonColor = if (
+                isClickable(
+                    secret,
+                    curValueLabel
+                )
+            ) SatoButtonPurple else SatoButtonPurple.copy(alpha = 0.6f),
+        )
     }
 }

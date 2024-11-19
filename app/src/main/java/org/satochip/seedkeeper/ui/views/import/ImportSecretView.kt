@@ -72,12 +72,63 @@ fun ImportSecretView(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            // HEADER (empty)
             HeaderAlternateRow(
                 onClick = {
                     navController.popBackStack()
                 },
                 titleText = stringResource(R.string.blankTextField)
             )
+//            // HEADER (with title and message)
+//            HeaderAlternateRow(
+//                onClick = {
+//                    navController.popBackStack()
+//                },
+//                titleText =
+//                when (generateStatus.value) {
+//                    GenerateStatus.DEFAULT -> {
+//                        stringResource(R.string.importASecret)
+//                    }
+//                    GenerateStatus.MNEMONIC_PHRASE -> {
+//                        stringResource(R.string.blankTextField)
+//                    }
+//                    GenerateStatus.LOGIN_PASSWORD -> {
+//                        stringResource(R.string.blankTextField)
+//                    }
+//                    GenerateStatus.WALLET_DESCRIPTOR -> {
+//                        stringResource(R.string.blankTextField)
+//                    }
+//                    GenerateStatus.FREE_FIELD -> {
+//                        stringResource(R.string.importFreeField)
+//                    }
+//                    GenerateStatus.HOME -> {
+//                        stringResource(R.string.importASecret)
+//                    }
+//                },
+//                message =
+//                when (generateStatus.value) {
+//                    GenerateStatus.DEFAULT -> {
+//                        R.string.importASecret
+//                    }
+//                    GenerateStatus.MNEMONIC_PHRASE -> {
+//                        R.string.blankTextField
+//                    }
+//                    GenerateStatus.LOGIN_PASSWORD -> {
+//                        R.string.blankTextField
+//                    }
+//                    GenerateStatus.WALLET_DESCRIPTOR -> {
+//                        R.string.blankTextField
+//                    }
+//                    GenerateStatus.FREE_FIELD -> {
+//                        R.string.importFreeField
+//                    }
+//                    GenerateStatus.HOME -> {
+//                        R.string.importASecret
+//                    }
+//                },
+//            )
+
+            // IMPORT SECRET OPTIONS
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -85,7 +136,7 @@ fun ImportSecretView(
                     .padding(bottom = 16.dp, top = 16.dp)
                     .verticalScroll(state = scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceEvenly //SpaceBetween
             ) {
                 when (generateStatus.value) {
                     GenerateStatus.DEFAULT -> {
