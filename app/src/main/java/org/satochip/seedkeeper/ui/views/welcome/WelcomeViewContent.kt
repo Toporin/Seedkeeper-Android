@@ -13,20 +13,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ui.components.shared.SatoButton
+import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
 
 @Composable
 fun WelcomeViewContent(
     title: Int,
     text: Int,
-    link: String? = null
+    urlString: String? = null,
+    onClick: () -> Unit
 ) {
     Text(
         text = stringResource(title),
+        modifier = Modifier.padding(horizontal = 8.dp),
         style = TextStyle(
             color = Color.Black,
             fontWeight = FontWeight.ExtraBold,
             fontSize = 24.sp,
-            lineHeight = (14.5).sp,
+            textAlign = TextAlign.Center
         ),
     )
     Spacer(modifier = Modifier.height(20.dp))
@@ -41,4 +46,15 @@ fun WelcomeViewContent(
             textAlign = TextAlign.Center
         ),
     )
+    urlString?.let{
+        SatoButton(
+            modifier = Modifier,
+            onClick = {
+                onClick()
+            },
+            text = R.string.moreInfo,
+            textColor = Color.White,
+            buttonColor = SatoButtonBlue
+        )
+    }
 }

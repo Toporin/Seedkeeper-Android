@@ -18,7 +18,7 @@ fun BottomSheet(
     content: @Composable () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false
+        skipPartiallyExpanded = true
     )
     if (!showSheet.value) {
         return
