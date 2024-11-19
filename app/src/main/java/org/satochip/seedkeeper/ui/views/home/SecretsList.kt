@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.ui.components.home.EditField
 import org.satochip.seedkeeper.ui.components.home.SearchSecretsField
 import org.satochip.seedkeeper.ui.components.home.SecretButton
 import org.satochip.seedkeeper.ui.components.home.SecretsFilter
@@ -71,23 +72,28 @@ fun SecretsList(
             .fillMaxSize()
             .padding(24.dp)
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = cardLabel,
-                style = TextStyle(
-                    color = Color.Black,
-                    fontSize = 24.sp,
-                    lineHeight = 40.sp,
-                    fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Card Label
+        if (!cardLabel.isEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = cardLabel,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        lineHeight = 22.sp,
+                        fontWeight = FontWeight.ExtraLight,
+                        textAlign = TextAlign.Center
+                    )
                 )
-            )
+            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = stringResource(id = R.string.homeAuthenticatedText),
@@ -99,7 +105,7 @@ fun SecretsList(
                 textAlign = TextAlign.Center
             )
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         if (isFilterFieldNeeded) {
             Row(
@@ -171,7 +177,7 @@ fun SecretsList(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(horizontal = 24.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             Text(
@@ -208,7 +214,6 @@ fun SecretsList(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
-
         }
     }
 }

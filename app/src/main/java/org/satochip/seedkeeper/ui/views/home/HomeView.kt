@@ -1,30 +1,34 @@
 package org.satochip.seedkeeper.ui.views.home
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavHostController
+import org.satochip.seedkeeper.AddSecretView
+import org.satochip.seedkeeper.MySecretView
+import org.satochip.seedkeeper.PinEntryView
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.HomeItems
+import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.PinCodeAction
 import org.satochip.seedkeeper.ui.components.home.HomeHeaderRow
 import org.satochip.seedkeeper.ui.components.home.SatoGradientButton
 import org.satochip.seedkeeper.ui.components.home.SatoRoundButton
+import org.satochip.seedkeeper.utils.webviewActivityIntent
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun HomeView(
-    isCardDataAvailable: Boolean,
-    cardLabel: String,
-    secretHeaders: SnapshotStateList<SeedkeeperSecretHeader?>,
-    authenticityStatus: AuthenticityStatus,
-    onClick: (HomeItems, SeedkeeperSecretHeader?) -> Unit,
-    webViewAction: (String) -> Unit
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
 ) {
+    val buySeedkeeperUrl = stringResource(id = R.string.buySeedkeeperUrl)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -36,34 +40,44 @@ fun HomeView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeHeaderRow(
-                isCardDataAvailable = isCardDataAvailable,
-                authenticityStatus = authenticityStatus,
-                onClick = { homeItems ->
-                    onClick(homeItems, null)
-                },
+                context = context,
+                navController = navController,
+                viewModel = viewModel,
             )
-            if (isCardDataAvailable) {
+            if (viewModel.isCardDataAvailable) {
                 SecretsList(
-                    cardLabel = cardLabel,
-                    secretHeaders = secretHeaders,
+                    cardLabel = viewModel.cardLabel,
+                    secretHeaders = viewModel.secretHeaders,
                     addNewSecret = {
-                        onClick(HomeItems.ADD_NEW_SECRET, null)
+                        navController.navigate(AddSecretView)
                     },
-                    onSecretClick = { item ->
-                        onClick(HomeItems.OPEN_SECRET, item)
-                    }
+                    onSecretClick = { secretHeader ->
+                        secretHeader.let {
+                            viewModel.updateCurrentSecretHeader(secretHeader)
+                            navController.navigate(MySecretView)
+                        }
+                    },
                 )
             } else {
                 // SCAN BUTTON
                 SatoRoundButton(
                     text = R.string.scan
                 ) {
-                    onClick(HomeItems.SCAN_CARD, null)
+                    viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+                    navController.navigate(
+                        PinEntryView(
+                            pinCodeAction = PinCodeAction.ENTER_PIN_CODE.name,
+                            isBackupCard = false,
+                        )
+                    )
                 }
                 // WEBVIEW
                 SatoGradientButton(
                     onClick = {
-                        webViewAction("https://satochip.io/product/seedkeeper/")
+                        webviewActivityIntent(
+                            url = buySeedkeeperUrl,
+                            context = context
+                        )
                     },
                     text = R.string.noSeedkeeper
                 )

@@ -39,7 +39,7 @@ fun MenuCard(
             )
             .clickable { onClick() },
     ) {
-        val endTextPadding = if (drawableId == null) 15.dp else 30.dp
+        val endTextPadding = if (drawableId == null) 15.dp else 30.dp //40.dp
         Column(
             modifier = Modifier
                 .align(textAlign)
@@ -57,7 +57,8 @@ fun MenuCard(
                     modifier = Modifier,
                     color = Color.White,
                     fontSize = 14.sp,
-                    text = textMessage
+                    text = textMessage,
+                    fontWeight =  FontWeight.ExtraLight
                 )
             }
         }

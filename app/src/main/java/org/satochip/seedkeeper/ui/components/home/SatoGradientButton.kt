@@ -60,12 +60,11 @@ fun SatoGradientButton(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box {}
             Text(
                 modifier = Modifier,
                 text = stringResource(text),
                 color = Color.White,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,

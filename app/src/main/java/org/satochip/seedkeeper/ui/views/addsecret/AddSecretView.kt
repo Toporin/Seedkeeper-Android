@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.addsecret
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,17 +20,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import org.satochip.seedkeeper.ImportSecretView
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.AddSecretItems
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
 import org.satochip.seedkeeper.ui.views.menu.MenuCard
+import org.satochip.seedkeeper.utils.webviewActivityIntent
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun AddSecretView(
-    onClick: (AddSecretItems) -> Unit,
-    webViewAction: (String) -> Unit
+    context: Context,
+    viewModel: SharedViewModel,
+    navController: NavHostController,
 ) {
     Box(
         modifier = Modifier
@@ -41,9 +47,9 @@ fun AddSecretView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HeaderAlternateRow(
-                titleText = R.string.addSecret,
+                titleText = stringResource(R.string.blankTextField),
                 onClick = {
-                    onClick(AddSecretItems.BACK)
+                    navController.popBackStack()
                 }
             )
             Column(
@@ -53,17 +59,32 @@ fun AddSecretView(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
-
-                Text(
-                    text = stringResource(id = R.string.addSecretMessage),
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight.ExtraLight,
-                        textAlign = TextAlign.Center
+                Column(
+                     modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.addSecret),
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 21.sp,
+                            fontWeight = FontWeight.ExtraBold,
+                            textAlign = TextAlign.Center
+                        )
                     )
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = stringResource(id = R.string.addSecretMessage),
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            fontWeight = FontWeight.ExtraLight,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
                 Column {
                     // GENERATE A SECRET
                     MenuCard(
@@ -76,7 +97,11 @@ fun AddSecretView(
                         color = SatoDarkPurple,
                         drawableId = R.drawable.generate_icon,
                         onClick = {
-                            onClick(AddSecretItems.GENERATE_A_SECRET)
+                            navController.navigate(
+                                ImportSecretView(
+                                    importMode = ImportMode.GENERATE_A_SECRET.name
+                                )
+                            )
                         }
                     )
                     Spacer(modifier = Modifier.height(32.dp))
@@ -91,12 +116,17 @@ fun AddSecretView(
                         color = SatoLightPurple,
                         drawableId = R.drawable.import_icon,
                         onClick = {
-                            onClick(AddSecretItems.IMPORT_A_SECRET)
+                            navController.navigate(
+                                ImportSecretView(
+                                    importMode = ImportMode.IMPORT_A_SECRET.name
+                                )
+                            )
                         }
                     )
                 }
 
                 // HOW TO USE SEEDKEEPER
+                val howToUseSeedkeeperUri = stringResource(id = R.string.howToUseSeedkeeper)
                 MenuCard(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -106,7 +136,10 @@ fun AddSecretView(
                     color = SatoLightPurple,
                     drawableId = R.drawable.how_to
                 ) {
-                    webViewAction("https://satochip.io/setup-use-seedkeeper-on-mobile/")
+                    webviewActivityIntent(
+                        url = howToUseSeedkeeperUri,
+                        context = context
+                    )
                 }
                 Spacer(modifier = Modifier)
             }

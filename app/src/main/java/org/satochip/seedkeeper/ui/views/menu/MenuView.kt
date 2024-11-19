@@ -1,5 +1,6 @@
 package org.satochip.seedkeeper.ui.views.menu
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,21 +30,43 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import org.satochip.seedkeeper.BackupView
+import org.satochip.seedkeeper.CardInformation
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.MenuItems
+import org.satochip.seedkeeper.SettingsView
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
+import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
-import org.satochip.seedkeeper.ui.theme.SatoCardPurple
 import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
+import org.satochip.seedkeeper.ui.theme.SatoPurple
+import org.satochip.seedkeeper.utils.webviewActivityIntent
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun MenuView(
-    onClick: (MenuItems) -> Unit,
-    webViewAction: (String) -> Unit
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
 ) {
+    // INFO DIALOG
+    val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
+    if (showInfoDialog.value) {
+        InfoPopUpDialog(
+            isOpen = showInfoDialog,
+            title = R.string.cardNeedToBeScannedTitle,
+            message = R.string.cardNeedToBeScannedMessage
+        )
+    }
+
     val scrollState = rememberScrollState()
+    val howToUseSeedkeeperUrl = stringResource(id = R.string.howToUseSeedkeeper)
+    val termsOfServiceUrl = stringResource(id = R.string.termsOfServiceUrl)
+    val privacyPolicyUrl = stringResource(id = R.string.privacyPolicyUrl)
+    val allOurProducsUrl = stringResource(id = R.string.allOurProducsUrl)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +77,7 @@ fun MenuView(
         ) {
             HeaderAlternateRow(
                 onClick = {
-                    onClick(MenuItems.BACK)
+                    navController.popBackStack()
                 }
             )
         }
@@ -86,7 +111,11 @@ fun MenuView(
                 color = SatoDarkPurple,
                 drawableId = R.drawable.cards_info,
                 onClick = {
-                    onClick(MenuItems.CARD_INFORMATION)
+                    if (viewModel.isCardDataAvailable) {
+                        navController.navigate(CardInformation)
+                    } else {
+                        showInfoDialog.value = !showInfoDialog.value
+                    }
                 }
             )
         }
@@ -104,28 +133,32 @@ fun MenuView(
             // MAKE A BACKUP
             MenuCard(
                 modifier = Modifier
-                    .weight(2f)
+                    .weight(3f)
                     .heightIn(min = 110.dp),
                 text = stringResource(R.string.makeBackup),
                 textAlign = Alignment.TopStart,
                 color = SatoLightPurple,
                 drawableId = R.drawable.make_backup,
                 onClick = {
-                    onClick(MenuItems.MAKE_A_BACKUP)
+                    if (viewModel.isCardDataAvailable) {
+                        navController.navigate(BackupView)
+                    } else {
+                        showInfoDialog.value = !showInfoDialog.value
+                    }
                 }
             )
             Spacer(modifier = Modifier.width(8.dp))
             // SETTINGS
             MenuCard(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(2f)
                     .heightIn(min = 110.dp),
                 text = stringResource(R.string.settings),
                 textAlign = Alignment.TopStart,
                 color = SatoDarkPurple,
                 drawableId = R.drawable.settings,
                 onClick = {
-                    onClick(MenuItems.SETTINGS)
+                    navController.navigate(SettingsView)
                 }
             )
         }
@@ -150,7 +183,10 @@ fun MenuView(
                 color = SatoLightPurple,
                 drawableId = R.drawable.how_to
             ) {
-                webViewAction("https://satochip.io/setup-use-seedkeeper-on-mobile/")
+                webviewActivityIntent(
+                    url = howToUseSeedkeeperUrl,
+                    context = context
+                )
             }
         }
         Row(
@@ -173,7 +209,10 @@ fun MenuView(
                 textAlign = Alignment.Center,
                 color = SatoDarkPurple,
             ) {
-                webViewAction("https://satochip.io/terms-of-service/")
+                webviewActivityIntent(
+                    url = termsOfServiceUrl,
+                    context = context
+                )
             }
             Spacer(modifier = Modifier.width(8.dp))
             // PRIVACY POLICY
@@ -185,7 +224,10 @@ fun MenuView(
                 textAlign = Alignment.Center,
                 color = SatoDarkPurple,
             ) {
-                webViewAction("https://satochip.io/privacy-policy/")
+                webviewActivityIntent(
+                    url = privacyPolicyUrl,
+                    context = context
+                )
             }
         }
         Spacer(
@@ -202,11 +244,14 @@ fun MenuView(
                 .padding(10.dp)
                 .padding(bottom = 50.dp)
                 .background(
-                    color = SatoCardPurple,
+                    color = SatoPurple.copy(alpha = 0.4f),
                     shape = RoundedCornerShape(15.dp)
                 )
                 .clickable {
-                    webViewAction("https://satochip.io/shop/")
+                    webviewActivityIntent(
+                        url = allOurProducsUrl,
+                        context = context
+                    )
                 }
         ) {
             Text(

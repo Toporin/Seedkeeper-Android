@@ -27,7 +27,8 @@ import org.satochip.seedkeeper.utils.satoClickEffect
 fun HeaderAlternateRow(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    titleText: Int? = null,
+    //titleText: Int? = null,
+    titleText: String? = null,
     message: Int? = null
 ) {
     Row(
@@ -55,7 +56,7 @@ fun HeaderAlternateRow(
                 fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color.Black,
-                text = stringResource(titleText),
+                text = titleText,
                 modifier = Modifier.padding(start = 50.dp, end = 50.dp)
             )
         }

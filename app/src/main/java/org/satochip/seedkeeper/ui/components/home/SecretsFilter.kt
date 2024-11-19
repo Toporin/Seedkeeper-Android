@@ -2,7 +2,6 @@ package org.satochip.seedkeeper.ui.components.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -20,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,11 +40,11 @@ fun SecretsFilter(
         mutableStateOf(SeedkeeperSecretType.DEFAULT_TYPE)
     }
     val seedkeeperSecretTypeMap = hashMapOf(
-        SeedkeeperSecretType.DEFAULT_TYPE to "All",
-        SeedkeeperSecretType.BIP39_MNEMONIC to "Mnemonic",
-        SeedkeeperSecretType.PASSWORD to "Password",
-        SeedkeeperSecretType.DATA to "Data",
-        SeedkeeperSecretType.WALLET_DESCRIPTOR to "Descriptors"
+        SeedkeeperSecretType.DEFAULT_TYPE to stringResource(id = R.string.all),
+        SeedkeeperSecretType.BIP39_MNEMONIC to stringResource(id = R.string.mnemonic),
+        SeedkeeperSecretType.PASSWORD to stringResource(id = R.string.password),
+        SeedkeeperSecretType.DATA to stringResource(id = R.string.data),
+        SeedkeeperSecretType.WALLET_DESCRIPTOR to stringResource(id = R.string.descriptors)
     )
 
     Column {

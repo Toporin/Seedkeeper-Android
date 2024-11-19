@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import kotlinx.coroutines.delay
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.NfcResultCode
-import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.shared.BottomDrawer
 import kotlin.time.Duration.Companion.seconds
 
@@ -18,20 +17,14 @@ private const val TAG = "NfcDialog"
 fun NfcDialog(
     openDialogCustom: MutableState<Boolean>,
     resultCodeLive: NfcResultCode,
-    isConnected: Boolean
+    isConnected: Boolean,
+    progress: Float? = null,
 ) {
     BottomDrawer(
         showSheet = openDialogCustom
     ) {
-        LaunchedEffect(resultCodeLive) {
-            SatoLog.d(TAG, "LaunchedEffect START ${resultCodeLive}")
-            while (resultCodeLive == NfcResultCode.BUSY || resultCodeLive == NfcResultCode.NONE) {
-                SatoLog.d(TAG, "LaunchedEffect in while delay 2s ${resultCodeLive}")
-                delay(2.seconds)
-            }
-            SatoLog.d(TAG, "LaunchedEffect after while delay ${resultCodeLive}")
-        }
         if (resultCodeLive == NfcResultCode.BUSY) {
+            // Busy scanning
             if (isConnected) {
                 DrawerScreen(
                     closeSheet = {
@@ -39,7 +32,7 @@ fun NfcDialog(
                     },
                     message = R.string.scanning,
                     image = R.drawable.nfc_scanner,
-                    //message = NfcResultCode.Busy.res, // show?
+                    progress = progress,
                 )
             } else {
                 DrawerScreen(
@@ -53,6 +46,7 @@ fun NfcDialog(
                 )
             }
         } else {
+            // finished scanning with some result code
             DrawerScreen(
                 closeSheet = {
                     openDialogCustom.value = !openDialogCustom.value
@@ -66,7 +60,8 @@ fun NfcDialog(
                 triesLeft = resultCodeLive.triesLeft
             )
             LaunchedEffect(Unit) {
-                delay(1.seconds)
+                // automatically close nfc toast after some delay
+                delay(2.seconds)
                 openDialogCustom.value = false
             }
         }

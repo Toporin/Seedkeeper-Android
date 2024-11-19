@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import org.satochip.seedkeeper.R
-import org.satochip.seedkeeper.data.MySecretItems
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
 import org.satochip.seedkeeper.ui.theme.SatoPurple
@@ -51,7 +51,7 @@ fun NewSeedkeeperPopUpDialog(
         Column(
             modifier = Modifier
                 .width(350.dp)
-                .height(250.dp)
+                .heightIn(min = 250.dp)
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(8.dp)

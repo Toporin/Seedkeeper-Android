@@ -27,6 +27,8 @@ import org.satochip.seedkeeper.ui.components.shared.NextButton
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.StepCircles
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
+import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 
 @Composable
 fun WelcomeView(
@@ -37,7 +39,8 @@ fun WelcomeView(
     backgroundImage: Int,
     isFullWidth: Boolean = false,
     onNext: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     Box(
@@ -78,7 +81,8 @@ fun WelcomeView(
             WelcomeViewContent(
                 title = title,
                 text = text,
-                link = link
+                urlString = link,
+                onClick = onClick
             )
             Spacer(modifier = Modifier.height(30.dp))
             Image(
@@ -110,6 +114,7 @@ fun WelcomeView(
                                     horizontal = 20.dp
                                 ),
                             onClick = onNext,
+                            buttonColor = SatoButtonBlue,
                             text = R.string.start
                         )
                     }

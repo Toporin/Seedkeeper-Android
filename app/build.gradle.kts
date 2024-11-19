@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebaseCrashlitics)
 }
 
 android {
@@ -12,8 +14,8 @@ android {
         applicationId = "org.satochip.seedkeeper"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 101 // if versionName is x.y.z, versionCode is 10000x+100y+z
+        versionName = "0.1.1" // using semantic versioning x.y.z (0<=x,y,z<=99)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -69,21 +71,25 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     //satochip libraries
-    implementation(files("libs/satochip-lib-0.2.0.jar"))
+    implementation(files("libs/satochip-lib-0.2.3.jar"))
     implementation(files("libs/satochip-android-0.0.2.jar"))
 
     // libs dependencies
-    implementation("org.bitcoinj:bitcoinj-core:0.16.2")
-    implementation("com.google.guava:guava:32.1.2-jre")
+    implementation(libs.bitcoinj.core)
+    implementation(libs.guava)
 
     //Type safe navigation
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
     //Compose coil image
-    implementation("io.coil-kt:coil-gif:2.0.0-rc02")
-    implementation("io.coil-kt:coil-compose:2.0.0-rc02")
+    implementation(libs.coil.gif)
+    implementation(libs.coil.compose)
 
     //QR string to image converter
-    implementation("io.github.g0dkar:qrcode-kotlin-android:3.3.0")
+    implementation(libs.qrcode.kotlin.android)
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
 }

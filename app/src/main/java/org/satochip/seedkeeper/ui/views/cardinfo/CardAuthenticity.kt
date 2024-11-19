@@ -1,5 +1,7 @@
 package org.satochip.seedkeeper.ui.views.cardinfo
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,25 +17,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.CardInformationItems
 import org.satochip.seedkeeper.ui.components.card.CardAuthenticityTextBox
 import org.satochip.seedkeeper.ui.components.card.CardCertificateField
 import org.satochip.seedkeeper.ui.components.card.InfoField
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.WelcomeViewTitle
 import org.satochip.seedkeeper.ui.theme.SatoGreen
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun CardAuthenticity(
-    authenticityStatus: AuthenticityStatus,
-    certificates: List<String>,
-    onClick: (CardInformationItems) -> Unit,
-    copyToClipboard: (String) -> Unit,
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
 ) {
     val scrollState = rememberScrollState()
     val logoColor = remember {
@@ -51,8 +55,10 @@ fun CardAuthenticity(
     val isCardCertOpen = remember {
         mutableStateOf(false)
     }
+    val clipboardManager = LocalClipboardManager.current
+    val copyText = stringResource(id = R.string.copiedToClipboard)
 
-    when (authenticityStatus) {
+    when (viewModel.authenticityStatus) {
         AuthenticityStatus.AUTHENTIC -> {
             logoColor.value =  SatoGreen
             cardAuthTitle.value = R.string.cardAuthSuccessful
@@ -74,14 +80,14 @@ fun CardAuthenticity(
     ) {
         HeaderAlternateRow(
             onClick = {
-                onClick(CardInformationItems.BACK)
+                navController.popBackStack()
             }
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 50.dp)
+                .padding(top = 8.dp)
                 .verticalScroll(state = scrollState)
                 .padding(horizontal = 16.dp)
         ) {
@@ -110,10 +116,11 @@ fun CardAuthenticity(
             )
             if (isCardCertOpen.value) {
                 CardCertificateField(
-                    certificates = certificates,
-                    authenticityStatus = authenticityStatus,
+                    certificates = viewModel.getCertificates(),
+                    authenticityStatus = viewModel.authenticityStatus,
                     copyToClipboard = { text ->
-                        copyToClipboard(text)
+                        clipboardManager.setText(AnnotatedString(text))
+                        Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                     },
                 )
             }

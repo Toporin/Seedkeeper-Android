@@ -1,87 +1,109 @@
 package org.satochip.seedkeeper.ui.views.import
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.data.ImportMode
 import org.satochip.seedkeeper.data.GenerateStatus
-import org.satochip.seedkeeper.data.SelectFieldItem
-import org.satochip.seedkeeper.data.TypeOfSecret
-import org.satochip.seedkeeper.ui.components.generate.SelectField
-import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.components.shared.TitleTextField
+import org.satochip.seedkeeper.ui.theme.SatoDarkPurple
+import org.satochip.seedkeeper.ui.theme.SatoLightPurple
+import org.satochip.seedkeeper.ui.views.menu.MenuCard
 
 @Composable
 fun ImportDefault(
-    stringResourceMap: Map<Int, String>,
-    typeOfSecret: MutableState<TypeOfSecret>,
+    importMode: ImportMode,
     generateStatus: MutableState<GenerateStatus>
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        TitleTextField(
-            title = R.string.importASecret,
-            text = R.string.importASecretMessage
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        SelectField(
-            selectList = listOf(
-                SelectFieldItem(prefix = null, text = R.string.typeOfSecret),
-                SelectFieldItem(prefix = null, text = R.string.mnemonicPhrase),
-                SelectFieldItem(prefix = null, text = R.string.loginPassword),
-                SelectFieldItem(prefix = null, text = R.string.walletDescriptor),
-                SelectFieldItem(prefix = null, text = R.string.freeField),
-            ),
-            onClick = { item ->
-                stringResourceMap[item]?.let { resourceItem ->
-                    typeOfSecret.value = TypeOfSecret.valueOfKey(resourceItem)
-                }
-            }
-        )
-    }
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            //Next
-            SatoButton(
-                onClick = {
-                    when (typeOfSecret.value) {
-                        TypeOfSecret.MNEMONIC_PHRASE -> {
-                            generateStatus.value =
-                                GenerateStatus.MNEMONIC_PHRASE
-                        }
-                        TypeOfSecret.LOGIN_PASSWORD -> {
-                            generateStatus.value =
-                                GenerateStatus.LOGIN_PASSWORD
-                        }
-                        TypeOfSecret.WALLET_DESCRIPTOR -> {
-                            generateStatus.value =
-                                GenerateStatus.WALLET_DESCRIPTOR
-                        }
-                        TypeOfSecret.FREE_FIELD -> {
-                            generateStatus.value =
-                                GenerateStatus.FREE_FIELD
-                        }
-                        else -> {}
-                    }
-                },
-                text = R.string.next
+        if (importMode == ImportMode.IMPORT_A_SECRET) {
+            TitleTextField(
+                title = R.string.importASecret,
+                text = R.string.importASecretMessage
             )
+        } else {
+            TitleTextField(
+                title = R.string.generateASecret,
+                text = R.string.generateExplanation
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Column {
+            MenuCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 110.dp),
+                text = stringResource(id = R.string.password),
+                textMessage = if (importMode == ImportMode.IMPORT_A_SECRET) stringResource(R.string.importAPasswordMessage) else stringResource(R.string.generateAPasswordExplanation),
+                textAlign = Alignment.TopStart,
+                color = SatoDarkPurple,
+                drawableId = R.drawable.password_icon,
+                onClick = {
+                    generateStatus.value =
+                        GenerateStatus.LOGIN_PASSWORD
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            MenuCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 110.dp),
+                text = stringResource(id = R.string.mnemonic),
+                textMessage = if (importMode == ImportMode.IMPORT_A_SECRET) stringResource(R.string.importAMnemonicPhraseMessage) else stringResource(R.string.generateAMnemonicPhraseExplanation),
+                textAlign = Alignment.TopStart,
+                color = SatoLightPurple,
+                drawableId = R.drawable.mnemonic,
+                onClick = {
+                    generateStatus.value =
+                        GenerateStatus.MNEMONIC_PHRASE
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // these secrets can only be imported, not randomly generated
+            if (importMode == ImportMode.IMPORT_A_SECRET) {
+                MenuCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 110.dp),
+                    text = stringResource(id = R.string.descriptor),
+                    textMessage = stringResource(R.string.importAWalletDescriptorMessage),
+                    textAlign = Alignment.TopStart,
+                    color = SatoDarkPurple,
+                    drawableId = R.drawable.wallet,
+                    onClick = {
+                        generateStatus.value =
+                            GenerateStatus.WALLET_DESCRIPTOR
+                    }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                MenuCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 110.dp),
+                    text = stringResource(id = R.string.data),
+                    textMessage = stringResource(R.string.importFreeFieldMessage),
+                    textAlign = Alignment.TopStart,
+                    color = SatoLightPurple,
+                    drawableId = R.drawable.free_data,
+                    onClick = {
+                        generateStatus.value =
+                            GenerateStatus.FREE_FIELD
+                    }
+                )
+            } // if importMode
         }
     }
 }

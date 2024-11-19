@@ -12,14 +12,14 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.MySecretStatus
 import org.satochip.seedkeeper.ui.components.shared.SatoButton
-import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
-import org.satochip.seedkeeper.ui.theme.SatoInactiveTracer
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 
 @Composable
 fun SecretButtonsField(
     mySecretStatus: MutableState<MySecretStatus>,
     isSecretShown: MutableState<Boolean>,
     type: String,
+    subType: Int = 1,
     onClick: () -> Unit,
 ) {
     Row(
@@ -31,45 +31,31 @@ fun SecretButtonsField(
         val secretType = SeedkeeperSecretType.valueOf(type)
         when (secretType) {
             SeedkeeperSecretType.MASTERSEED, SeedkeeperSecretType.BIP39_MNEMONIC, SeedkeeperSecretType.ELECTRUM_MNEMONIC  -> {
-                SatoButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        mySecretStatus.value = MySecretStatus.SEED
-                    },
-                    text = R.string.seed,
-                    image = R.drawable.seed_icon,
-                    horizontalPadding = 1.dp
-                )
-                SatoButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = {
-                        onClick()
-                        if (isSecretShown.value) {
-                            mySecretStatus.value = MySecretStatus.SEED_QR
-                        }
-                    },
-                    text = R.string.seedQR,
-                    image = R.drawable.seedqr_icon,
-                    horizontalPadding = 1.dp,
-                    buttonColor = if (isSecretShown.value) SatoButtonBlue else SatoInactiveTracer
-                )
-//                todo: logic should be changed
-//                SatoButton(
-//                    modifier = Modifier,
-//                    onClick = {
-//                        mySecretStatus.value = MySecretStatus.X_PUB
-//                    },
-//                    text = R.string.xpub,
-//                    image = R.drawable.xpub_icon,
-//                    horizontalPadding = 2.dp
-//                )
+                if (subType != 0 || secretType != SeedkeeperSecretType.MASTERSEED) {
+                    SatoButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            mySecretStatus.value = MySecretStatus.SEED
+                        },
+                        text = R.string.seed,
+                        image = R.drawable.seed_icon,
+                        horizontalPadding = 1.dp
+                    )
+                    SatoButton(
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            onClick()
+                            if (isSecretShown.value) {
+                                mySecretStatus.value = MySecretStatus.SEED_QR
+                            }
+                        },
+                        text = R.string.seedQR,
+                        image = R.drawable.seedqr_icon,
+                        horizontalPadding = 1.dp,
+                        buttonColor = if (isSecretShown.value) SatoButtonPurple else SatoButtonPurple.copy(alpha = 0.6f)
+                    )
+                }
             }
-//            SeedkeeperSecretType.PASSWORD -> {
-//
-//            }
-//            SeedkeeperSecretType.DATA -> {
-//
-//            }
             else -> {}
         }
     }

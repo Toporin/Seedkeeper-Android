@@ -15,7 +15,7 @@ import org.satochip.seedkeeper.data.IntentConstants
 import org.satochip.seedkeeper.ui.components.shared.HeaderAlternateRow
 import org.satochip.seedkeeper.ui.components.shared.Spinner
 import org.satochip.seedkeeper.ui.components.webview.WebViewComponent
-import org.satochip.seedkeeper.ui.theme.SatoButtonBlue
+import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SeedkeeperTheme
 
 class WebviewActivity : ComponentActivity() {
@@ -41,7 +41,7 @@ class WebviewActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            color = SatoButtonBlue
+                            color = SatoButtonPurple
                         )
                 ) {
                     HeaderAlternateRow(

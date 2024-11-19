@@ -25,16 +25,14 @@ fun TitleTextField(
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = stringResource(id = title),
             style = TextStyle(
                 color = Color.Black,
-                fontSize = 24.sp,
-                lineHeight = 40.sp,
+                fontSize = 21.sp,
                 fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center
             )
@@ -45,8 +43,7 @@ fun TitleTextField(
                 text = stringResource(id = text),
                 style = TextStyle(
                     color = Color.Black,
-                    fontSize = 16.sp,
-                    lineHeight = 24.sp,
+                    fontSize = 14.sp,
                     fontWeight = FontWeight.ExtraLight,
                     textAlign = TextAlign.Center
                 )

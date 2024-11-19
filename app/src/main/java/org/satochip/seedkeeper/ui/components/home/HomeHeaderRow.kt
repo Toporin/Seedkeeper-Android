@@ -1,7 +1,8 @@
 package org.satochip.seedkeeper.ui.components.home
 
+import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,21 +27,39 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import org.satochip.seedkeeper.CardAuthenticity
+import org.satochip.seedkeeper.MenuView
+import org.satochip.seedkeeper.PinEntryView
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.AuthenticityStatus
-import org.satochip.seedkeeper.data.HomeItems
+import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.data.PinCodeAction
+import org.satochip.seedkeeper.ui.components.shared.InfoPopUpDialog
 import org.satochip.seedkeeper.ui.theme.SatoGreen
+import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
 fun HomeHeaderRow(
-    isCardDataAvailable: Boolean,
-    authenticityStatus: AuthenticityStatus,
-    onClick: (HomeItems) -> Unit,
+    context: Context,
+    navController: NavHostController,
+    viewModel: SharedViewModel,
 ) {
+    // INFO DIALOG
+    val showInfoDialog = remember { mutableStateOf(false) } // for infoDialog
+    if (showInfoDialog.value) {
+        InfoPopUpDialog(
+            isOpen = showInfoDialog,
+            title = R.string.cardNeedToBeScannedTitle,
+            message = R.string.cardNeedToBeScannedMessage
+        )
+    }
+
+    // Logo
     val logoColor = remember {
         mutableStateOf(Color.Black)
     }
-    logoColor.value = when (authenticityStatus) {
+    logoColor.value = when (viewModel.authenticityStatus) {
         AuthenticityStatus.AUTHENTIC -> {
             SatoGreen
         }
@@ -51,18 +70,22 @@ fun HomeHeaderRow(
             Color.Black
         }
     }
-    Row(
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp, bottom = 5.dp, start = 20.dp, end = 5.dp)
-            .height(50.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .height(50.dp)
     ) {
         // LOGO
         IconButton(
+            modifier = Modifier.align(Alignment.CenterStart),
             onClick = {
-                onClick(HomeItems.CARD_INFO)
+                if (viewModel.isCardDataAvailable) {
+                    navController.navigate(CardAuthenticity)
+                } else {
+                    showInfoDialog.value = !showInfoDialog.value
+                }
             },
         ) {
             Image(
@@ -76,6 +99,7 @@ fun HomeHeaderRow(
         }
         // TITLE
         Text(
+            modifier = Modifier.align(Alignment.Center),
             text = stringResource(id = R.string.seedkeeper),
             style = TextStyle(
                 color = Color.Black,
@@ -84,27 +108,35 @@ fun HomeHeaderRow(
                 lineHeight = 34.sp,
             ),
         )
-        Row {
-            if (isCardDataAvailable) {
+        Row(
+            modifier = Modifier.align(Alignment.CenterEnd),
+        ) {
+            if (viewModel.isCardDataAvailable) {
                 // RESCAN BUTTON
                 IconButton(
                     onClick = {
-                        onClick(HomeItems.REFRESH)
+                        viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
+                        navController.navigate(
+                            PinEntryView(
+                                pinCodeAction = PinCodeAction.ENTER_PIN_CODE.name,
+                                isBackupCard = false,
+                            )
+                        )
                     },
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.rescan),
+                        painter = painterResource(R.drawable.refresh_button),
                         contentDescription = "logo",
                         modifier = Modifier
-                            .size(16.dp),
-                        contentScale = ContentScale.Crop,
+                            .size(24.dp),
+                        contentScale = ContentScale.Fit,
                         colorFilter = ColorFilter.tint(Color.Black)
                     )
                 }
             }
             // MENU BUTTON
             IconButton(onClick = {
-                onClick(HomeItems.MENU)
+                navController.navigate(MenuView)
             }) {
                 Icon(Icons.Default.MoreVert, "", tint = Color.Black)
             }

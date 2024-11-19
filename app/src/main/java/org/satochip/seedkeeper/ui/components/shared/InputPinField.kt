@@ -14,12 +14,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -45,6 +49,9 @@ fun InputPinField(
     placeHolder: Int? = null,
     visualTransformation: VisualTransformation = PasswordVisualTransformation(),
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val passwordVisibility = remember {
         mutableStateOf(visualTransformation != PasswordVisualTransformation())
     }
@@ -69,14 +76,19 @@ fun InputPinField(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(32.dp))
         TextField(
             modifier = modifier
                 .fillMaxWidth()
                 .border(1.dp, Color.Black, shape = RoundedCornerShape(8.dp))
                 .clip(
                     RoundedCornerShape(8.dp)
-                ),
+                )
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        keyboardController?.show()
+                    }
+                },
             enabled = isEditable,
             value = curValue.value,
             onValueChange = {
@@ -100,10 +112,10 @@ fun InputPinField(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = placeHolder),
                         style = TextStyle(
-                            color = Color.Black,
+                            color = Color.Gray,
                             fontSize = 18.sp,
                             lineHeight = 22.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.ExtraLight
                         )
                     )
                 }
@@ -125,5 +137,9 @@ fun InputPinField(
             maxLines = 1,
             trailingIcon = trailingIcon
         )
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }
