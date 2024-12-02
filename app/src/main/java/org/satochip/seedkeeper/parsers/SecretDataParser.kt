@@ -81,6 +81,10 @@ class SecretDataParser {
                 val passphraseBytes = bytes.copyOfRange(index, index + passphraseSize)
                 index += passphraseSize
                 passphrase = String(passphraseBytes, Charsets.UTF_8)
+                if (passphrase.isEmpty()) {
+                    SatoLog.e(TAG, "Passphrase bytes conversion to string failed")
+                    passphrase = "Passphrase bytes conversion to string failed"
+                }
             }
         }
 
@@ -92,6 +96,10 @@ class SecretDataParser {
             if (descriptorSize > 0 &&  index + descriptorSize <= bytes.size) {
                 val descriptorBytes = bytes.copyOfRange(index, index + descriptorSize)
                 descriptor = String(descriptorBytes, Charsets.UTF_8)
+                if (descriptor.isEmpty()) {
+                    SatoLog.e(TAG, "Descriptor bytes conversion to string failed")
+                    descriptor = "Descriptor bytes conversion to string failed"
+                }
             }
         }
 
@@ -167,7 +175,7 @@ class SecretDataParser {
             label = "",
             type = SeedkeeperSecretType.WALLET_DESCRIPTOR,
             size = 0,
-            data = descriptor
+            descriptor = descriptor
         )
     }
 
@@ -184,8 +192,8 @@ class SecretDataParser {
         val dataBytes = bytes.copyOfRange(index, index + dataSize)
         var data = String(dataBytes, Charsets.UTF_8)
         if (data.isEmpty()) {
-            SatoLog.e(TAG, "Descriptor bytes conversion to string failed")
-            data = "Descriptor bytes conversion to string failed" //TODO: return hex value
+            SatoLog.e(TAG, "Data bytes conversion to string failed")
+            data = "Data bytes conversion to string failed" //TODO: return hex value
         }
         return SecretData(
             label = "",
