@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4]:
+
+* Target Android 15 (API level 35), as required by Google Play
+* Support edge-to-edge display: content no longer overlaps the status and navigation bars
+* Patch status bar icons not visible
+* Upgrade Android Gradle Plugin to v8.13.2
+
 ## [0.1.3]:
 
 * Patch minor UI display bug: mnemonic descriptor not showing

@@ -2,13 +2,17 @@ package org.satochip.seedkeeper
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
@@ -24,6 +28,12 @@ class MainActivity : ComponentActivity() {
     private val viewModel: SharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Draw behind system bars on all API levels (enforced from API 35).
+        // Backgrounds are always light, so force dark system bar icons.
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
         super.onCreate(savedInstanceState)
         setContent {
             val context = LocalContext.current as Activity
@@ -46,10 +56,18 @@ class MainActivity : ComponentActivity() {
                                 .align(Alignment.BottomCenter),
                             contentScale = ContentScale.FillBounds
                         )
-                        Navigation(
-                            context = context,
-                            viewModel = viewModel
-                        )
+                        // Keep content clear of status/navigation bars, display cutout and keyboard,
+                        // while the background image above stays full screen.
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .safeDrawingPadding()
+                        ) {
+                            Navigation(
+                                context = context,
+                                viewModel = viewModel
+                            )
+                        }
                     }
                 }
             }

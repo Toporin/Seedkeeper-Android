@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "org.satochip.seedkeeper"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "org.satochip.seedkeeper"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 103 // if versionName is x.y.z, versionCode is 10000x+100y+z
-        versionName = "0.1.3" // using semantic versioning x.y.z (0<=x,y,z<=99)
+        targetSdk = 35
+        versionCode = 104 // if versionName is x.y.z, versionCode is 10000x+100y+z
+        versionName = "0.1.4" // using semantic versioning x.y.z (0<=x,y,z<=99)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
