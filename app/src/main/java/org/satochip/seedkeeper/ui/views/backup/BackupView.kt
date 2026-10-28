@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -170,20 +171,26 @@ fun BackupView(
                         }
 
                     } else {
-                        if (backupStatus.value == BackupStatus.SUCCESS){
-                            Text("${NFCCardService.backupNumberOfSecretsImported} " + stringResource(R.string.numberSecretsSaved),
-                                style = TextStyle(
-                                    color = Color.Black,
-                                    fontSize = 18.sp,
-                                    lineHeight = 22.sp,
-                                    fontWeight = FontWeight.Bold
+                        // Column (not Box) so the text is laid out above the illustration instead of overlapping it
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (backupStatus.value == BackupStatus.SUCCESS){
+                                Text("${NFCCardService.backupNumberOfSecretsImported} " + stringResource(R.string.numberSecretsSaved),
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 18.sp,
+                                        lineHeight = 22.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center
+                                    )
                                 )
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+                            // backup card illustration
+                            BackupTransferImages(
+                                backupStatus = backupStatus.value
                             )
                         }
-                        // backup card illustration
-                        BackupTransferImages(
-                            backupStatus = backupStatus.value
-                        )
                     }
                 }
 

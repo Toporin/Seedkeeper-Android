@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -17,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
@@ -56,7 +58,7 @@ fun CardResetButton(
                     vertical = 10.dp,
                     horizontal = 16.dp,
                 )
-                .height(40.dp),
+                .heightIn(min = 40.dp), // min height so long (translated) text can wrap on two lines
             shape = RoundedCornerShape(50),
             colors = ButtonColors(
                 contentColor = textColor,
@@ -72,7 +74,8 @@ fun CardResetButton(
                     color = textColor,
                     fontSize = 16.sp,
                     lineHeight = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
             )
         }
