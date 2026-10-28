@@ -3,7 +3,7 @@
     <string name="app_name">Seedkeeper</string>
     <string name="title_activity_webview">WebviewActivity</string>
     <string name="welcome">Bienvenido</string>
-    <string name="welcomeInfo">Seedkeeper le permite generar, importar y exportar fácilmente una variedad de secretos relacionados con criptomonedas.</string>
+    <string name="welcomeInfo">Seedkeeper le permite generar, importar y exportar fácilmente una variedad de secretos y contraseñas.</string>
     <string name="seedphraseManager">Su administrador de frases semilla</string>
     <string name="seedphraseManagerInfo">¡Ya no escriba sus frases semilla en un pedazo de papel! Le ofrecemos una solución de hardware avanzada para almacenarlas correctamente.</string>
     <string name="usingNfc">Uso de NFC</string>
@@ -246,7 +246,7 @@
     <string name="backupFailedText">Hubo algunos problemas durante el respaldo. Algunos secretos pueden no haber sido respaldados.</string>
 
     <!--Home View-->
-    <string name="homeAuthenticatedText">Administre sus secretos relacionados con criptomonedas al alcance de sus dedos con Seedkeeper.</string>
+    <string name="homeAuthenticatedText">Administre sus secretos al alcance de sus dedos con Seedkeeper.</string>
     <string name="search">Buscar:</string>
     <string name="mySecretList">Mi lista de secretos</string>
 

@@ -3,7 +3,7 @@
     <string name="app_name">Seedkeeper</string>
     <string name="title_activity_webview">WebviewActivity</string>
     <string name="welcome">Welcome</string>
-    <string name="welcomeInfo">Seedkeeper lets you easily generate, import and export a variety of crypto related secrets.</string>
+    <string name="welcomeInfo">Seedkeeper lets you easily generate, import and export a variety of secrets and passwords.</string>
     <string name="seedphraseManager">Your seedphrases manager</string>
     <string name="seedphraseManagerInfo">Don’t write your seedphrases on a piece of paper anymore! We offer you an advanced hardware solution to store them properly.</string>
     <string name="usingNfc">Using NFC</string>
@@ -247,7 +247,7 @@
     <string name="backupFailedText">There were some issues during backup. Some secrets may not have been backed up.</string>
 
     <!--Home View-->
-    <string name="homeAuthenticatedText">Manage your crypto-related secrets at your fingertips with Seedkeeper.</string>
+    <string name="homeAuthenticatedText">Manage your secrets at your fingertips with Seedkeeper.</string>
     <string name="search">Search:</string>
     <string name="mySecretList">My secrets list</string>
 

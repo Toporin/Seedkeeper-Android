@@ -3,7 +3,7 @@
     <string name="app_name">Seedkeeper</string>
     <string name="title_activity_webview">WebviewActivity</string>
     <string name="welcome">Bienvenue</string>
-    <string name="welcomeInfo">Seedkeeper vous permet de générer, importer et exporter facilement une variété de secrets liés à la crypto.</string>
+    <string name="welcomeInfo">Seedkeeper vous permet de générer, importer et exporter facilement une variété de secrets et mots de passes.</string>
     <string name="seedphraseManager">Votre gestionnaire de seedphrases</string>
     <string name="seedphraseManagerInfo">Ne notez plus vos phrases de récupération sur un morceau de papier ! Nous vous offrons une solution matérielle avancée pour les stocker correctement.</string>
     <string name="usingNfc">Utilisation du NFC</string>
@@ -246,7 +246,7 @@
     <string name="backupFailedText">Des problèmes sont survenus lors de la sauvegarde. Il est possible que certains secrets n\'aient pas été sauvegardés.</string>
 
     <!--Home View-->
-    <string name="homeAuthenticatedText">Gérez vos secrets liés à la crypto avec Seedkeeper.</string>
+    <string name="homeAuthenticatedText">Gérez vos secrets avec Seedkeeper.</string>
     <string name="search">Recherche :</string>
     <string name="mySecretList">Ma liste de secrets</string>
 
@@ -299,7 +299,7 @@
 
     <!-- AppErrorMsg -->
     <string name="errorLabelEmpty">Le champs label est requis!</string>
-    <string name="errorPasswordEmpty">Le champ mot-de-passe est requis!</string>
+    <string name="errorPasswordEmpty">Le champ \'mot de passe\' est requis!</string>
     <string name="errorMnemonicEmpty">Le champ mnémonique est requis!</string>
     <string name="errorDescriptorEmpty">Le champ descriptor est requis!</string>
     <string name="errorDataEmpty">Le champ data est requis!</string>
