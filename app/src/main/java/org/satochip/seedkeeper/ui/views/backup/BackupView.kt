@@ -87,6 +87,9 @@ fun BackupView(
                     viewModel.resultCodeLive == NfcResultCode.NO_MEMORY_LEFT)
         {
             backupStatus.value = BackupStatus.FAILURE
+        } else if (backupStatus.value == BackupStatus.THIRD_STEP && NFCCardService.backupErrors.isNotEmpty()) {
+            // import into backup card finished with errors (error details listed in failure view)
+            backupStatus.value = BackupStatus.FAILURE
         }
     }
 
@@ -143,7 +146,9 @@ fun BackupView(
                     if (backupStatus.value == BackupStatus.FAILURE){
                         // show error logs
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 64.dp), // keep list above the bottom button (60dp)
                             contentPadding = PaddingValues(16.dp)
                         ) {
                             item {

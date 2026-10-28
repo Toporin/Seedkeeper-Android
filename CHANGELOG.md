@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Cancelling the NFC dialog now cancels the pending card action, show a warning when NFC is disabled
 * Clear card data (secret list, PIN, card info) from memory on refresh and after 5 minutes of inactivity (issue #76)
 * Clear secrets copied to the clipboard after 30 seconds (only if the clipboard still contains the copied secret, when it can be checked)
+* Fix backup reporting success with 0 secrets saved when the backup card has no memory left: errors are now reported and listed in the backup result screen
+* Improve readability of the backup error details and keep them clear of the bottom button
 
 ## [0.1.3]:
 
