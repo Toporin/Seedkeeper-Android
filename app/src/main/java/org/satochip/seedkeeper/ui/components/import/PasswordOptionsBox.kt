@@ -66,10 +66,12 @@ fun PasswordOptionsBox(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val sliderState = remember {
+            // keyed on isMemorableSelected so the range is updated when toggling memorable mode
+            // (number of words for memorable passwords, number of chars otherwise)
+            val sliderState = remember(passwordOptions.value.isMemorableSelected) {
                 SliderState(
                     value = if(passwordOptions.value.isMemorableSelected) 6f else 12f,
-                    valueRange = if(passwordOptions.value.isMemorableSelected) 4f..16f else 8f..16f,
+                    valueRange = if(passwordOptions.value.isMemorableSelected) 4f..16f else 8f..32f,
                     onValueChangeFinished = {
                         passwordOptions.value =
                             passwordOptions.value.copy(passwordLength = sliderPosition.toInt())

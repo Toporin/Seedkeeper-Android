@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Add Spanish translation (thanks to @esixce, PR #73)
 * Support per-app language preferences (Android 13+): select the app language in system settings or from the app Settings screen
 * Fix UI display issues on small screens (issue #63)
+* Allow up to 32 characters in the password generator (issue #66)
 
 ## [0.1.3]:
 
