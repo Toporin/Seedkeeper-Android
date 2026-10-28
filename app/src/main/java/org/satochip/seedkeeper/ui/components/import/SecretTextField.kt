@@ -28,12 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -47,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.g0dkar.qrcode.QRCode
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.utils.SecretClipboard
 import org.satochip.seedkeeper.parsers.TAG
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.ui.components.shared.DataAsQrCode
@@ -67,7 +66,6 @@ fun SecretTextField(
     minHeight: Dp = 150.dp
 ) {
     val context = LocalContext.current as Activity
-    val clipboardManager = LocalClipboardManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val passwordVisibility = remember {
         mutableStateOf(visualTransformation == PasswordVisualTransformation())
@@ -197,7 +195,7 @@ fun SecretTextField(
                             .size(16.dp)
                             .satoClickEffect(
                                 onClick = {
-                                    clipboardManager.setText(AnnotatedString(curValue.value))
+                                    SecretClipboard.copySecret(context, curValue.value) // cleared after 30s
                                     Toast
                                         .makeText(context, copyText, Toast.LENGTH_SHORT)
                                         .show()

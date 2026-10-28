@@ -32,7 +32,8 @@ fun GetSpecificSecretInfoFields(
                     SecretInfoField(
                         title = R.string.passphrase,
                         optional = R.string.optional,
-                        text = passphrase
+                        text = passphrase,
+                        isSensitive = true
                     )
                 }
                 secret.value?.descriptor?.also { descriptor ->
