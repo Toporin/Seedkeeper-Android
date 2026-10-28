@@ -21,6 +21,7 @@ enum class  NfcResultCode(val resTitle : Int, val resMsg : Int, val resImage : I
     CARD_SUCCESSFULLY_BACKED_UP(R.string.nfcTitleSuccess, R.string.cardSuccessfullyBackedUp, R.drawable.icon_check_gif, null),
     NONE(R.string.scanning, R.string.nfcResultCodeNone, R.drawable.error_24px, null),
     BUSY(R.string.scanning, R.string.nfcResultCodeBusy, R.drawable.contactless_24px, null),
+    NFC_DISABLED(R.string.nfcTitleWarning, R.string.nfcDisabled, R.drawable.error_24px, null),
     NFC_ERROR(R.string.nfcTitleWarning, R.string.nfcResultCodeNfcError, R.drawable.error_24px, null),
     CARD_ERROR(R.string.nfcTitleWarning, R.string.cardError, R.drawable.error_24px, null),
     REQUIRE_SETUP(R.string.nfcTitleInfo, R.string.cardNotInitialized, R.drawable.error_24px, null),

@@ -53,6 +53,7 @@
     <string name="nfcResultCodeNone">None</string>
     <string name="nfcResultCodeBusy">Busy</string>
     <string name="nfcResultCodeNfcError">Error during card scan</string>
+    <string name="nfcDisabled">NFC is disabled, please enable NFC in your phone settings</string>
     <string name="nfcSeedkeeperNeedsSetup">Your Seedkeeper needs to be setup!</string>
     <string name="nfcWrongPin">Wrong PIN, tries left: </string>
     <string name="nfcCardBlocked">Too many incorrect PIN attempts! Your card has been blocked.</string>

@@ -175,7 +175,7 @@ class SharedViewModel : ViewModel() {
     fun scanCardForAction(activity: Activity, nfcActionType: NfcActionType) {
         SatoLog.d(TAG, "scanCardForAction START action: ${nfcActionType.name}")
         //NFCCardService.resultCodeLive.postValue(NfcResultCode.BUSY)
-        NFCCardService.actionType = nfcActionType
+        NFCCardService.requestAction(nfcActionType)
         viewModelScope.launch {
             NFCCardService.scanCardForAction(activity)
             SatoLog.d(TAG, "scanCardForAction END")

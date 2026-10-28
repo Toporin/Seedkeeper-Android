@@ -53,6 +53,7 @@
     <string name="nfcResultCodeNone">Ninguno</string>
     <string name="nfcResultCodeBusy">Ocupado</string>
     <string name="nfcResultCodeNfcError">Error durante el escaneo de la tarjeta</string>
+    <string name="nfcDisabled">El NFC está desactivado, actívelo en los ajustes de su teléfono</string>
     <string name="nfcSeedkeeperNeedsSetup">¡Su Seedkeeper necesita ser configurado!</string>
     <string name="nfcWrongPin">PIN incorrecto, intentos restantes: </string>
     <string name="nfcCardBlocked">¡Demasiados intentos incorrectos de PIN! Su tarjeta ha sido bloqueada.</string>

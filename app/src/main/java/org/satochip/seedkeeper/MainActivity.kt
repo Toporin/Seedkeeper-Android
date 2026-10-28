@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import org.satochip.seedkeeper.services.NFCCardService
 import org.satochip.seedkeeper.ui.theme.SeedkeeperTheme
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
@@ -73,5 +74,16 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
+    override fun onResume() {
+        super.onResume()
+        // keep NFC reader mode enabled while the app is in the foreground,
+        // so that tapping a card does not launch other NFC apps (tags are ignored when no action is pending)
+        NFCCardService.enableReaderMode(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        NFCCardService.disableReaderMode(this)
+    }
+}

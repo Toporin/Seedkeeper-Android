@@ -1,6 +1,5 @@
 package org.satochip.seedkeeper.services
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.nfc.NfcAdapter
 import android.util.Log
@@ -30,10 +29,7 @@ import org.satochip.seedkeeper.utils.bytesToHex
 
 private const val TAG = "NFCCardService"
 
-@SuppressLint("StaticFieldLeak")
 object NFCCardService {
-    private var activity: Activity? = null
-
     private lateinit var cmdSet: SatochipCommandSet
     private var parser: SatochipParser? = null
 
@@ -69,7 +65,8 @@ object NFCCardService {
 
     // NFC
     var resultCodeLive = MutableLiveData(NfcResultCode.BUSY)
-    var actionType: NfcActionType = NfcActionType.DO_NOTHING
+    var actionType: NfcActionType = NfcActionType.DO_NOTHING // action performed on next card tap, DO_NOTHING if none
+    private var actionRequestId = 0
     val isConnected = MutableLiveData(false) // the app is connected to a card, value updated in SeedkeeperCardListener
 
     /**
@@ -144,43 +141,89 @@ object NFCCardService {
     }
 
     /**
-     * Initiates scanning for NFC cards and sets up the necessary NFC reader mode for the specified activity.
+     * Single card manager (a polling thread that never stops), created and started once.
+     */
+    private val cardManager: NFCCardManager by lazy {
+        NFCCardManager().apply {
+            setCardListener(SatochipCardListenerForAction)
+            start()
+        }
+    }
+
+    /**
+     * Forwards tags to the card manager only when an action is pending, other tags are ignored.
+     */
+    private val readerCallback = NfcAdapter.ReaderCallback { tag ->
+        if (actionType != NfcActionType.DO_NOTHING) {
+            cardManager.onTagDiscovered(tag)
+        } else {
+            SatoLog.d(TAG, "readerCallback: tag ignored, no pending action")
+        }
+    }
+
+    /**
+     * Enables NFC reader mode for the activity.
+     * Called while MainActivity is in the foreground, so that tapping a card does not open other NFC apps.
+     */
+    fun enableReaderMode(activity: Activity) {
+        SatoLog.d(TAG, "enableReaderMode")
+        NfcAdapter.getDefaultAdapter(activity)?.enableReaderMode(
+            activity,
+            readerCallback,
+            NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_NFC_B or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
+            null
+        )
+    }
+
+    /**
+     * Disables NFC reader mode for the activity (when it goes to background).
+     */
+    fun disableReaderMode(activity: Activity) {
+        SatoLog.d(TAG, "disableReaderMode")
+        NfcAdapter.getDefaultAdapter(activity)?.disableReaderMode(activity)
+    }
+
+    /**
+     * Sets the action to perform when the next card is tapped.
+     *
+     * @return an id for this request, used to cancel it with `cancelPendingAction`.
+     */
+    fun requestAction(nfcActionType: NfcActionType): Int {
+        actionType = nfcActionType
+        actionRequestId++
+        return actionRequestId
+    }
+
+    fun currentActionRequestId(): Int = actionRequestId
+
+    /**
+     * Cancels the pending action (e.g. when the NFC dialog is closed before a card is tapped),
+     * unless a card is connected or another action was requested since.
+     */
+    fun cancelPendingAction(requestId: Int) {
+        if (requestId == actionRequestId && isConnected.value != true && actionType != NfcActionType.DO_NOTHING) {
+            SatoLog.d(TAG, "cancelPendingAction: ${actionType.name} cancelled")
+            actionType = NfcActionType.DO_NOTHING
+        }
+    }
+
+    /**
+     * Starts waiting for a card for the pending action.
      *
      * @param activity The activity where NFC scanning should be enabled.
      */
     fun scanCardForAction(activity: Activity) {
-        SatoLog.d(TAG, "scanCardForAction thread START")
-        this.activity = activity
-        val cardManager = NFCCardManager()
-        cardManager.setCardListener(SatochipCardListenerForAction)
-        cardManager.start()
-
-        resultCodeLive.postValue(NfcResultCode.BUSY) // indicate that the NFC scanning process is ongoing.
-
-        val nfcAdapter = NfcAdapter.getDefaultAdapter(activity) //context)
-        nfcAdapter?.enableReaderMode(
-            activity,
-            cardManager,
-            NfcAdapter.FLAG_READER_NFC_A or NfcAdapter.FLAG_READER_NFC_B or NfcAdapter.FLAG_READER_SKIP_NDEF_CHECK,
-            null
-        )
-        SatoLog.d(TAG, "scanCardForAction thread END")
-    }
-
-    /**
-     * Disables the NFC reader mode for the current activity to stop scanning for NFC actions.
-     */
-    fun disableScanForAction() {
-        SatoLog.d(TAG, "disableScanForAction Start")
-        if (activity != null) {
-            if (activity?.isFinishing() == true) {
-                SatoLog.e(TAG, "NFCCardService disableScanForAction activity isFinishing()")
-                return;
-            }
-            val nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
-            nfcAdapter?.disableReaderMode(activity)
-            SatoLog.d(TAG, "disableScanForAction disableReaderMode!")
+        SatoLog.d(TAG, "scanCardForAction START")
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(activity)
+        if (nfcAdapter == null || !nfcAdapter.isEnabled) {
+            SatoLog.e(TAG, "scanCardForAction: NFC not available or disabled")
+            resultCodeLive.postValue(NfcResultCode.NFC_DISABLED)
+            return
         }
+        resultCodeLive.postValue(NfcResultCode.BUSY) // indicate that the NFC scanning process is ongoing.
+        // reader mode is already enabled by MainActivity, enable it again in case NFC was turned on in the meantime
+        enableReaderMode(activity)
+        SatoLog.d(TAG, "scanCardForAction END")
     }
 
     /**

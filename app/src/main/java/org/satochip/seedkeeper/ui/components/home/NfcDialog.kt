@@ -1,13 +1,16 @@
 package org.satochip.seedkeeper.ui.components.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import kotlinx.coroutines.delay
 import org.satochip.seedkeeper.R
 import org.satochip.seedkeeper.data.NfcResultCode
+import org.satochip.seedkeeper.services.NFCCardService
 import org.satochip.seedkeeper.ui.components.shared.BottomDrawer
 import kotlin.time.Duration.Companion.seconds
 
@@ -20,6 +23,15 @@ fun NfcDialog(
     isConnected: Boolean,
     progress: Float? = null,
 ) {
+    // closing the dialog before a card is tapped cancels the pending card action
+    // (the dialog is always shown right after the action is requested)
+    val actionRequestId = remember { NFCCardService.currentActionRequestId() }
+    DisposableEffect(Unit) {
+        onDispose {
+            NFCCardService.cancelPendingAction(actionRequestId)
+        }
+    }
+
     BottomDrawer(
         showSheet = openDialogCustom
     ) {
