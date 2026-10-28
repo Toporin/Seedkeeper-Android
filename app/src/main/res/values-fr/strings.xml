@@ -141,6 +141,9 @@
     <string name="debugMode">Mode débogage</string>
     <string name="verbouseLogs">Activez la collecte des journaux détaillés</string>
     <string name="showLogs">Afficher les logs</string>
+    <string name="appLanguage">Langue de l\'application</string>
+    <string name="appLanguageText">Choisissez la langue utilisée par Seedkeeper</string>
+    <string name="changeLanguage">Changer de langue</string>
     <string name="factoryReset">Réinitialisation d\'usine</string>
     <string name="factoryResetText">Réinitialisez votre carte à son état d\'usine.</string>
     <string name="factoryResetWarning">Attention: cela effacera tous les secrets!</string>

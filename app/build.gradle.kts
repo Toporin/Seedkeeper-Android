@@ -42,6 +42,10 @@ android {
     buildFeatures {
         compose = true
     }
+    androidResources {
+        // per-app language support (Android 13+): locale list generated from res/values-XX folders
+        generateLocaleConfig = true
+    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }

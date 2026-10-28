@@ -1,6 +1,7 @@
 package org.satochip.seedkeeper.ui.views.settings
 
 import android.content.Context
+import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import org.satochip.seedkeeper.ui.components.shared.SatoButton
 import org.satochip.seedkeeper.ui.theme.SatoButtonPurple
 import org.satochip.seedkeeper.ui.theme.SatoDividerPurple
 import org.satochip.seedkeeper.ui.theme.SatoLightPurple
+import org.satochip.seedkeeper.utils.openAppLanguageSettings
 import org.satochip.seedkeeper.viewmodels.SharedViewModel
 
 @Composable
@@ -127,6 +129,24 @@ fun SettingsView(
                 text = R.string.showLogs,
                 buttonColor = if (debugMode.value) SatoButtonPurple else SatoButtonPurple.copy(0.6f),
             )
+            // per-app language is selected in system settings (Android 13+)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                Spacer(modifier = Modifier.height(35.dp))
+                SatoDescriptionField(
+                    title = R.string.appLanguage,
+                    text = R.string.appLanguageText
+                )
+                SatoButton(
+                    modifier = Modifier
+                        .padding(
+                            horizontal = 6.dp
+                        ),
+                    onClick = {
+                        openAppLanguageSettings(context)
+                    },
+                    text = R.string.changeLanguage,
+                )
+            }
             Spacer(
                 modifier = Modifier
                     .padding(horizontal = 32.dp)

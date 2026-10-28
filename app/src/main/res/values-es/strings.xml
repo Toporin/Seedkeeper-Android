@@ -141,6 +141,9 @@
     <string name="debugMode">Modo de depuración</string>
     <string name="verbouseLogs">Activar la recolección de registros detallados</string>
     <string name="showLogs">Mostrar registros</string>
+    <string name="appLanguage">Idioma de la aplicación</string>
+    <string name="appLanguageText">Elija el idioma utilizado por Seedkeeper</string>
+    <string name="changeLanguage">Cambiar idioma</string>
     <string name="factoryReset">Restablecimiento de fábrica</string>
     <string name="factoryResetText">Reinicialice su tarjeta a su estado de fábrica.</string>
     <string name="factoryResetWarning">Advertencia: ¡esto borrará todos los secretos!</string>
