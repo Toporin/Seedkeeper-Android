@@ -141,6 +141,48 @@ object NFCCardService {
     }
 
     /**
+     * Returns true if card-specific data (secret list, PIN, card info...) is currently held in memory.
+     */
+    fun hasCardData(): Boolean {
+        return isCardDataAvailable.value == true || cardStatus != null || pinString != null
+    }
+
+    /**
+     * Clears all card-specific data held in memory (secret list, PIN, card info, backup state...),
+     * so that the app is back to its state before the first card scan.
+     */
+    fun resetCardData() {
+        SatoLog.d(TAG, "resetCardData")
+        // master card
+        isCardDataAvailable.postValue(false)
+        cardLabel.postValue("")
+        secretHeaders.postValue(emptyList())
+        currentSecretObject.postValue(null)
+        currentSecretHeader.postValue(null)
+        authenticityStatus.postValue(AuthenticityStatus.UNKNOWN)
+        pinString = null
+        newPinString = null
+        seedkeeperStatus = null
+        cardLogs.clear()
+        certificateList.clear()
+        cardStatus = null
+        authentikey = null
+        // backup card
+        backupCardStatus = null
+        backupAuthentikey = null
+        backupPinString = null
+        backupSecretHeaders.clear()
+        secretHeadersForBackup.clear()
+        secretObjectsForBackup.clear()
+        backupErrors.clear()
+        backupImportProgress.postValue(0f)
+        backupExportProgress.postValue(0f)
+        backupNumberOfSecretsImported = 0
+        // secret being imported
+        secretData = null
+    }
+
+    /**
      * Single card manager (a polling thread that never stops), created and started once.
      */
     private val cardManager: NFCCardManager by lazy {

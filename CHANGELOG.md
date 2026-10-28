@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Allow up to 32 characters in the password generator (issue #66)
 * Keep NFC reader mode active while the app is open, so other NFC apps no longer open when tapping the card (issue #67)
 * Cancelling the NFC dialog now cancels the pending card action, show a warning when NFC is disabled
+* Clear card data (secret list, PIN, card info) from memory on refresh and after 5 minutes of inactivity (issue #76)
 
 ## [0.1.3]:
 

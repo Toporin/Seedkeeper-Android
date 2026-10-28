@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -42,6 +43,7 @@ class SharedViewModel : ViewModel() {
     var currentSecretHeader by mutableStateOf<SeedkeeperSecretHeader?>(null)
     var resultCodeLive by mutableStateOf(NfcResultCode.BUSY)
     var cardLabel by mutableStateOf("")
+    var cardDataResetCount by mutableIntStateOf(0) // incremented when card data is cleared after inactivity
     private var updateSecretsJob: Job? = null
 
     // backup
@@ -83,6 +85,20 @@ class SharedViewModel : ViewModel() {
         NFCCardService.backupExportProgress.observeForever{
             backupExportProgress = it
         }
+    }
+
+    fun hasCardData(): Boolean {
+        return NFCCardService.hasCardData()
+    }
+
+    /**
+     * Clears all card-specific data from memory.
+     *
+     * @param goHome if true, the app navigates back to the home screen (e.g. after inactivity timeout).
+     */
+    fun resetCardData(goHome: Boolean = false) {
+        NFCCardService.resetCardData()
+        if (goHome) cardDataResetCount++
     }
 
     fun setPinStringForCard(pinString: String, isBackupCard: Boolean = false) {

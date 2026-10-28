@@ -115,6 +115,8 @@ fun HomeHeaderRow(
                 // RESCAN BUTTON
                 IconButton(
                     onClick = {
+                        // clear current card data right away, the list is shown again after a new scan
+                        viewModel.resetCardData()
                         viewModel.setResultCodeLiveTo(NfcResultCode.NONE)
                         navController.navigate(
                             PinEntryView(

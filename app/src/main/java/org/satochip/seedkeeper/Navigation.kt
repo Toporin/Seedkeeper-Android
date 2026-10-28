@@ -72,6 +72,16 @@ fun Navigation(
         )
     }
 
+    // CARD DATA CLEARED AFTER INACTIVITY: go back to home screen
+    LaunchedEffect(viewModel.cardDataResetCount) {
+        if (viewModel.cardDataResetCount > 0) {
+            showNfcDialog.value = false
+            navController.navigate(HomeView) {
+                popUpTo(0)
+            }
+        }
+    }
+
     // FIRST TIME SETUP
     if (viewModel.resultCodeLive == NfcResultCode.REQUIRE_SETUP) {
         SatoLog.d(TAG, "Navigation: Card needs to be setup!")
