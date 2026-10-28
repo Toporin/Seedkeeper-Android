@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Clear secrets copied to the clipboard after 30 seconds (only if the clipboard still contains the copied secret, when it can be checked)
 * Fix backup reporting success with 0 secrets saved when the backup card has no memory left: errors are now reported and listed in the backup result screen
 * Improve readability of the backup error details and keep them clear of the bottom button
+* Fix first PIN check failing (error 0x9C30) after an interrupted card operation, e.g. a backup that ran out of memory
 
 ## [0.1.3]:
 

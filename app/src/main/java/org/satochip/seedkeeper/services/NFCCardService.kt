@@ -443,7 +443,15 @@ object NFCCardService {
             SatoLog.d(TAG, "verifyPin start")
             val pinBytes = if (isMasterCard) pinString?.toByteArray(Charsets.UTF_8) else backupPinString?.toByteArray(Charsets.UTF_8)
             cmdSet.setPin0(pinBytes)
-            val rapdu = cmdSet.cardVerifyPIN()
+            try {
+                cmdSet.cardVerifyPIN()
+            } catch (e: APDUException) {
+                // 0x9C30 (lock error): a multi-step operation (e.g. secret import) was interrupted
+                // in a previous session; the card rejects the next command once and releases the lock
+                if (e.sw != 0x9C30) throw e
+                SatoLog.w(TAG, "verifyPin lock error (0x9C30), retrying")
+                cmdSet.cardVerifyPIN()
+            }
             SatoLog.d(TAG, "verifyPin successful")
             return true
         } catch (e: WrongPINException) {
