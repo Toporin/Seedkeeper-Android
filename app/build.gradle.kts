@@ -75,13 +75,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     //satochip libraries
-    // satochip-android depends on satochip-lib, which brings BouncyCastle (bcprov-jdk15to18,
-    // same artifact as bitcoinj's, so Gradle keeps a single, most recent version)
+    // satochip-android depends on satochip-lib, which brings BouncyCastle (bcprov-jdk15to18),
+    // also used by utils/Bip39.kt
     implementation(libs.satochip.android)
-
-    // libs dependencies
-    implementation(libs.bitcoinj.core)
-    implementation(libs.guava)
 
     //Type safe navigation
     implementation(libs.navigation.compose)

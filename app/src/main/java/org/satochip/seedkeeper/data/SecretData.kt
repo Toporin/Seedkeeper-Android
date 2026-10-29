@@ -1,8 +1,8 @@
 package org.satochip.seedkeeper.data
 
-import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.seedkeeper.SeedkeeperExportRights
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
+import org.satochip.seedkeeper.utils.Bip39
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.utils.toMnemonicList
 import java.nio.ByteBuffer
@@ -31,9 +31,9 @@ data class SecretData(
         when (this.type) {
             SeedkeeperSecretType.MASTERSEED -> {
                 this.mnemonic?.let { mnemonic ->
-                    val masterseedBytes = MnemonicCode.toSeed(mnemonic.toMnemonicList(), this.passphrase ?: "")
+                    val masterseedBytes = Bip39.toSeed(mnemonic.toMnemonicList().filterNotNull(), this.passphrase ?: "")
                     val masterseedSize = masterseedBytes.size.toByte()
-                    val entropyBytes = MnemonicCode.INSTANCE.toEntropy(mnemonic.toMnemonicList())
+                    val entropyBytes = Bip39.toEntropy(mnemonic.toMnemonicList().filterNotNull())
                     val entropySize = entropyBytes.size.toByte()
                     secretBytes.add(masterseedSize)
                     secretBytes.addAll(masterseedBytes.toList())

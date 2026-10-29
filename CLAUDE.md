@@ -24,7 +24,7 @@ Android companion app (Kotlin + Jetpack Compose) for the Satochip **Seedkeeper**
 
 ## Card communication libraries
 
-The card protocol comes from [Satochip-Java](https://github.com/Toporin/Satochip-Java), published on JitPack (repository declared in `settings.gradle.kts`, version `satochipJava` in the version catalog): `satochip-android` (`org.satochip.android.NFCCardManager`) depends on `satochip-lib` (`org.satochip.client.*`: `SatochipCommandSet`, `seedkeeper.SeedkeeperSecretObject/Header/Status`, etc.), which brings BouncyCastle (`bcprov-jdk15to18`). The library passes its own BouncyCastle provider instance to the JCA calls, so nothing needs to be registered as "BC". bitcoinj supplies BIP39 (`MnemonicCode`).
+The card protocol comes from [Satochip-Java](https://github.com/Toporin/Satochip-Java), published on JitPack (repository declared in `settings.gradle.kts`, version `satochipJava` in the version catalog): `satochip-android` (`org.satochip.android.NFCCardManager`) depends on `satochip-lib` (`org.satochip.client.*`: `SatochipCommandSet`, `seedkeeper.SeedkeeperSecretObject/Header/Status`, etc.), which brings BouncyCastle (`bcprov-jdk15to18`). The library passes its own BouncyCastle provider instance to the JCA calls, so nothing needs to be registered as "BC". BIP39 (English) is implemented in `utils/Bip39.kt` (word list in `app/src/main/resources/bip39/english.txt`, tested against the official vectors in `Bip39Test`), using BouncyCastle's lightweight API.
 
 ## Architecture
 

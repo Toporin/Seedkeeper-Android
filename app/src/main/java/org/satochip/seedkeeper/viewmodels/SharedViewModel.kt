@@ -12,12 +12,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.ApplicationStatus
 import org.satochip.client.seedkeeper.SeedkeeperLog
 import org.satochip.client.seedkeeper.SeedkeeperSecretHeader
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperStatus
+import org.satochip.seedkeeper.utils.Bip39
 import org.satochip.seedkeeper.data.AuthenticityStatus
 import org.satochip.seedkeeper.data.NfcActionType
 import org.satochip.seedkeeper.data.NfcResultCode
@@ -264,12 +264,12 @@ class SharedViewModel : ViewModel() {
         }
 
         if (mnemonicList.any { word ->
-                MnemonicCode.INSTANCE.wordList.indexOf(word) == -1
+                Bip39.wordList.indexOf(word) == -1
             }) {
             return false
         }
         return try {
-            MnemonicCode.INSTANCE.check(mnemonicList)
+            Bip39.check(mnemonicList)
             true
         } catch (e: Exception) {
             false
@@ -285,7 +285,7 @@ class SharedViewModel : ViewModel() {
         }
         val entropy = ByteArray(entropyBits / 8)
         java.security.SecureRandom().nextBytes(entropy)
-        val mnemonic = MnemonicCode.INSTANCE.toMnemonic(entropy)
+        val mnemonic = Bip39.toMnemonic(entropy)
 
         return mnemonic.joinToString(" ")
     }

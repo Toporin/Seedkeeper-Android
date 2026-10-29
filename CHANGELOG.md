@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Remove secret labels from logs: card library logs disabled unless debug mode is on, debug logs no longer include labels and are cleared with card data
 * Disable Android backup and device transfer of app data
 * Update Satochip-Java library to v0.3.6: no sensitive data in logs, BouncyCastle 1.86, more reliable secure channel (detailed library logs available in debug mode)
+* Replace bitcoinj with a lightweight built-in BIP39 implementation (tested against the official vectors); passphrases are now NFKD-normalized as required by BIP39
 
 ## [0.1.3]:
 
