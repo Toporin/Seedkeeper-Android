@@ -18,7 +18,7 @@ qrcodeKotlinAndroid = "3.3.0"
 bitcoinjCore = "0.16.2"
 coilCompose = "2.0.0-rc02"
 guava = "32.1.2-jre"
-bouncycastle = "1.86"
+satochipJava = "0.3.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,7 +44,7 @@ bitcoinj-core = { module = "org.bitcoinj:bitcoinj-core", version.ref = "bitcoinj
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 coil-gif = { module = "io.coil-kt:coil-gif", version.ref = "coilCompose" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
-bcprov-jdk15to18 = { module = "org.bouncycastle:bcprov-jdk15to18", version.ref = "bouncycastle" }
+satochip-android = { module = "com.github.Toporin.Satochip-Java:satochip-android", version.ref = "satochipJava" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

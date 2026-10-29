@@ -75,11 +75,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     //satochip libraries
-    implementation(files("libs/satochip-lib-0.3.6.jar"))
-    implementation(files("libs/satochip-android-0.3.6.aar"))
-    // dependency of satochip-lib, declared here since local artifacts carry no POM
-    // (same artifact as bitcoinj's, so Gradle keeps a single, most recent version)
-    implementation(libs.bcprov.jdk15to18)
+    // satochip-android depends on satochip-lib, which brings BouncyCastle (bcprov-jdk15to18,
+    // same artifact as bitcoinj's, so Gradle keeps a single, most recent version)
+    implementation(libs.satochip.android)
 
     // libs dependencies
     implementation(libs.bitcoinj.core)
