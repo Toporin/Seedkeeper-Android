@@ -14,8 +14,8 @@ android {
         applicationId = "org.satochip.seedkeeper"
         minSdk = 24
         targetSdk = 36
-        versionCode = 104 // if versionName is x.y.z, versionCode is 10000x+100y+z
-        versionName = "0.1.4" // using semantic versioning x.y.z (0<=x,y,z<=99)
+        versionCode = 105 // if versionName is x.y.z, versionCode is 10000x+100y+z
+        versionName = "0.1.5" // using semantic versioning x.y.z (0<=x,y,z<=99)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

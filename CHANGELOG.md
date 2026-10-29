@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.4]:
+## [0.1.5]:
 
 * Target Android 16 (API level 36), as required by Google Play
 * Support edge-to-edge display: content no longer overlaps the status and navigation bars
@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Disable Android backup and device transfer of app data
 * Update Satochip-Java library to v0.3.6: no sensitive data in logs, BouncyCastle 1.86, more reliable secure channel (detailed library logs available in debug mode)
 * Replace bitcoinj with a lightweight built-in BIP39 implementation (tested against the official vectors); passphrases are now NFKD-normalized as required by BIP39
+
+## [0.1.4]:
+
+(Unreleased, same as 0.1.5)
 
 ## [0.1.3]:
 
