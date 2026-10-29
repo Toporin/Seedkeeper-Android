@@ -8,14 +8,14 @@ plugins {
 
 android {
     namespace = "org.satochip.seedkeeper"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "org.satochip.seedkeeper"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 103 // if versionName is x.y.z, versionCode is 10000x+100y+z
-        versionName = "0.1.3" // using semantic versioning x.y.z (0<=x,y,z<=99)
+        targetSdk = 35
+        versionCode = 104 // if versionName is x.y.z, versionCode is 10000x+100y+z
+        versionName = "0.1.4" // using semantic versioning x.y.z (0<=x,y,z<=99)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -41,6 +41,10 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    androidResources {
+        // per-app language support (Android 13+): locale list generated from res/values-XX folders
+        generateLocaleConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -71,12 +75,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     //satochip libraries
-    implementation(files("libs/satochip-lib-0.2.3.jar"))
-    implementation(files("libs/satochip-android-0.0.2.jar"))
-
-    // libs dependencies
-    implementation(libs.bitcoinj.core)
-    implementation(libs.guava)
+    // satochip-android depends on satochip-lib, which brings BouncyCastle (bcprov-jdk15to18),
+    // also used by utils/Bip39.kt
+    implementation(libs.satochip.android)
 
     //Type safe navigation
     implementation(libs.navigation.compose)

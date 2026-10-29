@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -86,6 +87,9 @@ fun BackupView(
                     viewModel.resultCodeLive == NfcResultCode.NO_MEMORY_LEFT)
         {
             backupStatus.value = BackupStatus.FAILURE
+        } else if (backupStatus.value == BackupStatus.THIRD_STEP && NFCCardService.backupErrors.isNotEmpty()) {
+            // import into backup card finished with errors (error details listed in failure view)
+            backupStatus.value = BackupStatus.FAILURE
         }
     }
 
@@ -142,7 +146,9 @@ fun BackupView(
                     if (backupStatus.value == BackupStatus.FAILURE){
                         // show error logs
                         LazyColumn(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 64.dp), // keep list above the bottom button (60dp)
                             contentPadding = PaddingValues(16.dp)
                         ) {
                             item {
@@ -170,20 +176,26 @@ fun BackupView(
                         }
 
                     } else {
-                        if (backupStatus.value == BackupStatus.SUCCESS){
-                            Text("${NFCCardService.backupNumberOfSecretsImported} " + stringResource(R.string.numberSecretsSaved),
-                                style = TextStyle(
-                                    color = Color.Black,
-                                    fontSize = 18.sp,
-                                    lineHeight = 22.sp,
-                                    fontWeight = FontWeight.Bold
+                        // Column (not Box) so the text is laid out above the illustration instead of overlapping it
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            if (backupStatus.value == BackupStatus.SUCCESS){
+                                Text("${NFCCardService.backupNumberOfSecretsImported} " + stringResource(R.string.numberSecretsSaved),
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 18.sp,
+                                        lineHeight = 22.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center
+                                    )
                                 )
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+                            // backup card illustration
+                            BackupTransferImages(
+                                backupStatus = backupStatus.value
                             )
                         }
-                        // backup card illustration
-                        BackupTransferImages(
-                            backupStatus = backupStatus.value
-                        )
                     }
                 }
 

@@ -1,7 +1,6 @@
 package org.satochip.seedkeeper.utils
 
 import androidx.compose.runtime.MutableState
-import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.seedkeeper.R
 import java.util.Locale
@@ -16,7 +15,7 @@ fun getSeedQr(mnemonic: String): String {
     // todo add support for other wordlist languages
     // based on https://github.com/SeedSigner/seedsigner/blob/dev/docs/seed_qr/README.md#standard-seedqr-specification
     val indices = mnemonic.split(" ").map { word ->
-        MnemonicCode.INSTANCE.wordList.indexOf(word).also {
+        Bip39.wordList.indexOf(word).also {
             if (it == -1){
                 throw IllegalArgumentException("Word not found in BIP-39 wordlist: $word")
             }

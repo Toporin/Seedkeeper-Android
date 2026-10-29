@@ -3,7 +3,7 @@
     <string name="app_name">Seedkeeper</string>
     <string name="title_activity_webview">WebviewActivity</string>
     <string name="welcome">Bienvenue</string>
-    <string name="welcomeInfo">Seedkeeper vous permet de générer, importer et exporter facilement une variété de secrets liés à la crypto.</string>
+    <string name="welcomeInfo">Seedkeeper vous permet de générer, importer et exporter facilement une variété de secrets et mots de passes.</string>
     <string name="seedphraseManager">Votre gestionnaire de seedphrases</string>
     <string name="seedphraseManagerInfo">Ne notez plus vos phrases de récupération sur un morceau de papier ! Nous vous offrons une solution matérielle avancée pour les stocker correctement.</string>
     <string name="usingNfc">Utilisation du NFC</string>
@@ -53,6 +53,7 @@
     <string name="nfcResultCodeNone">Aucun</string>
     <string name="nfcResultCodeBusy">Occupé</string>
     <string name="nfcResultCodeNfcError">Erreur lors de la lecture de la carte</string>
+    <string name="nfcDisabled">Le NFC est désactivé, veuillez activer le NFC dans les paramètres de votre téléphone</string>
     <string name="nfcSeedkeeperNeedsSetup">Votre Seedkeeper doit être configurée !</string>
     <string name="nfcWrongPin">Mauvais PIN, tentatives restantes:</string>
     <string name="nfcCardBlocked">Trop de tentatives incorrectes de saisie du code PIN ! Votre carte a été bloquée.</string>
@@ -141,6 +142,9 @@
     <string name="debugMode">Mode débogage</string>
     <string name="verbouseLogs">Activez la collecte des journaux détaillés</string>
     <string name="showLogs">Afficher les logs</string>
+    <string name="appLanguage">Langue de l\'application</string>
+    <string name="appLanguageText">Choisissez la langue utilisée par Seedkeeper</string>
+    <string name="changeLanguage">Changer de langue</string>
     <string name="factoryReset">Réinitialisation d\'usine</string>
     <string name="factoryResetText">Réinitialisez votre carte à son état d\'usine.</string>
     <string name="factoryResetWarning">Attention: cela effacera tous les secrets!</string>
@@ -243,7 +247,7 @@
     <string name="backupFailedText">Des problèmes sont survenus lors de la sauvegarde. Il est possible que certains secrets n\'aient pas été sauvegardés.</string>
 
     <!--Home View-->
-    <string name="homeAuthenticatedText">Gérez vos secrets liés à la crypto avec Seedkeeper.</string>
+    <string name="homeAuthenticatedText">Gérez vos secrets avec Seedkeeper.</string>
     <string name="search">Recherche :</string>
     <string name="mySecretList">Ma liste de secrets</string>
 
@@ -296,7 +300,7 @@
 
     <!-- AppErrorMsg -->
     <string name="errorLabelEmpty">Le champs label est requis!</string>
-    <string name="errorPasswordEmpty">Le champ mot-de-passe est requis!</string>
+    <string name="errorPasswordEmpty">Le champ \'mot de passe\' est requis!</string>
     <string name="errorMnemonicEmpty">Le champ mnémonique est requis!</string>
     <string name="errorDescriptorEmpty">Le champ descriptor est requis!</string>
     <string name="errorDataEmpty">Le champ data est requis!</string>

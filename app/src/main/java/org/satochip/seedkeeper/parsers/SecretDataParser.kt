@@ -1,8 +1,8 @@
 package org.satochip.seedkeeper.parsers
 
-import org.bitcoinj.crypto.MnemonicCode
 import org.satochip.client.seedkeeper.SeedkeeperSecretObject
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
+import org.satochip.seedkeeper.utils.Bip39
 import org.satochip.seedkeeper.data.SecretData
 import org.satochip.seedkeeper.services.SatoLog
 import org.satochip.seedkeeper.utils.bytesToHex
@@ -70,7 +70,7 @@ class SecretDataParser {
         }
         val entropyBytes = bytes.copyOfRange(index, index + entropySize)
 
-        val mnemonic = MnemonicCode.INSTANCE.toMnemonic(entropyBytes).joinToString(separator = " ")
+        val mnemonic = Bip39.toMnemonic(entropyBytes).joinToString(separator = " ")
         index += entropySize
 
         var passphrase: String? = null

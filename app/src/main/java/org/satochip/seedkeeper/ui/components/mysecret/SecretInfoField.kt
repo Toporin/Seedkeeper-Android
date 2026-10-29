@@ -43,6 +43,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.satochip.seedkeeper.R
+import org.satochip.seedkeeper.utils.SecretClipboard
 import org.satochip.seedkeeper.ui.theme.SatoPurple
 import org.satochip.seedkeeper.utils.satoClickEffect
 
@@ -52,6 +53,7 @@ fun SecretInfoField(
     optional: Int? = null,
     text: String,
     isUrl: Boolean = false,
+    isSensitive: Boolean = false, // sensitive data is cleared from clipboard after 30s
 ) {
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current as Activity
@@ -146,7 +148,11 @@ fun SecretInfoField(
                     .size(16.dp)
                     .satoClickEffect(
                         onClick = {
-                            clipboardManager.setText(AnnotatedString(text))
+                            if (isSensitive) {
+                                SecretClipboard.copySecret(context, text)
+                            } else {
+                                clipboardManager.setText(AnnotatedString(text))
+                            }
                             Toast.makeText(context, copyText, Toast.LENGTH_SHORT).show()
                         }
                     ),

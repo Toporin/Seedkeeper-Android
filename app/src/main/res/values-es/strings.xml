@@ -1,0 +1,324 @@
+<resources>
+    <!--General-->
+    <string name="app_name">Seedkeeper</string>
+    <string name="title_activity_webview">WebviewActivity</string>
+    <string name="welcome">Bienvenido</string>
+    <string name="welcomeInfo">Seedkeeper le permite generar, importar y exportar fácilmente una variedad de secretos y contraseñas.</string>
+    <string name="seedphraseManager">Su administrador de frases semilla</string>
+    <string name="seedphraseManagerInfo">¡Ya no escriba sus frases semilla en un pedazo de papel! Le ofrecemos una solución de hardware avanzada para almacenarlas correctamente.</string>
+    <string name="usingNfc">Uso de NFC</string>
+    <string name="usingNfcInfo">Para usarlo, coloque la tarjeta sobre su teléfono cuando se le solicite y manténgala en el lector durante toda la operación.</string>
+    <string name="start">Iniciar</string>
+    <string name="seedkeeper">Seedkeeper</string>
+    <string name="noSeedkeeper">¿Aún no tiene una tarjeta Seedkeeper?\nHaga clic aquí para comprar una.</string>
+    <string name="scan">Hacer clic\n&amp;\nEscanear</string>
+    <string name="cancel">Cancelar</string>
+    <string name="readyToScan">Listo para escanear</string>
+    <string name="nfcHoldSeedkeeper">Acérquese su Seedkeeper a su teléfono</string>
+    <string name="done">Listo</string>
+    <string name="cardNeedToBeScannedTitle">No hay tarjeta escaneada</string>
+    <string name="cardNeedToBeScannedMessage">Necesita escanear una tarjeta para mostrar su información</string>
+    <string name="close">Cerrar</string>
+    <string name="retrieveTheSecretFirst">Por favor, recupere el secreto primero</string>
+    <string name="mnemonicValidText">¡La frase mnemónica no es válida!</string>
+    <string name="moreInfo">Más información</string>
+    <string name="blankTextField"></string>
+
+    <!--Secrets filters-->
+    <string name="all">Todos</string>
+    <string name="mnemonic">Mnemónica</string>
+    <string name="password">Contraseña</string>
+    <string name="descriptors">Descriptor</string>
+    <string name="data">Datos</string>
+    <string name="secret">Secreto</string>
+    <string name="unsupportedSecret">Secreto no soportado</string>
+
+    <!--NFC code validation-->
+    <string name="nfcTitleSuccess">OK</string>
+    <string name="nfcOk">¡Operación exitosa!</string>
+    <string name="nfcTitleWarning">Advertencia</string>
+    <string name="nfcTitleInfo">Información</string>
+    <string name="nfcErrorOccured">Ocurrió un error, por favor intente nuevamente</string>
+    <string name="pinVerified">¡PIN verificado!</string>
+    <string name="pinChangedSuccessfully">¡PIN cambiado exitosamente!</string>
+    <string name="secretHeaderListSet">¡Tarjeta escaneada exitosamente!</string>
+    <string name="secretImportedSuccessfully">¡Secreto importado exitosamente!</string>
+    <string name="secretFetchedSuccessfully">¡Secreto exportado exitosamente!</string>
+    <string name="cardLabelChangedSuccessfully">¡Etiqueta de la tarjeta cambiada exitosamente!</string>
+    <string name="cardLogsFetchedSuccessfully">¡Registros de la tarjeta recuperados exitosamente!</string>
+    <string name="cardSuccessfullyScanned">¡Tarjeta escaneada exitosamente!</string>
+    <string name="cardSuccessfullyBackedUp">¡Tarjeta respaldada exitosamente!</string>
+    <string name="cardSetupSuccessful">¡Configuración de la tarjeta exitosa!</string>
+    <string name="scanning">Escaneando</string>
+    <string name="nfcResultCodeNone">Ninguno</string>
+    <string name="nfcResultCodeBusy">Ocupado</string>
+    <string name="nfcResultCodeNfcError">Error durante el escaneo de la tarjeta</string>
+    <string name="nfcDisabled">El NFC está desactivado, actívelo en los ajustes de su teléfono</string>
+    <string name="nfcSeedkeeperNeedsSetup">¡Su Seedkeeper necesita ser configurado!</string>
+    <string name="nfcWrongPin">PIN incorrecto, intentos restantes: </string>
+    <string name="nfcCardBlocked">¡Demasiados intentos incorrectos de PIN! Su tarjeta ha sido bloqueada.</string>
+    <string name="nfcSecretDeleted">Secreto eliminado exitosamente.</string>
+    <string name="cardMismatch">¡Tarjeta diferente detectada, por favor use la tarjeta correcta!</string>
+    <string name="cardReadyToReset">¡La tarjeta está lista para <b>RESETEAR</b>!</string>
+    <string name="cardResetSuccess">¡El <b>RESETEO</b> de la tarjeta fue exitoso!</string>
+    <string name="cardResetSent">Comando de <b>RESETEO</b> enviado</string>
+    <string name="cardResetCancel">Restablecimiento de fábrica cancelado.</string>
+    <string name="cardNotInitialized">¡Tarjeta no inicializada!</string>
+    <string name="backupCardNotInitialized">¡Tarjeta de respaldo no inicializada!</string>
+    <string name="noMemoryLeft">¡No hay más memoria disponible en la tarjeta!</string>
+    <string name="secretTooLong">¡Fallo en la importación, el secreto es demasiado largo!</string>
+    <string name="cardError">Error durante el procesamiento de la tarjeta</string>
+
+    <!--Generate View-->
+    <string name="generate"><b>GENERAR</b></string>
+    <string name="regenerate"><b>REGENERAR</b></string>
+    <string name="generateASecret">Generar un secreto</string>
+    <string name="generateAMnemonicPhrase">Generar una frase mnemónica</string>
+    <string name="generateAPassword">Generar una contraseña</string>
+    <string name="generateABitcoinDescriptor">Generar un descriptor de Bitcoin</string>
+    <string name="generateExplanation">Le permite generar e importar rápidamente un nuevo secreto.</string>
+    <string name="generateAMnemonicPhraseExplanation">Le permite generar rápidamente una frase mnemónica.</string>
+    <string name="generateAPasswordExplanation">Le permite generar rápidamente una contraseña.</string>
+    <string name="generateSuccessful">El siguiente secreto ha sido importado exitosamente en su Seedkeeper</string>
+    <string name="importButton"><b>IMPORTAR</b></string>
+    <string name="memorablePassword">Fácil de leer</string>
+
+        <!--Mnemonic phrase-->
+        <string name="typeOfSecret">Tipo de secreto</string>
+        <string name="mnemonicPhrase">Frase mnemónica</string>
+        <string name="loginPassword">Usuario/Contraseña</string>
+        <string name="label">Etiqueta</string>
+        <string name="mnemonicSize">Tamaño de la mnemónica</string>
+        <string name="mnemonicWords">%d palabras</string>
+        <string name="passphrase"> Frase de contraseña</string>
+        <string name="walletDescriptorOptional"> Descriptor de billetera (opcional)</string>
+        <!--Login/Password-->
+        <string name="loginOptional">Usuario</string>
+        <string name="urlOptional">URL</string>
+        <string name="optional">(opcional)</string>
+        <string name="passwordLength">Longitud</string>
+        <string name="passwordImport">Importar</string>
+        <string name="copiedToClipboard">Copiado al portapapeles</string>
+        <string name="selectMoreSets">Por favor seleccione al menos un conjunto de caracteres</string>
+        <string name="emailListTitle">Previamente usado</string>
+        <string name="emailListNewEmail">Escribir nuevo usuario</string>
+        <string name="emailListUseExisting">O usar existente:</string>
+        <string name="emailListWriteNewOne">Escribir uno nuevo:</string>
+
+    <!--Import View-->
+    <string name="importHeader">Importar</string>
+    <string name="importAMnemonicPhrase">Importar una frase mnemónica</string>
+    <string name="importAMnemonicPhraseMessage">Le permite importar una frase mnemónica existente en su Seedkeeper.</string>
+    <string name="importAPassword">Importar una contraseña</string>
+    <string name="importAPasswordMessage">Le permite importar una contraseña existente en su Seedkeeper.</string>
+    <string name="importAWalletDescriptor">Importar un descriptor de billetera</string>
+    <string name="importAWalletDescriptorMessage">Le permite importar un descriptor de billetera existente en su Seedkeeper.</string>
+    <string name="importFreeField">Importar lo que desee</string>
+    <string name="importFreeFieldMessage">Le permite importar cualquier dato en su Seedkeeper</string>
+    <string name="enterYourMnemonic">Ingrese su frase mnemónica aquí</string>
+    <string name="enterYourPassword">Ingrese su contraseña aquí</string>
+    <string name="enterYourWalletDescriptor">Ingrese su descriptor de billetera aquí</string>
+    <string name="enterYourData">Ingrese sus datos aquí</string>
+    <string name="enterYourSecret">Ingrese su secreto aquí</string>
+    <string name="secretGeneratePlaceholder">Haga clic en \'<b>GENERAR</b>\' para generar un secreto aleatorio</string>
+    <string name="mnemonicType">Tipo de mnemónica</string>
+    <string name="bip">BIP39</string>
+    <string name="walletDescriptor">Descriptor de billetera</string>
+    <string name="freeField">Campo libre</string>
+
+    <!--Menu View-->
+    <string name="cardInfo">Información de la tarjeta</string>
+    <string name="makeBackup">Hacer un respaldo</string>
+    <string name="useSeedkeeper">Cómo usar Seedkeeper</string>
+    <string name="tos">Términos de servicio</string>
+    <string name="privacyPolicy">Política de privacidad</string>
+    <string name="allOurProducs">Todos nuestros\nproductos</string>
+
+    <!--Settings View-->
+    <string name="settings">Configuración</string>
+    <string name="showInstructionScreens">Mostrar las pantallas de introducción</string>
+    <string name="restartApplication">Debe reiniciar la aplicación</string>
+    <string name="starterIntro">Introducción inicial</string>
+    <string name="debugMode">Modo de depuración</string>
+    <string name="verbouseLogs">Activar la recolección de registros detallados</string>
+    <string name="showLogs">Mostrar registros</string>
+    <string name="appLanguage">Idioma de la aplicación</string>
+    <string name="appLanguageText">Elija el idioma utilizado por Seedkeeper</string>
+    <string name="changeLanguage">Cambiar idioma</string>
+    <string name="factoryReset">Restablecimiento de fábrica</string>
+    <string name="factoryResetText">Reinicialice su tarjeta a su estado de fábrica.</string>
+    <string name="factoryResetWarning">Advertencia: ¡esto borrará todos los secretos!</string>
+    <string name="resetMyCard"><b>RESETEAR</b> mi tarjeta</string>
+        <!--Factory Reset View-->
+        <string name="reset"><b>RESETEAR</b></string>
+        <string name="factoryResetWarningText">Está a punto de <b>RESETEAR</b> su tarjeta a la configuración de fábrica.</string>
+        <string name="allDataErasedWarning">¡Todos los datos, incluyendo los secretos, serán borrados!</string>
+        <string name="allDataErasedIrreversible">Este proceso es irreversible.</string>
+        <string name="checkToProceed">Marque esta casilla para continuar</string>
+        <string name="sendResetCommand">Enviar comando de <b>RESETEO</b></string>
+        <string name="currentlyPerformingReset">Actualmente está realizando el <b>RESETEO</b> de su tarjeta.</string>
+        <string name="clickOnResetToContinue">Haga clic en el comando de <b>RESETEO</b> para continuar…</string>
+        <string name="orCancelToQuit">O cancele para salir.</string>
+        <string name="resetSuccessful">Su tarjeta ha sido <b>RESETEADA</b> a la configuración de fábrica.</string>
+        <string name="stepsRemaining">Pasos restantes: </string>
+        <string name="pinRemaining">Advertencia: PIN restantes: </string>
+        <string name="resetCancelled">Restablecimiento de fábrica cancelado</string>
+
+    <!--Card Information View-->
+    <string name="cardVersion">Versión de la tarjeta</string>
+    <string name="cardLabel">Etiqueta de la tarjeta</string>
+    <string name="pinCode">Código PIN</string>
+    <string name="changePinCode">Cambiar código PIN</string>
+    <string name="cardAuthenticity">Autenticidad de la tarjeta</string>
+    <string name="cardAuthentikey">Card authentikey</string>
+    <string name="seedkeeperStatus">Estado de Seedkeeper</string>
+    <string name="cardIsGenuine">esta tarjeta es genuina</string>
+    <string name="cardIsNotGenuine">esta tarjeta no es genuina</string>
+    <string name="memoryAvailable">Memoria disponible</string>
+    <string name="memoryTotal">Memoria total</string>
+    <string name="secretsStored">Secretos almacenados</string>
+    <string name="showCardLogs">Mostrar registros de la tarjeta</string>
+
+    <!--Edit Card Label View-->
+    <string name="cardLabelTitle">Editar etiqueta de la tarjeta</string>
+    <string name="cardLabelMsg">Le permite cambiar la etiqueta de la tarjeta (máx. 64 caracteres)</string>
+    <string name="cardLabelToast">¡Etiqueta de la tarjeta cambiada exitosamente!</string>
+
+    <!--Card Authenticity View-->
+    <string name="cardAuthFailed">¡Fallo en la autenticación de la tarjeta!</string>
+    <string name="cardAuthFailedText">Imposible autenticar el emisor de esta tarjeta. No fue emitida por Satochip S.R.L.</string>
+    <string name="cardAuthFailedUsage">¡Si no cargó la tarjeta usted mismo, tenga mucho cuidado!</string>
+    <string name="cardAuthSuccessful">¡Tarjeta autenticada exitosamente!</string>
+    <string name="cardAuthSuccessfulText">Esta tarjeta fue emitida por Satochip S.R.L.</string>
+    <string name="cardAuthSuccessfulUsage">Puede usarla con seguridad.</string>
+    <string name="showCardCertificate">Mostrar certificados de la tarjeta</string>
+    <string name="hideCardCertificate">Ocultar certificados de la tarjeta</string>
+    <string name="cardInfoCert">Certificado de la tarjeta</string>
+    <string name="subcaInfo">Certificado Sub-CA</string>
+    <string name="rootCaInfo">Certificado Root CA</string>
+    <string name="copyToClipboard">Copiar al portapapeles</string>
+
+    <!--Pin Code View-->
+    <string name="setup">Configuración</string>
+    <string name="setupPinTitle">Configurar nuevo PIN</string>
+    <string name="editPinCodeTitle">Cambiar PIN</string>
+    <string name="editPinCode">Cambiar su código PIN</string>
+    <string name="editPinCodeEnterCurrentPin">Para modificar el código PIN de la tarjeta, primero ingrese el código PIN actual.</string>
+    <string name="editPinCodeEnterNewPin">Ingrese el nuevo código PIN</string>
+    <string name="editPinCodeMessage">Edite el código PIN para asegurar el acceso a su tarjeta inteligente Seedkeeper.</string>
+    <string name="enterPinCodeTitle">Ingresar PIN</string>
+    <string name="enterMasterPinCode">Ingrese su código PIN</string>
+    <string name="enterBackupPinCode">Ingrese el código PIN para su tarjeta de respaldo</string>
+    <string name="enterPinCodeText">Si la tarjeta aún no ha sido configurada, se le pedirá que <b>CREAR</b> un nuevo PIN en la siguiente pantalla.</string>
+    <string name="enterPinCode">Ingrese PIN (4–16 caracteres)</string>
+    <string name="createPinCode"><b>CREAR</b> un código PIN para su tarjeta</string>
+    <string name="createBackupPinCode"><b>CREAR</b> un código PIN para su tarjeta de respaldo</string>
+    <string name="createPinCodeMessage"><b>CREAR</b> un código PIN para asegurar el acceso a su tarjeta inteligente Seedkeeper.</string>
+    <string name="wrongPinCode">¡Código PIN incorrecto!</string>
+    <string name="wrongPinCodeMessage">¡El valor del código PIN no coincide!\npor favor intente nuevamente</string>
+    <string name="confirmPinCode">Confirmar código PIN</string>
+    <string name="confirmPinCodeMessage">Confirme el código PIN que ingresó anteriormente</string>
+    <string name="next">Siguiente</string>
+    <string name="confirm">Confirmar</string>
+    <string name="restartTheSetup">Reiniciar la configuración</string>
+    <string name="shouldNotHappen">Error de flujo de PIN</string>
+
+    <!--Backup View-->
+    <string name="backup">Respaldo</string>
+    <string name="pairing">Emparejamiento</string>
+    <string name="masterCard">Tarjeta Maestra</string>
+    <string name="backupCard">Tarjeta de Respaldo</string>
+    <string name="home">Inicio</string>
+    <string name="back">Atrás</string>
+    <string name="restart">Reiniciar</string>
+    <string name="scanMySeedkeeper">Escanear mi Seedkeeper</string>
+    <string name="makeTheBackup">Hacer el respaldo</string>
+    <string name="backupDescription">Para hacer un respaldo de su Seedkeeper (tarjeta maestra) a otra, primero necesitará emparejar la tarjeta de respaldo.</string>
+    <string name="pairingStartProcess">Inicie el proceso de respaldo y siga el asistente.</string>
+    <string name="pairingFirstStep">Por favor prepare su tarjeta de respaldo Seedkeeper y haga clic en siguiente para emparejar la tarjeta.</string>
+    <string name="pairingSecondStep">Ahora que su tarjeta de respaldo ha sido emparejada, por favor vuelva a escanear su tarjeta Seedkeeper.</string>
+    <string name="pairingThirdStepDoneTitle">¡Perfecto!</string>
+    <string name="pairingThirdStepDoneText">Ahora está listo para copiar el contenido de esta tarjeta a su tarjeta de respaldo usando una comunicación encriptada.</string>
+    <string name="pairingFourthStep">Por favor prepare su tarjeta de respaldo Seedkeeper y haga clic en siguiente para copiar su respaldo.</string>
+    <string name="congratulations">¡Felicitaciones!</string>
+    <string name="numberSecretsSaved">secretos guardados en la tarjeta de respaldo</string>
+    <string name="backupFifthText">Ha realizado exitosamente un respaldo de su tarjeta Seedkeeper.</string>
+    <string name="backupWarning">¡Advertencia!</string>
+    <string name="backupFailedText">Hubo algunos problemas durante el respaldo. Algunos secretos pueden no haber sido respaldados.</string>
+
+    <!--Home View-->
+    <string name="homeAuthenticatedText">Administre sus secretos al alcance de sus dedos con Seedkeeper.</string>
+    <string name="search">Buscar:</string>
+    <string name="mySecretList">Mi lista de secretos</string>
+
+    <!--Add Secret View-->
+    <string name="addSecret">Agregar secreto</string>
+    <string name="addSecretMessage">Genere y guarde un nuevo secreto o simplemente importe uno existente a su Seedkeeper.</string>
+    <string name="generateASecretMessage">Le permite generar e importar rápidamente un nuevo secreto.</string>
+    <string name="importASecret">Importar un secreto</string>
+    <string name="importASecretMessage">Le permite importar un secreto existente en su Seedkeeper.</string>
+
+    <!--My Secret View-->
+    <string name="mySecret">Mi secreto</string>
+    <string name="manageSecret">Administre su secreto</string>
+    <string name="manageSecretMessage">Información del secreto y acciones relacionadas</string>
+    <string name="showSecret">Revelar</string>
+    <string name="secretRevealPlaceholder">Haga clic en \'Revelar\' para exportar el secreto de la tarjeta</string>
+    <string name="deleteSecret">Eliminar</string>
+    <string name="seed">Semilla</string>
+    <string name="seedQR">SeedQR</string>
+    <string name="xpub">Xpub</string>
+    <string name="login">Usuario</string>
+    <string name="url">URL</string>
+    <string name="oldSeedkeeper">Esta opción solo está disponible para la última tarjeta Seedkeeper - compre la suya en https://satochip.io/product/seedkeeper</string>
+    <string name="buySeedkeeper">Comprar Seedkeeper</string>
+    <string name="encryptedOnlySecret">Secreto encriptado</string>
+    <string name="encryptedOnlySecretText">No se puede exportar este secreto debido a una política de exportación específica</string>
+    <string name="secretResetWarningText">Está a punto de <b>RESETEAR</b> un secreto.\n¡Este proceso es irreversible!</string>
+    <string name="checkThisBoxToContinue">Marque esta casilla para continuar</string>
+        <!--Seedkeeper Secret Type-->
+        <string name="masterseed">Mnemónica</string>
+        <string name="pubkey">Clave pública</string>
+        <string name="descriptor">Descriptor</string>
+        <string name="secret2FA">2FA</string>
+
+    <!--Show Logs View-->
+    <string name="logs">Registros</string>
+    <string name="logsEntriesnumber">Número de entradas:</string>
+    <string name="logsDisabledText">Por favor active el modo de depuración</string>
+
+    <!--Show Card Logs View-->
+    <string name="cardLogs">Registros de la tarjeta</string>
+
+    <!-- Links -->
+    <string name="howToUseSeedkeeper">https://satochip.io/setup-use-seedkeeper-on-mobile/</string>
+    <string name="termsOfServiceUrl">https://satochip.io/terms-of-service/</string>
+    <string name="privacyPolicyUrl">https://satochip.io/privacy-policy/</string>
+    <string name="allOurProducsUrl">https://satochip.io/shop/</string>
+    <string name="buySeedkeeperUrl">https://satochip.io/product/seedkeeper/</string>
+    <string name="moreInfoUrl">https://www.youtube.com/watch?v=lVrKgzak2Bc</string>
+
+    <!-- AppErrorMsg -->
+    <string name="errorLabelEmpty">¡El campo etiqueta es requerido!</string>
+    <string name="errorPasswordEmpty">¡El campo contraseña es requerido!</string>
+    <string name="errorMnemonicEmpty">¡El campo mnemónica es requerido!</string>
+    <string name="errorDescriptorEmpty">¡El campo descriptor es requerido!</string>
+    <string name="errorDataEmpty">¡El campo datos es requerido!</string>
+    <string name="errorCardLabelTooLong">La etiqueta de la tarjeta es demasiado larga (máx. 64 bytes)</string>
+    <string name="errorLabelTooLong">¡La etiqueta es demasiado larga (máx. 127 bytes)!</string>
+    <string name="errorPasswordTooLong">¡La contraseña es demasiado larga (máx. 255 bytes)!</string>
+    <string name="errorMnemonicTooLong">¡La frase mnemónica es demasiado larga (máx. 255 bytes)!</string>
+    <string name="errorDescriptorTooLong">¡El descriptor es demasiado largo (máx. 65535 bytes)!</string>
+    <string name="errorDataTooLong">¡Los datos son demasiado largos (máx. 65536 bytes)!</string>
+    <string name="errorLoginTooLong">¡El usuario es demasiado largo (máx. 255 bytes)!</string>
+    <string name="errorUrlTooLong">¡La URL es demasiado larga (máx. 255 bytes)!</string>
+    <string name="errorPassphraseTooLong">¡La frase de contraseña es demasiado larga (máx. 255 bytes)!</string>
+    <string name="errorMnemonicWrongFormat">¡La mnemónica está en el formato incorrecto!</string>
+    <string name="errorSecretTooLongForV1">¡El contenido es demasiado largo para Seedkeeper v1 (máx. 255 bytes)!</string>
+    <string name="errorNoCharSelected">Por favor seleccione al menos un conjunto de caracteres</string>
+    <string name="errorPlaintextExportNotAllowed">¡La política de este secreto no permite la exportación en texto plano!</string>
+    <string name="errorPinWrongFormat">¡El PIN debe tener entre 4 y 16 caracteres!</string>
+    <string name="errorPinMismatch">¡El valor del código PIN no coincide!\npor favor intente nuevamente o cancele</string>
+
+</resources>
+
