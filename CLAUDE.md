@@ -24,7 +24,7 @@ Android companion app (Kotlin + Jetpack Compose) for the Satochip **Seedkeeper**
 
 ## Card communication libraries
 
-The card protocol lives in local jars under `app/libs/`, not in this repo: `satochip-lib-<ver>.jar` (`org.satochip.client.*`: `SatochipCommandSet`, `seedkeeper.SeedkeeperSecretObject/Header/Status`, etc.) and `satochip-android-<ver>.jar` (`org.satochip.android.NFCCardManager`). Only the jar versions named in `app/build.gradle.kts` are used; the older jars in that folder are ignored. bitcoinj supplies BIP39 (`MnemonicCode`).
+The card protocol comes from [Satochip-Java](https://github.com/Toporin/Satochip-Java), used as local artifacts under `app/libs/`: `satochip-lib-<ver>.jar` (`org.satochip.client.*`: `SatochipCommandSet`, `seedkeeper.SeedkeeperSecretObject/Header/Status`, etc.) and `satochip-android-<ver>.aar` (`org.satochip.android.NFCCardManager`). Only the versions named in `app/build.gradle.kts` are used; the older jars in that folder are ignored. Local artifacts carry no POM, so satochip-lib's BouncyCastle dependency (`bcprov-jdk15to18`) is declared in the app. The library passes its own BouncyCastle provider instance to the JCA calls, so nothing needs to be registered as "BC". bitcoinj supplies BIP39 (`MnemonicCode`).
 
 ## Architecture
 

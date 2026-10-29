@@ -16,6 +16,7 @@ import org.satochip.client.seedkeeper.SeedkeeperSecretOrigin
 import org.satochip.client.seedkeeper.SeedkeeperSecretType
 import org.satochip.client.seedkeeper.SeedkeeperStatus
 import org.satochip.io.APDUException
+import org.satochip.io.LockErrorException
 import org.satochip.io.WrongPINException
 import org.satochip.io.BlockedPINException
 import org.satochip.io.ResetToFactoryException
@@ -185,12 +186,11 @@ object NFCCardService {
     }
 
     /**
-     * Single card manager (a polling thread that never stops), created and started once.
+     * Single card manager: card sessions run from onTagDiscovered (on the NFC reader thread).
      */
     private val cardManager: NFCCardManager by lazy {
         NFCCardManager().apply {
             setCardListener(SatochipCardListenerForAction)
-            start()
         }
     }
 
@@ -447,10 +447,9 @@ object NFCCardService {
             cmdSet.setPin0(pinBytes)
             try {
                 cmdSet.cardVerifyPIN()
-            } catch (e: APDUException) {
+            } catch (e: LockErrorException) {
                 // 0x9C30 (lock error): a multi-step operation (e.g. secret import) was interrupted
                 // in a previous session; the card rejects the next command once and releases the lock
-                if (e.sw != 0x9C30) throw e
                 SatoLog.w(TAG, "verifyPin lock error (0x9C30), retrying")
                 cmdSet.cardVerifyPIN()
             }
