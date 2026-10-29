@@ -61,7 +61,8 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             val context = LocalContext.current as Activity
-            //Lock screen orientation to portrait
+            // Lock screen orientation to portrait (ignored by Android 16+ on large screens, sw >= 600dp;
+            // configChanges in the manifest keeps the activity and its state on rotation/resize)
             context.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             SeedkeeperTheme {
                 Surface(

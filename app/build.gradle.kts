@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace = "org.satochip.seedkeeper"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "org.satochip.seedkeeper"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 104 // if versionName is x.y.z, versionCode is 10000x+100y+z
         versionName = "0.1.4" // using semantic versioning x.y.z (0<=x,y,z<=99)
 

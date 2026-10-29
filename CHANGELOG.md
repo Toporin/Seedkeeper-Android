@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.4]:
 
-* Target Android 15 (API level 35), as required by Google Play
+* Target Android 16 (API level 36), as required by Google Play
 * Support edge-to-edge display: content no longer overlaps the status and navigation bars
+* Keep screen state when rotating or resizing on tablets and foldables (Android 16 ignores the portrait lock on large screens)
 * Patch status bar icons not visible
 * Upgrade Android Gradle Plugin to v8.13.2
 * Add Spanish translation (thanks to @esixce, PR #73)

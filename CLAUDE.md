@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Android companion app (Kotlin + Jetpack Compose) for the Satochip **Seedkeeper** NFC smartcard, which stores seedphrases, passwords, wallet descriptors and free text. Single Gradle module `:app`, package `org.satochip.seedkeeper`, minSdk 24 / targetSdk 34, Java/JVM target 1.8.
+Android companion app (Kotlin + Jetpack Compose) for the Satochip **Seedkeeper** NFC smartcard, which stores seedphrases, passwords, wallet descriptors and free text. Single Gradle module `:app`, package `org.satochip.seedkeeper`, minSdk 24 / targetSdk 36, Java/JVM target 1.8.
 
 ## Build & test
 
