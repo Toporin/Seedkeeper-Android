@@ -4,6 +4,7 @@ import android.util.Log
 import org.satochip.client.SatochipCommandSet
 import org.satochip.io.CardChannel
 import org.satochip.io.CardListener
+import java.util.logging.Level
 import org.satochip.seedkeeper.data.NfcActionType
 
 private const val TAG = "SeedkeeperCardListener"
@@ -16,6 +17,10 @@ object SatochipCardListenerForAction : CardListener {
         SatoLog.d(TAG, "onConnected: Card is connected")
         try {
             val cmdSet = SatochipCommandSet(cardChannel)
+            // satochip-lib logs to logcat (logger 'org.satochip.client'), its level is reset to WARNING
+            // for each new SatochipCommandSet. WARNING logs include secret labels (import APDUs):
+            // only enabled in debug mode. Never use INFO: it logs decrypted card responses (secrets).
+            cmdSet.setLoggerLevel(if (SatoLog.isDebugModeActivated) Level.WARNING else Level.SEVERE)
             // start to interact with card
             NFCCardService.initialize(cmdSet)
 

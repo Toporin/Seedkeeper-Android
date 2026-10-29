@@ -180,6 +180,8 @@ object NFCCardService {
         backupNumberOfSecretsImported = 0
         // secret being imported
         secretData = null
+        // in-app debug logs
+        SatoLog.emptyList()
     }
 
     /**
@@ -768,7 +770,7 @@ object NFCCardService {
             // Change label
             cmdSet.setCardLabel(cardLabel)
             resultCodeLive.postValue(NfcResultCode.CARD_LABEL_CHANGED_SUCCESSFULLY)
-            SatoLog.e(TAG, "editCardLabel label set to: $cardLabel")
+            SatoLog.d(TAG, "editCardLabel label changed")
         } catch (e: CardMismatchException) {
             resultCodeLive.postValue(NfcResultCode.CARD_MISMATCH)
             SatoLog.e(TAG, "card mismatch exception: $e")
@@ -841,9 +843,9 @@ object NFCCardService {
                         cmdSet.seedkeeperImportSecret(item)
                         backupImportProgress.postValue(index.toFloat() / secretObjectsForBackup.size)
                         backupNumberOfSecretsImported +=1
-                        SatoLog.d(TAG, "importSecretsToBackup imported secret with label ${item.secretHeader.label} and sid ${item.secretHeader.sid}")
+                        SatoLog.d(TAG, "importSecretsToBackup imported secret with sid ${item.secretHeader.sid}")
                     } catch (e: APDUException) {
-                        SatoLog.e(TAG, "importSecretsToBackup failed to import secret with label ${item.secretHeader.label} and sid ${item.secretHeader.sid}: $e")
+                        SatoLog.e(TAG, "importSecretsToBackup failed to import secret with sid ${item.secretHeader.sid}: $e")
                         SatoLog.e(TAG, Log.getStackTraceString(e))
                         // log error
                         backupErrors.add(backupErrorFor(item, importErrorCode(e)))
@@ -1068,7 +1070,7 @@ object NFCCardService {
                 val secretObject = cmdSet.seedkeeperExportSecret(item.sid, pubSid)
                 secretObjectsForBackup.add(secretObject)
                 backupExportProgress.postValue(index.toFloat() / secretHeadersForBackup.size)
-                SatoLog.d(TAG, "exportSecrets exported encrypted secret with label: ${secretObject.secretHeader.label} and sid: ${secretObject.secretHeader.sid}")
+                SatoLog.d(TAG, "exportSecrets exported encrypted secret with sid: ${secretObject.secretHeader.sid}")
             }
             SatoLog.d(TAG, "exportSecrets exported successfully!")
         } catch (e: Exception) {
